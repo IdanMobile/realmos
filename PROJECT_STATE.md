@@ -1,18 +1,18 @@
 # RealmOS — Project State
 
-Version: 0.25.0  
+Version: 0.26.0  
 Prepared: 2026-06-12
 
 ## Current Phase
 
 ```text
-Initiative 0.25 — Work Packet Lifecycle (complete)
+Initiative 0.26 — Command Center Task Approval + Run Monitor (complete)
 ```
 
 ## Current Task
 
 ```text
-Await operator approval for Initiative 0.26 — Command Center Task Approval + Run Monitor
+Await operator approval for Initiative 0.27 — Self-Handoff / Durable Run State Updates
 ```
 
 ## Roadmap gate (locked)
@@ -20,7 +20,7 @@ Await operator approval for Initiative 0.26 — Command Center Task Approval + R
 **No side projects until RealmOS self-management milestone is complete.**
 
 - **GUING bootstrap:** blocked
-- **Recommended next:** **0.26 — Command Center Task Approval + Run Monitor**
+- **Recommended next:** **0.27 — Self-Handoff / Durable Run State Updates**
 
 ## Handoff
 
@@ -29,12 +29,12 @@ Await operator approval for Initiative 0.26 — Command Center Task Approval + R
 
 ## Current Status
 
-Strict verification bar is **green**. Work packet lifecycle: draft → approval → dispatch (dry-run queue) → manual result → verification record → close. **No automatic shell execution or Cursor CLI invocation.**
+Strict verification bar is **green**. Command Center exposes lifecycle approval, dry-run dispatch monitoring, and manual result/verification recording. **No automatic shell execution or Cursor CLI invocation.**
 
 ## Last Completed
 
 ```text
-Initiative 0.25 — Work packet lifecycle (contract, service, API, persistence, tests, docs)
+Initiative 0.26 — Command Center task approval + run monitor (UI, API clients, tests, docs)
 ```
 
 ## Verification (strict)
@@ -50,7 +50,7 @@ pnpm test:postgres     # optional
 
 ## Docs
 
+- Command Center monitor: `docs/realmos-package/06_operations/command_center_task_monitor_v0_26.md`
+- Audit: `docs/realmos-package/99_audits/command_center_task_monitor_audit_v0_26.md`
 - Lifecycle: `docs/realmos-package/06_operations/work_packet_lifecycle_v0_25.md`
-- Audit: `docs/realmos-package/99_audits/work_packet_lifecycle_audit_v0_25.md`
-- Executor bridge: `docs/realmos-package/06_operations/local_executor_bridge_v0_24.md`
 - Verification: `VERIFICATION_COMMANDS.md`

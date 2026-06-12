@@ -1,7 +1,7 @@
-# Latest Cursor Handoff — Post Initiative 0.25
+# Latest Cursor Handoff — Post Initiative 0.26
 
 Updated: 2026-06-12  
-**Purpose:** Continue from Work Packet Lifecycle complete.
+**Purpose:** Continue from Command Center Task Approval + Run Monitor complete.
 
 ---
 
@@ -9,11 +9,11 @@ Updated: 2026-06-12
 
 | Field | Value |
 |-------|--------|
-| **Project version** | `0.25.0` |
-| **Post-MVP complete** | 0.18–0.25 |
+| **Project version** | `0.26.0` |
+| **Post-MVP complete** | 0.18–0.26 |
 | **Strict verification** | **GREEN** |
 | **Executor mode** | `dry_run` — file queue only, no shell execution |
-| **Lifecycle mode** | Manual result + verification records — no auto-run |
+| **Command Center** | Lifecycle approval + run monitor panel (live API) |
 
 ---
 
@@ -21,25 +21,23 @@ Updated: 2026-06-12
 
 - **No side projects** until self-management milestone
 - **GUING blocked**
-- **Next:** **0.26 — Command Center Task Approval + Run Monitor**
+- **Next:** **0.27 — Self-Handoff / Durable Run State Updates**
 
 ---
 
-## Initiative 0.25 summary
+## Initiative 0.26 summary
 
-- Contract: `WorkPacketLifecycle` in `@realmos/contracts`
-- Service: `@realmos/work-loop` lifecycle state machine + executor bridge integration
-- API: `/api/lifecycle/*` endpoints
-- Persistence: `operational_work_packet_lifecycle` (migration 008)
-- Health: `checks.lifecycle` + dashboard panel
-- States: draft → ready_for_approval → approved → awaiting_result → verification_pending → verified → completed
+- API clients: lifecycle + executor bridge in `apps/web/src/lib/api/`
+- Panel: `WorkPacketTaskMonitorPanel` — list, detail, operator actions, run monitor
+- Safety UX: dry-run banner, `shellExecution=false`, `automaticExecution=false`
+- Tests: mappers, API client, panel component (no browser E2E)
 
 ---
 
 ## Exact next task
 
 ```text
-Await operator approval for Initiative 0.26 — Command Center Task Approval + Run Monitor.
+Await operator approval for Initiative 0.27 — Self-Handoff / Durable Run State Updates.
 ```
 
 Do not start GUING, side projects, or autonomous execution.
@@ -48,5 +46,5 @@ Do not start GUING, side projects, or autonomous execution.
 
 ## Audits
 
+- `docs/realmos-package/99_audits/command_center_task_monitor_audit_v0_26.md`
 - `docs/realmos-package/99_audits/work_packet_lifecycle_audit_v0_25.md`
-- `docs/realmos-package/99_audits/local_executor_bridge_audit_v0_24.md`

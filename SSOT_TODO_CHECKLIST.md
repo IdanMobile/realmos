@@ -978,7 +978,8 @@ RealmOS must be able to:
 - [x] 0.23 Firebase baseline wiring (platform only — no product unlock)
 - [x] 0.24 Local executor / Cursor CLI bridge (dry-run file queue)
 - [x] 0.25 Work Packet Lifecycle
+- [x] 0.26 Command Center Task Approval + Run Monitor
 
 ## Recommended next
 
-- [ ] **0.26 — Command Center Task Approval + Run Monitor**
+- [ ] **0.27 — Self-Handoff / Durable Run State Updates**

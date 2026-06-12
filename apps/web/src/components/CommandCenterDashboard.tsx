@@ -28,6 +28,7 @@ import { ProjectInfrastructurePanel } from "@/components/panels/ProjectInfrastru
 import { RepositoryBoundaryPanel } from "@/components/panels/RepositoryBoundaryPanel";
 import { SelfBuildConsolePanel } from "@/components/panels/SelfBuildConsolePanel";
 import { SystemStatusPanel } from "@/components/panels/SystemStatusPanel";
+import { WorkPacketTaskMonitorPanel } from "@/components/panels/WorkPacketTaskMonitorPanel";
 
 type CommandCenterDashboardProps = {
   data: DashboardMockData;
@@ -78,6 +79,7 @@ export function CommandCenterDashboard({
     <CommandCenterLayout dataSource={dataSource}>
       <div className="grid gap-4 lg:grid-cols-2" data-testid="command-center-dashboard">
         <SystemStatusPanel health={health} dataSource={dataSource} />
+        <WorkPacketTaskMonitorPanel health={health} dataSource={dataSource} />
         <OperatorGuidePanel />
         <SelfBuildConsolePanel {...data.workLoop} />
         <FleetControlPanel {...data.fleet} />
