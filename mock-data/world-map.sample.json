@@ -1,0 +1,59 @@
+{
+  "id": "world_default",
+  "title": "RealmOS World",
+  "version": "0.1.0",
+  "nodes": [
+    {
+      "id": "node_jarvis_hq",
+      "kind": "jarvis_hq",
+      "label": "Jarvis HQ",
+      "status": "active",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "visualTheme": "cyan"
+    },
+    {
+      "id": "node_realm_os",
+      "kind": "business_land",
+      "refType": "business",
+      "refId": "biz_realm_os",
+      "label": "RealmOS",
+      "status": "active",
+      "position": {
+        "x": -200,
+        "y": 100
+      },
+      "visualTheme": "blue"
+    },
+    {
+      "id": "node_guing",
+      "kind": "business_land",
+      "refType": "business",
+      "refId": "biz_guing",
+      "label": "GUING",
+      "status": "healthy",
+      "position": {
+        "x": 200,
+        "y": 100
+      },
+      "visualTheme": "teal"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_hq_realm",
+      "sourceNodeId": "node_jarvis_hq",
+      "targetNodeId": "node_realm_os",
+      "kind": "belongs_to"
+    },
+    {
+      "id": "edge_hq_guing",
+      "sourceNodeId": "node_jarvis_hq",
+      "targetNodeId": "node_guing",
+      "kind": "belongs_to"
+    }
+  ],
+  "updatedAt": "2026-06-07T00:00:00.000Z"
+}

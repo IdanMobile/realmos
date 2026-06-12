@@ -1,0 +1,73 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+.next/
+out/
+build/
+*.tsbuildinfo
+
+# Turbo
+.turbo/
+
+# Test / coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# Vitest
+**/.vite/
+
+# Environment and secrets (keep .env.example)
+.env
+.env.*
+!.env.example
+
+# RealmOS runtime artifacts (see .env.example REALMOS_*_DIR)
+generated/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors / IDEs
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Optional local IDE config (uncomment if you do not want to share)
+# .vscode/
+
+# Cursor local state (keep rules/skills in repo if added later)
+.cursor/
+
+# Debug
+*.pid
+*.seed
+*.pid.lock
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# TypeScript incremental (package-level)
+**/*.tsbuildinfo
+
+# Misc
+.vercel
+.cache/

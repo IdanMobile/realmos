@@ -1,0 +1,25 @@
+sequenceDiagram
+  participant U as User
+  participant J as Jarvis
+  participant C as Council
+  participant G as Government
+  participant N as Necromancer
+  participant B as Business Registry
+  participant A as Agents
+  participant M as Memory
+  participant D as Dashboard
+
+  U->>J: I have an idea
+  J->>M: Recall relevant memory
+  J->>C: Ask for strategic review if needed
+  C-->>J: Options, risks, direction
+  J->>G: Check creation policy
+  G-->>J: Allowed
+  J->>N: Propose agent team
+  N-->>J: Agent team blueprint
+  J->>B: Create ecosystem business
+  B->>A: Create default agents
+  A->>A: Generate spec/tasks/research/risks
+  A->>M: Store decisions and artifacts
+  A->>D: Update dashboard
+  J-->>U: Business ready, approval needed for next actions

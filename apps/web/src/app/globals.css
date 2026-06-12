@@ -1,0 +1,23 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-background text-textPrimary antialiased;
+}
+
+.card {
+  @apply rounded-xl border border-border bg-card p-4 shadow-lg shadow-black/20;
+}
+
+.panel-title {
+  @apply mb-3 text-sm font-semibold uppercase tracking-wide text-textSecondary;
+}
+
+.badge {
+  @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium;
+}

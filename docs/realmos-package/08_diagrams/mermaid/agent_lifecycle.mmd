@@ -1,0 +1,15 @@
+flowchart TD
+  Need[Need detected] --> Reuse{Existing agent can handle?}
+  Reuse -- Yes --> Assign[Assign existing agent]
+  Reuse -- No --> Blueprint[Create agent blueprint]
+  Blueprint --> Gov[Governance review]
+  Gov --> Test[Test task]
+  Test --> Passed{Passed?}
+  Passed -- No --> Improve[Improve blueprint]
+  Improve --> Gov
+  Passed -- Yes --> Active[Activate agent]
+  Active --> Review[Performance review]
+  Review --> Keep{Still useful?}
+  Keep -- Yes --> Optimize[Optimize agent]
+  Optimize --> Active
+  Keep -- No --> Retire[Retire agent]

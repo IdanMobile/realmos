@@ -1,0 +1,24 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@realmos/contracts": ["../../packages/contracts/src/index.ts"],
+      "@realmos/core": ["../../packages/core/src/index.ts"],
+      "@realmos/agents": ["../../packages/agents/src/index.ts"],
+      "@realmos/governance": ["../../packages/governance/src/index.ts"],
+      "@realmos/tools": ["../../packages/tools/src/index.ts"],
+      "@realmos/memory": ["../../packages/memory/src/index.ts"],
+      "@realmos/llm-router": ["../../packages/llm-router/src/index.ts"],
+      "@realmos/intelligence": ["../../packages/intelligence/src/index.ts"],
+      "@realmos/tool-runner": ["../../packages/tool-runner/src/index.ts"],
+      "@realmos/work-loop": ["../../packages/work-loop/src/index.ts"],
+      "@realmos/fleet-control": ["../../packages/fleet-control/src/index.ts"],
+      "@realmos/realm-scope": ["../../packages/realm-scope/src/index.ts"],
+      "@realmos/platform-infra": ["../../packages/platform-infra/src/index.ts"]
+    }
+  },
+  "include": ["src/**/*.ts", "tests/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "@realmos/worker",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx src/worker.ts",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "lint": "echo \"lint worker\""
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.8.0",
+    "tsx": "latest",
+    "vitest": "latest",
+    "@types/node": "latest"
+  },
+  "type": "module"
+}

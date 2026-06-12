@@ -1,0 +1,16 @@
+import path from "node:path";
+import { defineConfig } from "vitest/config";
+
+export default defineConfig({
+  test: {
+    environment: "node",
+    include: ["tests/**/*.test.ts"]
+  },
+  resolve: {
+    alias: {
+      "@realmos/contracts": path.resolve(__dirname, "../contracts/src/index.ts"),
+      "@realmos/agents": path.resolve(__dirname, "../agents/src/index.ts"),
+      "@realmos/governance": path.resolve(__dirname, "../governance/src/index.ts")
+    }
+  }
+});

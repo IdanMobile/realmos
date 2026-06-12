@@ -1,0 +1,271 @@
+{
+  "businesses": [
+    {
+      "id": "biz_realm_os",
+      "name": "RealmOS",
+      "mission": "Build the personal agentic operating system.",
+      "type": "software_project",
+      "status": "building",
+      "ownerUserId": "user_idan",
+      "agentIds": ["agent_jarvis", "agent_government", "agent_necromancer"],
+      "taskIds": ["task_build_dashboard", "task_define_governance"],
+      "memoryScopeId": "memscope_biz_realm_os",
+      "metrics": [
+        {
+          "id": "metric_health",
+          "name": "Health",
+          "value": 92,
+          "unit": "%",
+          "trend": "up"
+        }
+      ],
+      "risks": [],
+      "createdAt": "2026-06-07T00:00:00.000Z",
+      "updatedAt": "2026-06-07T00:00:00.000Z"
+    },
+    {
+      "id": "biz_guing",
+      "name": "GUING",
+      "mission": "Design-to-code pipeline with Product, Brain Lab, and Runtime.",
+      "type": "software_project",
+      "status": "active",
+      "ownerUserId": "user_idan",
+      "agentIds": [],
+      "taskIds": [],
+      "memoryScopeId": "memscope_biz_guing",
+      "metrics": [
+        {
+          "id": "metric_export_quality",
+          "name": "Latest export validation",
+          "value": "PASS",
+          "trend": "up"
+        }
+      ],
+      "risks": [],
+      "createdAt": "2026-06-07T00:00:00.000Z",
+      "updatedAt": "2026-06-07T00:00:00.000Z"
+    }
+  ],
+  "agents": [
+    {
+      "id": "agent_jarvis",
+      "name": "Jarvis",
+      "role": "Main Assistant / Command Interface",
+      "scope": "global",
+      "directive": "Understand the user, route work, recall memory, and coordinate RealmOS.",
+      "skills": ["conversation", "routing", "memory recall", "briefing"],
+      "limitations": ["Cannot spend money", "Cannot create subscriptions", "Cannot hide actions"],
+      "tools": [],
+      "memoryAccess": [{ "scope": "global", "access": "read_write" }],
+      "modelProfile": {
+        "defaultModelClass": "online_reasoning",
+        "allowOnline": true,
+        "allowLocal": true
+      },
+      "canCreateAgents": false,
+      "canExecuteCode": false,
+      "canSpendMoney": false,
+      "canContactHumans": false,
+      "status": "active",
+      "createdAt": "2026-06-07T00:00:00.000Z",
+      "updatedAt": "2026-06-07T00:00:00.000Z"
+    },
+    {
+      "id": "agent_government",
+      "name": "Government",
+      "role": "Governance Kernel",
+      "scope": "global",
+      "directive": "Enforce approval gates and audit policy.",
+      "skills": ["policy", "risk classification"],
+      "limitations": ["Cannot bypass approvals"],
+      "tools": [],
+      "memoryAccess": [{ "scope": "global", "access": "read" }],
+      "modelProfile": {
+        "defaultModelClass": "local_simple",
+        "allowOnline": false,
+        "allowLocal": true
+      },
+      "canCreateAgents": false,
+      "canExecuteCode": false,
+      "canSpendMoney": false,
+      "canContactHumans": false,
+      "status": "active",
+      "createdAt": "2026-06-07T00:00:00.000Z",
+      "updatedAt": "2026-06-07T00:00:00.000Z"
+    },
+    {
+      "id": "agent_necromancer",
+      "name": "Necromancer",
+      "role": "Agent Creator and Optimizer",
+      "scope": "global",
+      "directive": "Create, test, improve, and retire agents according to need and governance.",
+      "skills": ["agent design", "templates", "evaluation", "optimization"],
+      "limitations": ["Cannot grant dangerous permissions without approval"],
+      "tools": [],
+      "memoryAccess": [{ "scope": "global", "access": "read" }],
+      "modelProfile": {
+        "defaultModelClass": "online_reasoning",
+        "allowOnline": true,
+        "allowLocal": true
+      },
+      "canCreateAgents": true,
+      "canExecuteCode": false,
+      "canSpendMoney": false,
+      "canContactHumans": false,
+      "status": "active",
+      "createdAt": "2026-06-07T00:00:00.000Z",
+      "updatedAt": "2026-06-07T00:00:00.000Z"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "task_build_dashboard",
+      "businessId": "biz_realm_os",
+      "title": "Build dashboard shell",
+      "goal": "Create the first visual Command Center UI with mock data.",
+      "status": "todo",
+      "priority": "high",
+      "requiresApproval": false,
+      "dependencies": [],
+      "artifacts": [],
+      "auditEventIds": [],
+      "createdAt": "2026-06-07T00:00:00.000Z",
+      "updatedAt": "2026-06-07T00:00:00.000Z"
+    },
+    {
+      "id": "task_define_governance",
+      "businessId": "biz_realm_os",
+      "title": "Define governance kernel",
+      "goal": "Implement approval-required rules before tool execution.",
+      "assignedAgentId": "agent_government",
+      "status": "running",
+      "priority": "critical",
+      "requiresApproval": false,
+      "dependencies": [],
+      "artifacts": [],
+      "auditEventIds": [],
+      "createdAt": "2026-06-07T00:00:00.000Z",
+      "updatedAt": "2026-06-07T00:00:00.000Z"
+    }
+  ],
+  "approvals": [
+    {
+      "id": "approval_enable_terminal",
+      "businessId": "biz_realm_os",
+      "actionType": "terminal_command",
+      "riskLevel": "medium",
+      "title": "Enable terminal runner",
+      "description": "Allow agents to request terminal commands, still requiring approval per command.",
+      "payload": { "requestedCapability": "terminal" },
+      "status": "pending",
+      "createdAt": "2026-06-07T00:00:00.000Z"
+    },
+    {
+      "id": "approval_online_model",
+      "businessId": "biz_realm_os",
+      "actionType": "use_online_model",
+      "riskLevel": "low",
+      "title": "Enable online model for spec generation",
+      "description": "Allow one online model call for SpecKit artifact generation.",
+      "payload": { "estimatedCostUsd": 0.45 },
+      "status": "pending",
+      "createdAt": "2026-06-07T00:00:00.000Z"
+    }
+  ],
+  "budgets": [
+    {
+      "id": "budget_global",
+      "scope": "global",
+      "scopeId": "global",
+      "monthlyLimit": 50,
+      "hardLimit": 75,
+      "currency": "USD",
+      "requiresApprovalAbove": 1,
+      "createdAt": "2026-06-07T00:00:00.000Z",
+      "updatedAt": "2026-06-07T00:00:00.000Z"
+    }
+  ],
+  "costEntries": [
+    {
+      "id": "cost_local_1",
+      "businessId": "biz_realm_os",
+      "agentId": "agent_jarvis",
+      "provider": "ollama",
+      "model": "qwen3.5:latest",
+      "amount": 0,
+      "currency": "USD",
+      "metadata": { "tokens": 1200 },
+      "createdAt": "2026-06-07T00:00:00.000Z"
+    },
+    {
+      "id": "cost_online_1",
+      "businessId": "biz_realm_os",
+      "agentId": "agent_necromancer",
+      "provider": "openai",
+      "model": "gpt-4.1-mini",
+      "amount": 0.82,
+      "currency": "USD",
+      "metadata": { "tokens": 3400 },
+      "createdAt": "2026-06-07T12:00:00.000Z"
+    }
+  ],
+  "memories": [
+    {
+      "id": "memory_jarvis_brief",
+      "scope": "global",
+      "scopeId": "global",
+      "kind": "summary",
+      "title": "Morning briefing",
+      "content": "Dashboard shell is the next safe work item. Governance kernel follows.",
+      "source": "agent",
+      "sensitivity": "normal",
+      "retention": "keep",
+      "createdAt": "2026-06-07T08:00:00.000Z",
+      "updatedAt": "2026-06-07T08:00:00.000Z"
+    },
+    {
+      "id": "memory_guing_pref",
+      "scope": "business",
+      "scopeId": "memscope_biz_guing",
+      "kind": "preference",
+      "title": "Export validation preference",
+      "content": "Prefer pixel-perfect layer export checks before runtime adapter work.",
+      "source": "manual",
+      "sensitivity": "normal",
+      "retention": "keep",
+      "createdAt": "2026-06-07T09:00:00.000Z",
+      "updatedAt": "2026-06-07T09:00:00.000Z"
+    }
+  ],
+  "auditEvents": [
+    {
+      "id": "audit_dashboard_task",
+      "actorType": "system",
+      "businessId": "biz_realm_os",
+      "taskId": "task_build_dashboard",
+      "eventType": "task_created",
+      "summary": "Created task to build dashboard shell",
+      "payload": {},
+      "createdAt": "2026-06-07T00:00:00.000Z"
+    },
+    {
+      "id": "audit_approval_requested",
+      "actorType": "agent",
+      "actorId": "agent_jarvis",
+      "businessId": "biz_realm_os",
+      "eventType": "approval_requested",
+      "summary": "Requested approval to enable terminal runner",
+      "payload": { "approvalId": "approval_enable_terminal" },
+      "createdAt": "2026-06-07T10:00:00.000Z"
+    },
+    {
+      "id": "audit_policy_blocked",
+      "actorType": "system",
+      "businessId": "biz_realm_os",
+      "eventType": "policy_blocked",
+      "summary": "Blocked online model call pending approval",
+      "payload": {},
+      "createdAt": "2026-06-07T11:00:00.000Z"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+flowchart LR
+  Web[Web Dashboard] --> API[API Server]
+  API --> DB[(Postgres)]
+  API --> Queue[(Redis / BullMQ)]
+  Worker[Worker] --> Queue
+  Worker --> DB
+  API --> Agents[Agent Engine]
+  Agents --> Governance[Governance]
+  Agents --> Memory[Memory]
+  Agents --> Tools[Tool Runner]
+  Agents --> Router[LLM Router]
+  Router --> Local[Ollama Local]
+  Router --> Online[Online Models]

@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS artifacts (
+  id TEXT PRIMARY KEY,
+  payload JSONB NOT NULL
+);

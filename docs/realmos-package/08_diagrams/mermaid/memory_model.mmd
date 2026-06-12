@@ -1,0 +1,13 @@
+flowchart LR
+  Global[Global Jarvis Memory] --> Recall[Jarvis Recall]
+  Business[Business Memory] --> Recall
+  Agent[Agent Memory] --> Recall
+  Task[Task Memory] --> Recall
+  Run[Run Memory] --> Recall
+
+  Recall --> Context[Context Pack]
+  Context --> LLM[Agent / LLM Execution]
+  LLM --> NewMemory[New Memory Candidate]
+  NewMemory --> Review{Needs Review?}
+  Review -- Yes --> Approval[Memory Review]
+  Review -- No --> Store[Store by Scope]

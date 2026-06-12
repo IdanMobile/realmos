@@ -1,0 +1,16 @@
+flowchart TD
+  Agent[Agent requests action] --> Classify[Classify risk]
+  Classify --> Low{Low risk?}
+  Low -- Yes --> Execute[Execute and log]
+  Low -- No --> MedHigh{Medium or high risk?}
+  MedHigh -- Medium --> Policy[Check policy and budget]
+  MedHigh -- High --> Approval[Require user approval]
+  Policy --> NeedsApproval{Approval required?}
+  NeedsApproval -- No --> Execute
+  NeedsApproval -- Yes --> Approval
+  Approval --> Approved{Approved?}
+  Approved -- Yes --> Execute
+  Approved -- No --> Block[Block action]
+  Execute --> Audit[Audit log]
+  Block --> Audit
+  Audit --> Memory[Memory update if relevant]

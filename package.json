@@ -1,0 +1,36 @@
+{
+  "name": "realmos",
+  "private": true,
+  "version": "1.14.0",
+  "description": "RealmOS / Jarvis HQ personal agentic operating system",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "typecheck": "turbo typecheck",
+    "test": "turbo test",
+    "test:postgres": "pnpm --filter @realmos/api test:postgres",
+    "test:contracts": "vitest run packages/contracts/src",
+    "lint": "turbo lint",
+    "format": "prettier --write .",
+    "check:clean-start": "pnpm typecheck && pnpm test:contracts",
+    "demo:mvp": "node scripts/mvp-demo.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "prettier": "^3.3.0",
+    "tsx": "^4.19.0",
+    "turbo": "^2.0.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.0.0"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "pnpm": {
+    "overrides": {
+      "esbuild": "0.28.1",
+      "typescript": "5.9.3"
+    }
+  },
+  "dependencies": {
+    "fastify": "^5.0.0"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "noEmit": true,
+    "incremental": true,
+    "plugins": [{ "name": "next" }],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@realmos/contracts": ["../../packages/contracts/src/index.ts"],
+      "@realmos/core": ["../../packages/core/src/index.ts"],
+      "@realmos/agents": ["../../packages/agents/src/index.ts"],
+      "@realmos/governance": ["../../packages/governance/src/index.ts"],
+      "@realmos/intelligence": ["../../packages/intelligence/src/index.ts"],
+      "@realmos/work-loop": ["../../packages/work-loop/src/index.ts"],
+      "@realmos/fleet-control": ["../../packages/fleet-control/src/index.ts"],
+      "@realmos/realm-scope": ["../../packages/realm-scope/src/index.ts"],
+      "@realmos/platform-infra": ["../../packages/platform-infra/src/index.ts"]
+    }
+  },
+  "include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
