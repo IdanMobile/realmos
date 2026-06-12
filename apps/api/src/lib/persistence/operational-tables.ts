@@ -21,7 +21,8 @@ export const OperationalTables = {
   platformResources: "operational_platform_resources",
   projectInfrastructurePlans: "operational_project_infrastructure_plans",
   prototypeApprovals: "operational_prototype_approvals",
-  isolationViolations: "operational_isolation_violations"
+  isolationViolations: "operational_isolation_violations",
+  executorDispatches: "operational_executor_dispatches"
 } as const;
 
 export type OperationalTableName = (typeof OperationalTables)[keyof typeof OperationalTables];

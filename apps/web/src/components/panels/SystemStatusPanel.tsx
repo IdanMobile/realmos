@@ -67,6 +67,28 @@ export function SystemStatusPanel({ health, dataSource }: SystemStatusPanelProps
               </p>
             ) : null}
           </li>
+          {health.checks.executor ? (
+            <li className="rounded-lg border border-border/70 bg-surface p-3 text-sm sm:col-span-2">
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-semibold">Local executor bridge</span>
+                <span
+                  className={`badge ${statusBadge(health.checks.executor.enabled ? "ok" : "disabled")}`}
+                >
+                  {health.checks.executor.enabled ? health.checks.executor.mode : "disabled"}
+                </span>
+              </div>
+              <p className="mt-2 text-xs text-textSecondary">Queue: {health.checks.executor.queueRoot}</p>
+              <p className="mt-1 text-xs text-textSecondary">
+                Queued {health.checks.executor.queuedCount} · Dispatched {health.checks.executor.dispatchedCount} ·
+                Completed {health.checks.executor.completedCount} · Blocked {health.checks.executor.blockedCount}
+              </p>
+              {health.checks.executor.lastDispatchId ? (
+                <p className="mt-1 text-xs text-textSecondary">
+                  Last: {health.checks.executor.lastDispatchId} ({health.checks.executor.lastDispatchStatus})
+                </p>
+              ) : null}
+            </li>
+          ) : null}
           <li className="rounded-lg border border-border/70 bg-surface p-3 text-sm sm:col-span-2">
             <div className="flex items-center justify-between gap-2">
               <span className="font-semibold">Local LLM (Ollama)</span>

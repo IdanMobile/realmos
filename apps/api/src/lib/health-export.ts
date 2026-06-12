@@ -1,4 +1,5 @@
 import type { RealmOSDatabase } from "../db/types";
+import { buildExecutorBridgeStatus } from "../executor-bridge-routes";
 import { buildFirebaseBaselineHealthSnapshot } from "@realmos/platform-infra";
 import { buildOllamaHealthSnapshot, probeOllama } from "@realmos/llm-router";
 import { isTerminalExecutionEnabled } from "@realmos/tool-runner";
@@ -29,6 +30,20 @@ export type FirebaseHealthCheck = {
   };
 };
 
+export type ExecutorHealthCheck = {
+  enabled: boolean;
+  mode: "dry_run";
+  queueRoot: string;
+  queuedCount: number;
+  dispatchedCount: number;
+  runningCount: number;
+  completedCount: number;
+  failedCount: number;
+  blockedCount: number;
+  lastDispatchId: string | null;
+  lastDispatchStatus: string | null;
+};
+
 export type HealthReport = {
   status: "ok" | "degraded";
   service: string;
@@ -38,6 +53,7 @@ export type HealthReport = {
     database: { status: "ok" | "error"; detail?: string };
     ollama: OllamaHealthCheck;
     firebase: FirebaseHealthCheck;
+    executor: ExecutorHealthCheck;
     terminal: { enabled: boolean };
     onlineModels: { enabled: boolean; configured: boolean };
   };
@@ -56,6 +72,20 @@ export async function buildHealthReport(db: RealmOSDatabase): Promise<HealthRepo
 
   const ollamaStatus = await buildOllamaHealthSnapshot(probeOllama);
   const firebaseStatus = buildFirebaseBaselineHealthSnapshot();
+  const executorSummary = await buildExecutorBridgeStatus();
+  const executorStatus: ExecutorHealthCheck = {
+    enabled: executorSummary.enabled,
+    mode: executorSummary.mode,
+    queueRoot: executorSummary.queueRoot,
+    queuedCount: executorSummary.queuedCount,
+    dispatchedCount: executorSummary.dispatchedCount,
+    runningCount: executorSummary.runningCount,
+    completedCount: executorSummary.completedCount,
+    failedCount: executorSummary.failedCount,
+    blockedCount: executorSummary.blockedCount,
+    lastDispatchId: executorSummary.lastDispatch?.id ?? null,
+    lastDispatchStatus: executorSummary.lastDispatch?.status ?? null
+  };
 
   const onlineEnabled = process.env.REALMOS_ALLOW_ONLINE_MODELS === "true";
   const onlineConfigured = Boolean(process.env.OPENAI_API_KEY?.trim());
@@ -65,12 +95,13 @@ export async function buildHealthReport(db: RealmOSDatabase): Promise<HealthRepo
   return {
     status: degraded ? "degraded" : "ok",
     service: "realmos-api",
-    version: "0.23.0",
+    version: "0.24.0",
     timestamp: new Date().toISOString(),
     checks: {
       database: databaseStatus,
       ollama: ollamaStatus,
       firebase: firebaseStatus,
+      executor: executorStatus,
       terminal: { enabled: isTerminalExecutionEnabled() },
       onlineModels: { enabled: onlineEnabled, configured: onlineConfigured }
     }

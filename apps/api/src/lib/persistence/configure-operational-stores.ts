@@ -4,6 +4,7 @@ import { createWorkLoopStore, type WorkLoopStore } from "./create-work-loop-stor
 import { createFleetStore, type FleetStore } from "./create-fleet-store";
 import { createRealmStore, type RealmStore } from "./create-realm-store";
 import { createPlatformInfraStore, type PlatformInfraStore } from "./create-platform-infra-store";
+import { createExecutorStore, type ExecutorStore } from "./create-executor-store";
 import { OperationalTables } from "./operational-tables";
 import { createDefaultWorkLoopSeed } from "../work-loop-seed";
 import { createDefaultFleetSeed } from "../fleet-seed";
@@ -16,7 +17,8 @@ const storeRefs = {
   workLoop: createWorkLoopStore(activeAdapter),
   fleet: createFleetStore(activeAdapter),
   realm: createRealmStore(activeAdapter),
-  platformInfra: createPlatformInfraStore(activeAdapter)
+  platformInfra: createPlatformInfraStore(activeAdapter),
+  executor: createExecutorStore(activeAdapter)
 };
 
 function bindStoreProxy<T extends object>(getter: () => T): T {
@@ -36,6 +38,7 @@ export const workLoopStore = bindStoreProxy(() => storeRefs.workLoop);
 export const fleetStore = bindStoreProxy(() => storeRefs.fleet);
 export const realmStore = bindStoreProxy(() => storeRefs.realm);
 export const platformInfraStore = bindStoreProxy(() => storeRefs.platformInfra);
+export const executorStore = bindStoreProxy(() => storeRefs.executor);
 
 export function getOperationalPersistenceAdapter(): OperationalPersistenceAdapter {
   return activeAdapter;
@@ -47,6 +50,7 @@ export function configureOperationalPersistence(adapter: OperationalPersistenceA
   storeRefs.fleet = createFleetStore(adapter);
   storeRefs.realm = createRealmStore(adapter);
   storeRefs.platformInfra = createPlatformInfraStore(adapter);
+  storeRefs.executor = createExecutorStore(adapter);
 }
 
 export async function seedOperationalStoresIfEmpty(): Promise<void> {
@@ -70,4 +74,4 @@ export async function resetOperationalPersistenceForTests(): Promise<void> {
   await seedOperationalStoresIfEmpty();
 }
 
-export type { WorkLoopStore, FleetStore, RealmStore, PlatformInfraStore };
+export type { WorkLoopStore, FleetStore, RealmStore, PlatformInfraStore, ExecutorStore };

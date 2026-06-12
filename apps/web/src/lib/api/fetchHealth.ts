@@ -26,6 +26,20 @@ export type FirebaseHealthCheck = {
   };
 };
 
+export type ExecutorHealthCheck = {
+  enabled: boolean;
+  mode: "dry_run";
+  queueRoot: string;
+  queuedCount: number;
+  dispatchedCount: number;
+  runningCount: number;
+  completedCount: number;
+  failedCount: number;
+  blockedCount: number;
+  lastDispatchId: string | null;
+  lastDispatchStatus: string | null;
+};
+
 export type HealthReport = {
   status: "ok" | "degraded";
   service: string;
@@ -35,6 +49,7 @@ export type HealthReport = {
     database: { status: "ok" | "error"; detail?: string };
     ollama: OllamaHealthCheck;
     firebase: FirebaseHealthCheck;
+    executor: ExecutorHealthCheck;
     terminal: { enabled: boolean };
     onlineModels: { enabled: boolean; configured: boolean };
   };

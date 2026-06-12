@@ -29,6 +29,7 @@ coverage/
 
 # RealmOS runtime artifacts (see .env.example REALMOS_*_DIR)
 generated/
+.realmos/
 
 # Logs
 logs/

@@ -1,6 +1,6 @@
-# RealmOS — Verification Commands v0.23
+# RealmOS — Verification Commands v0.24
 
-Initiative 0.23 adds Firebase baseline wiring (2026-06-12). Initiative 0.22 adds local Ollama node integration.
+Initiative 0.24 adds local executor bridge (dry-run file queue). Initiative 0.23 adds Firebase baseline wiring.
 
 ## Full verification (recommended)
 
@@ -155,6 +155,19 @@ curl http://localhost:4100/api/health | jq '.checks.firebase'
 
 Requires Firebase CLI + `firebase emulators:start` only for live emulator experiments — not for CI.
 
+## Local executor bridge (dry-run)
+
+Setup: `docs/realmos-package/06_operations/local_executor_bridge_v0_24.md`
+
+```bash
+curl http://localhost:4100/api/executor/status
+curl http://localhost:4100/api/health | jq '.checks.executor'
+```
+
+Queue artifacts (gitignored): `.realmos/executor-queue/<dispatch-id>/`
+
+No shell execution by default. Approval required before dispatch.
+
 ## Local Ollama (optional, machine-level)
 
 Ollama is **not** installed by the repo. Models live on the operator machine.
@@ -233,6 +246,7 @@ pnpm --filter @realmos/platform-infra test
 
 ## Audits
 
+- Local executor bridge: `docs/realmos-package/99_audits/local_executor_bridge_audit_v0_24.md`
 - Firebase baseline: `docs/realmos-package/99_audits/firebase_baseline_audit_v0_23.md`
 - Ollama local node: `docs/realmos-package/99_audits/ollama_local_node_audit_v0_22.md`
 - Postgres CI smoke: `docs/realmos-package/99_audits/postgres_ci_smoke_audit_v0_21.md`

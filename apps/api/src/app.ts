@@ -93,5 +93,7 @@ export async function buildApp(options: AppOptions = {}) {
   registerRealmRoutes(app, db);
   const { registerPlatformInfraRoutes } = await import("./platform-infra-routes");
   registerPlatformInfraRoutes(app, db);
+  const { registerExecutorBridgeRoutes } = await import("./executor-bridge-routes");
+  registerExecutorBridgeRoutes(app, db);
   return { app, db };
 }

@@ -7,3 +7,18 @@ export {
   type ImportCompletionReportInput
 } from "./completion-report";
 export { makeWorkLoopId, nowIso } from "./id";
+export {
+  applyExecutorApproval,
+  applyExecutorResult,
+  buildLocalExecutorDispatch,
+  buildLocalExecutorDispatchFromWorkPacket,
+  canDispatchLocalExecutor,
+  getExecutorQueueRoot,
+  isExecutorBridgeEnabled,
+  markExecutorDispatched,
+  summarizeExecutorBridge,
+  validateLocalExecutorDispatchInput,
+  writeExecutorQueueArtifacts,
+  type ExecutorBridgeValidationError,
+  type ExecutorQueueArtifacts
+} from "./executor-bridge";

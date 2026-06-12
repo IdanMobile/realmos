@@ -5,6 +5,8 @@ import { createWorkLoopStore } from "../src/lib/persistence/create-work-loop-sto
 import { createFleetStore } from "../src/lib/persistence/create-fleet-store";
 import { createRealmStore } from "../src/lib/persistence/create-realm-store";
 import { createPlatformInfraStore } from "../src/lib/persistence/create-platform-infra-store";
+import { createExecutorStore } from "../src/lib/persistence/create-executor-store";
+import { buildLocalExecutorDispatch } from "@realmos/work-loop";
 import { buildFleetConsole } from "../src/lib/fleet-store";
 import { makeWorkLoopId } from "@realmos/work-loop";
 import type { WorkItem } from "@realmos/contracts";
@@ -114,5 +116,27 @@ describe("operational persistence", () => {
     const reloadedPolicy = await reloaded.getContinuousWorkPolicy();
     expect(reloadedPolicy.requireApprovalForDestructiveActions).toBe(true);
     expect(reloadedPolicy.requireStopCheckBeforePhaseAdvance).toBe(true);
+  });
+
+  it("retains executor dispatches across store re-instantiation", async () => {
+    const adapter = createMemoryOperationalAdapter();
+    const storeA = createExecutorStore(adapter);
+    const dispatch = buildLocalExecutorDispatch({
+      realmId: "realm_realmos",
+      repositoryId: "repo_realmos",
+      workPacketId: "packet_persist",
+      allowedPaths: ["packages/**"],
+      forbiddenPaths: [".env"],
+      taskSummary: "Persist executor dispatch",
+      prompt: "Dry-run only.",
+      verificationCommands: ["pnpm test"]
+    }, "exec_persist_test");
+
+    await storeA.createExecutorDispatch(dispatch);
+
+    const storeB = createExecutorStore(adapter);
+    const loaded = await storeB.getExecutorDispatch("exec_persist_test");
+    expect(loaded?.status).toBe("queued");
+    expect(loaded?.realmId).toBe("realm_realmos");
   });
 });

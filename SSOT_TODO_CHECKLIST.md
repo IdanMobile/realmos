@@ -976,7 +976,9 @@ RealmOS must be able to:
 - [x] 0.21 Postgres CI smoke
 - [x] 0.22 Local Ollama node integration
 - [x] 0.23 Firebase baseline wiring (platform only — no product unlock)
+- [x] 0.24 Local executor / Cursor CLI bridge (dry-run file queue)
 
 ## Recommended next
 
-- [ ] **0.24 — Local Executor / Cursor CLI Bridge** (RealmOS executor/work orchestration infrastructure)
+- [x] **0.24 — Local Executor / Cursor CLI Bridge**
+- [ ] **0.25 — Work Packet Lifecycle**

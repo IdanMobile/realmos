@@ -787,6 +787,10 @@ describe("RealmOS API integration", () => {
           adminStatus: string;
           services: { auth: string; firestore: string; storage: string };
         };
+        executor: {
+          mode: string;
+          queueRoot: string;
+        };
       };
     };
 
@@ -801,6 +805,8 @@ describe("RealmOS API integration", () => {
     expect(body.checks.firebase.mode).toMatch(/none|emulator|production/);
     expect(typeof body.checks.firebase.adminStatus).toBe("string");
     expect(body.checks.firebase.services.firestore).toMatch(/not_configured|emulator|production/);
+    expect(body.checks.executor.mode).toBe("dry_run");
+    expect(typeof body.checks.executor.queueRoot).toBe("string");
   });
 
   it("exports full data bundle", async () => {
@@ -1020,5 +1026,65 @@ describe("RealmOS API integration", () => {
     expect(packetResponse.statusCode).toBe(201);
     const packet = packetResponse.json() as { rules: string[] };
     expect(packet.rules.some((rule) => rule.includes("RealmOS Firebase"))).toBe(true);
+  });
+
+  it("creates, dispatches, and records local executor bridge packets", async () => {
+    const db = createMemoryDatabase();
+    const { app } = await buildApp({ database: db });
+
+    const createResponse = await app.inject({
+      method: "POST",
+      url: "/api/executor/dispatches",
+      payload: {
+        realmId: "realm_realmos",
+        repositoryId: "repo_realmos",
+        workPacketId: "packet_exec_test",
+        allowedPaths: ["packages/**"],
+        forbiddenPaths: [".env"],
+        taskSummary: "Executor bridge smoke",
+        prompt: "Dry-run dispatch only.",
+        verificationCommands: ["pnpm test"]
+      }
+    });
+    expect(createResponse.statusCode).toBe(201);
+    const created = createResponse.json() as { id: string; status: string };
+    expect(created.status).toBe("queued");
+
+    const blockedDispatch = await app.inject({
+      method: "POST",
+      url: `/api/executor/dispatches/${created.id}/dispatch`,
+      payload: {}
+    });
+    expect(blockedDispatch.statusCode).toBe(409);
+
+    await app.inject({
+      method: "POST",
+      url: `/api/executor/dispatches/${created.id}/approve`
+    });
+
+    const dispatchResponse = await app.inject({
+      method: "POST",
+      url: `/api/executor/dispatches/${created.id}/dispatch`,
+      payload: { approved: true, cwd: process.cwd() }
+    });
+    expect(dispatchResponse.statusCode).toBe(200);
+    const dispatched = dispatchResponse.json() as {
+      dispatch: { status: string; queueArtifactPath?: string };
+    };
+    expect(dispatched.dispatch.status).toBe("dispatched");
+    expect(dispatched.dispatch.queueArtifactPath).toBeTruthy();
+
+    const resultResponse = await app.inject({
+      method: "POST",
+      url: `/api/executor/dispatches/${created.id}/result`,
+      payload: { status: "completed", resultSummary: "Queue artifact written." }
+    });
+    expect(resultResponse.statusCode).toBe(200);
+    const completed = resultResponse.json() as { status: string };
+    expect(completed.status).toBe("completed");
+
+    const listResponse = await app.inject({ method: "GET", url: "/api/executor/dispatches" });
+    const listBody = listResponse.json() as { items: Array<{ id: string }> };
+    expect(listBody.items.some((item) => item.id === created.id)).toBe(true);
   });
 });
