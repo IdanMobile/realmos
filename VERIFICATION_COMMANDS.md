@@ -1,6 +1,21 @@
-# RealmOS — Verification Commands v0.27
+# RealmOS — Verification Commands v0.28
 
-Initiative 0.27 adds durable self-handoff / run-state records. Initiative 0.26 adds Command Center task monitor. Initiative 0.25 adds work packet lifecycle.
+Initiative 0.28 adds the permanent **Testing & Quality Gate** (CURSOR_SSOT.md Section 7.1) and dogfood lifecycle verification. Initiative 0.27 adds durable self-handoff / run-state records.
+
+## Testing & Quality Gate (locked)
+
+Before marking any initiative **PASS**:
+
+```bash
+pnpm test
+pnpm typecheck
+pnpm build
+pnpm check:clean-start
+pnpm demo:mvp          # when MVP paths touched
+pnpm test:postgres     # when persistence/Postgres paths touched
+```
+
+No PASS without relevant tests or an explicit documented test gap in the initiative audit.
 
 ## Full verification (recommended)
 
@@ -194,6 +209,17 @@ curl http://localhost:4100/api/executor/status
 
 Requires live API for operator actions. Mock dashboard mode shows safety banner but disables actions.
 
+## Dogfood lifecycle (Initiative 0.28)
+
+Setup: `docs/realmos-package/06_operations/dogfood_realmOS_task_v0_28.md`
+
+```bash
+REALMOS_API_BASE_URL=http://localhost:4101 node scripts/dogfood-v0-28.mjs dispatch
+REALMOS_API_BASE_URL=http://localhost:4101 node scripts/dogfood-v0-28.mjs complete
+curl http://localhost:4101/api/lifecycle/packets
+curl http://localhost:4101/api/run-state/handoff/latest
+```
+
 ## Self-handoff / run state (Initiative 0.27)
 
 Setup: `docs/realmos-package/06_operations/self_handoff_run_state_v0_27.md`
@@ -289,6 +315,7 @@ pnpm --filter @realmos/platform-infra test
 - Work packet lifecycle: `docs/realmos-package/99_audits/work_packet_lifecycle_audit_v0_25.md`
 - Command Center task monitor: `docs/realmos-package/99_audits/command_center_task_monitor_audit_v0_26.md`
 - Self-handoff run state: `docs/realmos-package/99_audits/self_handoff_run_state_audit_v0_27.md`
+- Dogfood RealmOS task: `docs/realmos-package/99_audits/dogfood_realmOS_task_audit_v0_28.md`
 - Firebase baseline: `docs/realmos-package/99_audits/firebase_baseline_audit_v0_23.md`
 - Ollama local node: `docs/realmos-package/99_audits/ollama_local_node_audit_v0_22.md`
 - Postgres CI smoke: `docs/realmos-package/99_audits/postgres_ci_smoke_audit_v0_21.md`

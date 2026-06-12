@@ -4,7 +4,7 @@ Then read:
 
 1. docs/realmos-package/99_handoffs/latest_cursor_handoff.md
 2. PROJECT_STATE.md
-3. docs/realmos-package/99_audits/self_handoff_run_state_audit_v0_27.md
+3. docs/realmos-package/99_audits/dogfood_realmOS_task_audit_v0_28.md
 
 Optional durable context: `GET /api/run-state/handoff/latest` and `GET /api/run-state/next-chat-prompt/latest`
 
@@ -12,15 +12,17 @@ Optional durable context: `GET /api/run-state/handoff/latest` and `GET /api/run-
 
 ## Resume context (2026-06-12)
 
-Continue from **Initiative 0.27 complete**.
+Continue from **Initiative 0.28 complete**.
 
-**0.27 delivered:** Durable run-state / self-handoff records in operational persistence. No arbitrary file writes. No automatic shell execution.
+**0.28 delivered:** Dogfood lifecycle on Testing & Quality Gate governance task. Dry-run dispatch only. Permanent quality gate in SSOT Section 7.1.
 
-**Roadmap gate (hard rule):** No side projects until RealmOS base system is complete and verified. GUING, product bootstrap, external project work, and all non-RealmOS work are blocked. Side-project decisions happen only from inside working RealmOS/Jarvis — not from Cursor.
+**Roadmap gate (hard rule):** No side projects until RealmOS base system is complete. Side-project decisions only from working RealmOS/Jarvis.
 
-**Recommended next (RealmOS-only):** **0.28 Dogfood RealmOS Managing One Real RealmOS Task** — await operator approval before starting.
+**Recommended next (RealmOS-only):** **0.29 RealmOS Base System Verification Plan** — await operator approval.
 
-**Do not auto-start:** 0.28, GUING, side projects, product bootstrap, external project work, UI polish, voice, autonomous execution.
+**Do not auto-start:** 0.29, GUING, side projects, UI polish, voice, autonomous execution.
+
+**Testing & Quality Gate:** No PASS without tests or documented test gap (see CURSOR_SSOT.md Section 7.1).
 
 ```bash
 pnpm test && pnpm typecheck && pnpm build && pnpm check:clean-start

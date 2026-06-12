@@ -1,7 +1,7 @@
-# Latest Cursor Handoff — Post Initiative 0.27
+# Latest Cursor Handoff — Post Initiative 0.28
 
 Updated: 2026-06-12  
-**Purpose:** Continue from Self-Handoff / Durable Run State complete.
+**Purpose:** Continue from Dogfood RealmOS task + Testing & Quality Gate complete.
 
 ---
 
@@ -9,50 +9,44 @@ Updated: 2026-06-12
 
 | Field | Value |
 |-------|--------|
-| **Project version** | `0.27.0` |
-| **Post-MVP complete** | 0.18–0.27 |
+| **Project version** | `0.28.0` |
+| **Post-MVP complete** | 0.18–0.28 |
 | **Strict verification** | **GREEN** |
-| **Run state** | Durable handoff in operational persistence |
+| **Dogfood packet** | `wpl_mqbhyes0_5xy658` (completed) |
+| **Run state** | `run_state_mqbhyes8_gdpibs` |
 | **Executor mode** | `dry_run` — no shell execution |
 
 ---
 
-## Roadmap gate (locked — reinforced)
+## Roadmap gate (locked)
 
-**Hard rule:** No side projects until the **RealmOS base system is complete and verified**.
+**Hard rule:** No side projects until RealmOS base system is complete and verified.
 
-Blocked (do not start, recommend, prepare, or scope): GUING, prior side projects, product bootstrap, external client/project work, project ideas, any non-RealmOS work.
-
-Side-project decisions happen only from inside a **working RealmOS/Jarvis environment** — not from Cursor chat.
-
-**Next roadmap:** RealmOS-only.
-
-- **Recommended next:** **0.28 — Dogfood RealmOS Managing One Real RealmOS Task**
+- **Recommended next:** **0.29 — RealmOS Base System Verification Plan**
+- **Blocked:** GUING, side projects, product bootstrap, external project work
 
 ---
 
-## Initiative 0.27 summary
+## Initiative 0.28 summary
 
-- Contract: `RealmOSRunState` in `@realmos/contracts`
-- Service: handoff summary + next-chat prompt generation in `@realmos/work-loop`
-- API: `/api/run-state/*` endpoints
-- Persistence: `operational_run_state_handoff` (migration 009)
-- Command Center: `RunStateHandoffPanel`
-- Lifecycle sync on result/verification/close when run state exists
+- **Dogfood task:** Add permanent Testing & Quality Gate governance rule
+- **Flow:** lifecycle packet → approval → dry-run dispatch → manual docs → verification → run-state/handoff
+- **Queue artifact:** `.realmos/executor-queue/exec_mqbhyes5_yg0a7f`
+- **Quality gate:** `CURSOR_SSOT.md` Section 7.1
 
 ---
 
 ## Exact next task
 
 ```text
-Await operator approval for Initiative 0.28 — Dogfood RealmOS Managing One Real RealmOS Task.
+Await operator approval for Initiative 0.29 — RealmOS Base System Verification Plan.
 ```
 
-Do not start 0.28 without approval. Do not start GUING, side projects, or autonomous execution.
+Do not start 0.29 without approval. Do not start GUING, side projects, or autonomous execution.
 
 ---
 
 ## Audits
 
+- `docs/realmos-package/99_audits/dogfood_realmOS_task_audit_v0_28.md`
 - `docs/realmos-package/99_audits/self_handoff_run_state_audit_v0_27.md`
-- `docs/realmos-package/99_audits/command_center_task_monitor_audit_v0_26.md`

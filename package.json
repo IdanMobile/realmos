@@ -15,7 +15,8 @@
     "lint": "turbo lint",
     "format": "prettier --write .",
     "check:clean-start": "pnpm typecheck && pnpm test:contracts",
-    "demo:mvp": "node scripts/mvp-demo.mjs"
+    "demo:mvp": "node scripts/mvp-demo.mjs",
+    "demo:dogfood-v0-28": "node scripts/dogfood-v0-28.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

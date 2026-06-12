@@ -971,7 +971,7 @@ RealmOS base system must be completed and verified, including:
 - [x] local Ollama path
 - [x] Postgres persistence
 - [x] Firebase baseline (platform wiring only)
-- [ ] end-to-end self-management milestone validation
+- [ ] end-to-end self-management milestone validation (0.28 dogfood partial — governance task only)
 
 ## Self-management milestone (incomplete)
 
@@ -983,7 +983,13 @@ RealmOS must be able to:
 - [x] verify results
 - [x] persist run state
 - [x] produce handoff/state updates
-- [ ] ask the operator only when human approval is required (full dogfood validation pending)
+- [x] ask the operator only when human approval is required (0.28 dogfood — approval gate enforced)
+
+## Testing & Quality Gate (locked — 0.28)
+
+- [x] Permanent rule in `CURSOR_SSOT.md` Section 7.1
+- [x] Required gates documented in `VERIFICATION_COMMANDS.md`
+- [x] No PASS without tests or explicit audit test gap
 
 ## Forbidden until base system complete
 
@@ -1001,8 +1007,8 @@ Do not start, recommend, prepare, or scope:
 
 ## Allowed upcoming RealmOS-only initiatives
 
-- [ ] **0.28 — Dogfood RealmOS Managing One Real RealmOS Task** (recommended next)
-- [ ] Testing & Quality Gate constitution
+- [ ] **0.29 — RealmOS Base System Verification Plan** (recommended next)
+- [x] Testing & Quality Gate constitution (0.28)
 - [ ] UI/navigation verification against locked screenshots/references
 - [ ] Jarvis interaction path verification
 - [ ] Necromancer verification
@@ -1023,3 +1029,4 @@ Do not start, recommend, prepare, or scope:
 - [x] 0.25 Work Packet Lifecycle
 - [x] 0.26 Command Center Task Approval + Run Monitor
 - [x] 0.27 Self-Handoff / Durable Run State Updates
+- [x] 0.28 Dogfood RealmOS Managing One Real RealmOS Task

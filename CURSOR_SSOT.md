@@ -45,7 +45,7 @@ realmos_cursor_ready_v1_14/
 
 ```text
 ACTIVE_MODE = mvp_stabilized
-ACTIVE_PHASE = Initiative 0.27 complete — Self-handoff run state; await operator-scoped next initiative
+ACTIVE_PHASE = Initiative 0.28 complete — Dogfood RealmOS task; await operator-scoped next initiative
 IMPLEMENTATION_ALLOWED = false (unless operator scopes a new initiative)
 ARCHITECTURE_CHANGES_ALLOWED = false (unless operator approves)
 FEATURE_WORK_ALLOWED = false (unless operator scopes a new initiative)
@@ -53,7 +53,7 @@ USER_APPROVAL_REQUIRED_BEFORE_NEXT_PHASE = true
 ```
 
 SSOT phases 0–12, 6.5–6.8, 2.5–2.6 are implemented and checkpoint-approved.  
-Post-MVP initiatives 0.18–0.27 (stabilization, Postgres, CI, Ollama, Firebase baseline, executor bridge, lifecycle, Command Center monitor, self-handoff run state) are complete.  
+Post-MVP initiatives 0.18–0.28 (stabilization, Postgres, CI, Ollama, Firebase baseline, executor bridge, lifecycle, Command Center monitor, self-handoff run state, dogfood governance task) are complete.  
 Start new work from `PROJECT_STATE.md`, `latest_cursor_handoff.md`, and operator-scoped initiatives — not Phase 0 bootstrap.
 
 ---
@@ -239,8 +239,7 @@ side project once ready
 **Allowed upcoming RealmOS-only initiatives (examples — operator approval still required):**
 
 ```text
-0.28 — Dogfood RealmOS Managing One Real RealmOS Task
-Testing & Quality Gate constitution
+0.29 — RealmOS Base System Verification Plan
 UI/navigation verification against locked screenshots/references
 Jarvis interaction path verification
 Necromancer verification
@@ -250,7 +249,7 @@ Cursor CLI/local executor bridge only when safe and explicitly approved
 RealmOS self-management milestone validation
 ```
 
-**Recommended next initiative:** `0.28 — Dogfood RealmOS Managing One Real RealmOS Task` (RealmOS-only dogfood on a real RealmOS task).
+**Recommended next initiative:** `0.29 — RealmOS Base System Verification Plan` (UI/navigation, Jarvis path, Necromancer, Command Center flow, run-state/handoff, approvals, base-system readiness).
 
 Cursor must not recommend GUING, sync-agent product work, side projects, external project work, or UI polish as the default next step while this gate is active.
 
@@ -353,6 +352,46 @@ pnpm check:clean-start
 ```
 
 If dependency install is not needed, Cursor may skip `pnpm install` and explain why.
+
+---
+
+## 7.1 Testing & Quality Gate (locked — Initiative 0.28)
+
+Every new initiative or capability must include tests and verification before being marked **PASS**.
+
+**Rules:**
+
+- Every new initiative/capability must include tests for new behavior.
+- No initiative can be marked **PASS** without relevant tests or an **explicit documented test gap** in the initiative audit.
+- Required verification gates (run before claiming PASS):
+
+```bash
+pnpm test
+pnpm typecheck
+pnpm build
+pnpm check:clean-start
+pnpm demo:mvp          # when MVP paths touched
+pnpm test:postgres     # when persistence/Postgres paths touched
+```
+
+**Coverage expectations by change type:**
+
+| Change type | Required tests |
+|-------------|----------------|
+| New public contracts | Contract/schema tests |
+| New services | Unit tests |
+| New API routes | API/integration tests |
+| New persistence | Round-trip tests (memory + Postgres when applicable) |
+| New UI/operator flows | Component/client tests; document E2E gaps in audit |
+| New safety/governance behavior | Regression tests |
+
+**Forbidden:**
+
+- Removing or weakening tests to pass CI without explicit operator approval.
+- Silent test skips (`.skip`, `it.skip`, disabled jobs) without audit documentation.
+- Marking PASS when core new behavior is untested without listing the gap under audit **remaining risks**.
+
+**Untestable or deferred areas** must be listed in the initiative audit under **remaining risks** with rationale and follow-up initiative.
 
 ---
 

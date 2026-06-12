@@ -14,7 +14,7 @@ const SECRET_PATTERN =
   /(?:api[_-]?key|secret|password|token|private[_-]?key|service[_-]?account)\s*[:=]\s*\S+/i;
 const BLOCKED_NEXT_INITIATIVE_PATTERN = /guing|side.?project|sync.?agent/i;
 
-export const DEFAULT_NEXT_INITIATIVE = "0.28 — Dogfood RealmOS Managing One Real RealmOS Task";
+export const DEFAULT_NEXT_INITIATIVE = "0.29 — RealmOS Base System Verification Plan";
 
 export type RunStateValidationError = {
   field: string;
@@ -79,10 +79,10 @@ function inferNextInitiative(packet: WorkPacketLifecycle): string {
     return DEFAULT_NEXT_INITIATIVE;
   }
   if (packet.status === "failed" || packet.status === "blocked") {
-    return "0.27 — Self-Handoff / Durable Run State Updates (remediation)";
+    return "0.28 — Dogfood RealmOS Managing One Real RealmOS Task (remediation)";
   }
   if (packet.handoffRequired && !packet.handoffUpdated) {
-    return "0.27 — Self-Handoff / Durable Run State Updates";
+    return "0.28 — Dogfood RealmOS Managing One Real RealmOS Task";
   }
   return DEFAULT_NEXT_INITIATIVE;
 }
@@ -164,7 +164,7 @@ export function buildRunStateFromWorkPacket(
     sourceDispatchId: packet.dispatchId,
     realmId: packet.realmId,
     repositoryId: packet.repositoryId,
-    initiativeId: input.initiativeId?.trim() || "0.27",
+    initiativeId: input.initiativeId?.trim() || "0.28",
     taskLabel: input.taskLabel?.trim() || packet.objective,
     lifecycleStatus: packet.status,
     resultStatus: mapResultStatus(packet),
