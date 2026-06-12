@@ -14,7 +14,7 @@ const SECRET_PATTERN =
   /(?:api[_-]?key|secret|password|token|private[_-]?key|service[_-]?account)\s*[:=]\s*\S+/i;
 const BLOCKED_NEXT_INITIATIVE_PATTERN = /guing|side.?project|sync.?agent/i;
 
-export const DEFAULT_NEXT_INITIATIVE = "0.29 — RealmOS Base System Verification Plan";
+export const DEFAULT_NEXT_INITIATIVE = "0.30 — UI / Navigation Verification Against Locked References";
 
 export type RunStateValidationError = {
   field: string;

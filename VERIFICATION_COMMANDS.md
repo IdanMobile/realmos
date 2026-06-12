@@ -1,6 +1,6 @@
-# RealmOS — Verification Commands v0.28
+# RealmOS — Verification Commands v0.29
 
-Initiative 0.28 adds the permanent **Testing & Quality Gate** (CURSOR_SSOT.md Section 7.1) and dogfood lifecycle verification. Initiative 0.27 adds durable self-handoff / run-state records.
+Initiative 0.29 adds the **base system verification plan** and readiness audit. Initiative 0.28 adds the permanent **Testing & Quality Gate** (CURSOR_SSOT.md Section 7.1).
 
 ## Testing & Quality Gate (locked)
 
@@ -311,6 +311,8 @@ pnpm --filter @realmos/platform-infra test
 
 ## Audits
 
+- Base system readiness: `docs/realmos-package/99_audits/base_system_readiness_audit_v0_29.md`
+- Base system verification plan: `docs/realmos-package/06_operations/base_system_verification_plan_v0_29.md`
 - Local executor bridge: `docs/realmos-package/99_audits/local_executor_bridge_audit_v0_24.md`
 - Work packet lifecycle: `docs/realmos-package/99_audits/work_packet_lifecycle_audit_v0_25.md`
 - Command Center task monitor: `docs/realmos-package/99_audits/command_center_task_monitor_audit_v0_26.md`

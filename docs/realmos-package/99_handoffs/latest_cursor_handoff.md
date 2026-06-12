@@ -1,7 +1,7 @@
-# Latest Cursor Handoff — Post Initiative 0.28
+# Latest Cursor Handoff — Post Initiative 0.29
 
 Updated: 2026-06-12  
-**Purpose:** Continue from Dogfood RealmOS task + Testing & Quality Gate complete.
+**Purpose:** Continue from base system verification plan + readiness audit complete.
 
 ---
 
@@ -9,11 +9,11 @@ Updated: 2026-06-12
 
 | Field | Value |
 |-------|--------|
-| **Project version** | `0.28.0` |
-| **Post-MVP complete** | 0.18–0.28 |
+| **Project version** | `0.29.0` |
+| **Post-MVP complete** | 0.18–0.29 |
 | **Strict verification** | **GREEN** |
-| **Dogfood packet** | `wpl_mqbhyes0_5xy658` (completed) |
-| **Run state** | `run_state_mqbhyes8_gdpibs` |
+| **Base system readiness** | **PARTIAL** (see audit) |
+| **Cursor IDE exit** | **NOT READY** |
 | **Executor mode** | `dry_run` — no shell execution |
 
 ---
@@ -22,31 +22,34 @@ Updated: 2026-06-12
 
 **Hard rule:** No side projects until RealmOS base system is complete and verified.
 
-- **Recommended next:** **0.29 — RealmOS Base System Verification Plan**
+- **Recommended next:** **0.30 — UI / Navigation Verification Against Locked References**
 - **Blocked:** GUING, side projects, product bootstrap, external project work
+
+**Do not start 0.30 until operator explicitly approves.**
 
 ---
 
-## Initiative 0.28 summary
+## Initiative 0.29 summary
 
-- **Dogfood task:** Add permanent Testing & Quality Gate governance rule
-- **Flow:** lifecycle packet → approval → dry-run dispatch → manual docs → verification → run-state/handoff
-- **Queue artifact:** `.realmos/executor-queue/exec_mqbhyes5_yg0a7f`
-- **Quality gate:** `CURSOR_SSOT.md` Section 7.1
+- **Delivered:** Full verification plan + readiness audit for all base-system areas
+- **Key gaps:** Navigation (FAIL), Jarvis chat UI (missing), UI reference PNGs (mostly absent from repo), Cursor exit (FAIL)
+- **Key greens:** Lifecycle, executor dry-run, run-state, Postgres, Ollama, governance, Testing & Quality Gate
+- **Code change:** `DEFAULT_NEXT_INITIATIVE` → 0.30 only
 
 ---
 
 ## Exact next task
 
 ```text
-Await operator approval for Initiative 0.29 — RealmOS Base System Verification Plan.
+Await operator approval for Initiative 0.30 — UI / Navigation Verification Against Locked References.
 ```
 
-Do not start 0.29 without approval. Do not start GUING, side projects, or autonomous execution.
+Do not start GUING, side projects, or autonomous execution.
 
 ---
 
 ## Audits
 
+- `docs/realmos-package/99_audits/base_system_readiness_audit_v0_29.md`
+- `docs/realmos-package/06_operations/base_system_verification_plan_v0_29.md`
 - `docs/realmos-package/99_audits/dogfood_realmOS_task_audit_v0_28.md`
-- `docs/realmos-package/99_audits/self_handoff_run_state_audit_v0_27.md`

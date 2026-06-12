@@ -239,17 +239,16 @@ side project once ready
 **Allowed upcoming RealmOS-only initiatives (examples — operator approval still required):**
 
 ```text
-0.29 — RealmOS Base System Verification Plan
-UI/navigation verification against locked screenshots/references
-Jarvis interaction path verification
-Necromancer verification
-Command Center operator flow hardening
-Real verification evidence capture
-Cursor CLI/local executor bridge only when safe and explicitly approved
-RealmOS self-management milestone validation
+0.30 — UI / Navigation Verification Against Locked References
+0.31 — Jarvis Interaction Flow
+0.32 — Necromancer Verification / Hardening
+0.33 — Verification Evidence Capture
+0.34 — Command Center Task Creation / Operator Flow Hardening
+0.35 — Safe Local Executor Consumer Design (no auto-exec without approval)
+RealmOS replaces Cursor IDE as primary operator surface
 ```
 
-**Recommended next initiative:** `0.29 — RealmOS Base System Verification Plan` (UI/navigation, Jarvis path, Necromancer, Command Center flow, run-state/handoff, approvals, base-system readiness).
+**Recommended next initiative:** `0.30 — UI / Navigation Verification Against Locked References` (locked references, routed navigation, screenshot comparison plan).
 
 Cursor must not recommend GUING, sync-agent product work, side projects, external project work, or UI polish as the default next step while this gate is active.
 

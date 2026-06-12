@@ -955,23 +955,29 @@ Side projects remain blocked until the operator explicitly decides from inside a
 
 RealmOS base system must be completed and verified, including:
 
-- [ ] Command Center
-- [ ] navigation
-- [ ] UI correctness against locked screenshots / UI references
-- [ ] Jarvis local interaction path
-- [ ] Necromancer
+- [ ] Command Center (0.29 audit: **PARTIAL** — single-page dashboard)
+- [ ] navigation (0.29 audit: **FAIL** — sidebar non-functional)
+- [ ] UI correctness against locked screenshots / UI references (0.29 audit: **NEEDS MANUAL VERIFICATION** — most PNGs missing from repo)
+- [ ] Jarvis local interaction path (0.29 audit: **PARTIAL** — API yes, chat UI no)
+- [ ] Necromancer (0.29 audit: **PARTIAL** — API + tests, no CC UI)
 - [x] work packet lifecycle
 - [x] executor bridge
 - [x] run monitor
 - [x] durable run-state / self-handoff
-- [ ] approvals (operator flow hardening)
-- [ ] verification reporting / evidence capture
+- [ ] approvals (operator flow hardening) (0.29 audit: **PARTIAL**)
+- [ ] verification reporting / evidence capture (0.29 audit: **PARTIAL**)
 - [x] memory/state persistence (operational)
 - [x] safety/governance
 - [x] local Ollama path
 - [x] Postgres persistence
 - [x] Firebase baseline (platform wiring only)
-- [ ] end-to-end self-management milestone validation (0.28 dogfood partial — governance task only)
+- [ ] end-to-end self-management milestone validation (0.28 dogfood PASS governance task; 0.29 audit: CC packet create UI missing)
+
+## 0.29 audit summary (2026-06-12)
+
+- Plan: `docs/realmos-package/06_operations/base_system_verification_plan_v0_29.md`
+- Audit: `docs/realmos-package/99_audits/base_system_readiness_audit_v0_29.md`
+- Overall base readiness: **PARTIAL**; Cursor IDE exit: **FAIL**
 
 ## Self-management milestone (incomplete)
 
@@ -1007,15 +1013,15 @@ Do not start, recommend, prepare, or scope:
 
 ## Allowed upcoming RealmOS-only initiatives
 
-- [ ] **0.29 — RealmOS Base System Verification Plan** (recommended next)
+- [x] **0.29 — RealmOS Base System Verification Plan** (complete — audit + plan docs)
+- [ ] **0.30 — UI / Navigation Verification Against Locked References** (recommended next — await operator approval)
 - [x] Testing & Quality Gate constitution (0.28)
-- [ ] UI/navigation verification against locked screenshots/references
-- [ ] Jarvis interaction path verification
-- [ ] Necromancer verification
-- [ ] Command Center operator flow hardening
-- [ ] Real verification evidence capture
-- [ ] Cursor CLI/local executor bridge (only when safe and explicitly approved)
-- [ ] RealmOS self-management milestone validation
+- [ ] Jarvis interaction path verification (0.31 planned)
+- [ ] Necromancer verification (0.32 planned)
+- [ ] Command Center operator flow hardening (0.34 planned)
+- [ ] Real verification evidence capture (0.33 planned)
+- [ ] Safe local executor consumer design (0.35 planned — no auto-exec without approval)
+- [ ] RealmOS replaces Cursor IDE as primary operator surface (final milestone)
 
 ## Completed post-MVP initiatives
 
@@ -1030,3 +1036,4 @@ Do not start, recommend, prepare, or scope:
 - [x] 0.26 Command Center Task Approval + Run Monitor
 - [x] 0.27 Self-Handoff / Durable Run State Updates
 - [x] 0.28 Dogfood RealmOS Managing One Real RealmOS Task
+- [x] 0.29 RealmOS Base System Verification Plan
