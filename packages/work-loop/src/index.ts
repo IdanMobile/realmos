@@ -37,3 +37,18 @@ export {
   validateWorkPacketLifecycleReadiness,
   type WorkPacketLifecycleValidationError
 } from "./work-packet-lifecycle";
+export {
+  buildHandoffSummaryObject,
+  buildNextChatPromptObject,
+  buildRunStateFromWorkPacket,
+  DEFAULT_NEXT_INITIATIVE,
+  markRunStateHandoffRequired,
+  markRunStateHandoffUpdated,
+  summarizeRunStates,
+  updateRunStateFromExecutorResult,
+  updateRunStateFromVerification,
+  updateRunStateFromWorkPacket,
+  validateNextRecommendedInitiative,
+  validateRunStateTextContent,
+  type RunStateValidationError
+} from "./run-state-handoff";

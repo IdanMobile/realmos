@@ -795,6 +795,10 @@ describe("RealmOS API integration", () => {
           totalCount: number;
           approvalNeededCount: number;
         };
+        runState: {
+          totalCount: number;
+          handoffRequiredCount: number;
+        };
       };
     };
 
@@ -813,6 +817,8 @@ describe("RealmOS API integration", () => {
     expect(typeof body.checks.executor.queueRoot).toBe("string");
     expect(typeof body.checks.lifecycle.totalCount).toBe("number");
     expect(typeof body.checks.lifecycle.approvalNeededCount).toBe("number");
+    expect(typeof body.checks.runState.totalCount).toBe("number");
+    expect(typeof body.checks.runState.handoffRequiredCount).toBe("number");
   });
 
   it("exports full data bundle", async () => {
@@ -1200,5 +1206,63 @@ describe("RealmOS API integration", () => {
       }
     });
     expect(response.statusCode).toBe(400);
+  });
+
+  it("creates and syncs durable run-state handoff from lifecycle packet", async () => {
+    const db = createMemoryDatabase();
+    const { app } = await buildApp({ database: db });
+
+    const createPacket = await app.inject({
+      method: "POST",
+      url: "/api/lifecycle/packets",
+      payload: {
+        realmId: "realm_realmos",
+        repositoryId: "repo_realmos",
+        allowedPaths: ["packages/**"],
+        forbiddenPaths: [".env"],
+        objective: "Run state handoff smoke",
+        instructions: "Dry-run only.",
+        verificationCommands: ["pnpm test"],
+        expectedArtifacts: ["handoff record"]
+      }
+    });
+    const packet = createPacket.json() as { id: string };
+
+    const createRunState = await app.inject({
+      method: "POST",
+      url: `/api/run-state/records/from-packet/${packet.id}`,
+      payload: { initiativeId: "0.27" }
+    });
+    expect(createRunState.statusCode).toBe(201);
+    const runState = createRunState.json() as { id: string; sourcePacketId: string };
+    expect(runState.sourcePacketId).toBe(packet.id);
+
+    await app.inject({
+      method: "POST",
+      url: `/api/lifecycle/packets/${packet.id}/ready`
+    });
+    await app.inject({
+      method: "POST",
+      url: `/api/lifecycle/packets/${packet.id}/approve`,
+      payload: { approvedBy: "operator" }
+    });
+
+    const syncResponse = await app.inject({
+      method: "POST",
+      url: `/api/run-state/records/${runState.id}/sync-from-packet`
+    });
+    expect(syncResponse.statusCode).toBe(200);
+    const synced = syncResponse.json() as { lifecycleStatus: string };
+    expect(synced.lifecycleStatus).toBe("approved");
+
+    const handoffLatest = await app.inject({ method: "GET", url: "/api/run-state/handoff/latest" });
+    expect(handoffLatest.statusCode).toBe(200);
+    const handoff = handoffLatest.json() as { nextRecommendedInitiative: string };
+    expect(handoff.nextRecommendedInitiative).not.toMatch(/guing/i);
+
+    const promptLatest = await app.inject({ method: "GET", url: "/api/run-state/next-chat-prompt/latest" });
+    expect(promptLatest.statusCode).toBe(200);
+    const prompt = promptLatest.json() as { promptText: string };
+    expect(prompt.promptText).toContain("CURSOR_SSOT.md");
   });
 });

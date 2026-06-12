@@ -979,7 +979,8 @@ RealmOS must be able to:
 - [x] 0.24 Local executor / Cursor CLI bridge (dry-run file queue)
 - [x] 0.25 Work Packet Lifecycle
 - [x] 0.26 Command Center Task Approval + Run Monitor
+- [x] 0.27 Self-Handoff / Durable Run State Updates
 
 ## Recommended next
 
-- [ ] **0.27 — Self-Handoff / Durable Run State Updates**
+- [ ] **0.28 — Dogfood RealmOS Managing One Real RealmOS Task**

@@ -1,6 +1,7 @@
 import type { RealmOSDatabase } from "../db/types";
 import { buildExecutorBridgeStatus } from "../executor-bridge-routes";
 import { buildWorkPacketLifecycleStatus } from "../work-packet-lifecycle-routes";
+import { buildRunStateHandoffStatus } from "../run-state-handoff-routes";
 import { buildFirebaseBaselineHealthSnapshot } from "@realmos/platform-infra";
 import { buildOllamaHealthSnapshot, probeOllama } from "@realmos/llm-router";
 import { isTerminalExecutionEnabled } from "@realmos/tool-runner";
@@ -55,6 +56,14 @@ export type WorkPacketLifecycleHealthCheck = {
   latestPacketStatus: string | null;
 };
 
+export type RunStateHandoffHealthCheck = {
+  totalCount: number;
+  handoffRequiredCount: number;
+  handoffUpdatedCount: number;
+  latestRunStateId: string | null;
+  latestNextRecommendedInitiative: string | null;
+};
+
 export type HealthReport = {
   status: "ok" | "degraded";
   service: string;
@@ -66,6 +75,7 @@ export type HealthReport = {
     firebase: FirebaseHealthCheck;
     executor: ExecutorHealthCheck;
     lifecycle: WorkPacketLifecycleHealthCheck;
+    runState: RunStateHandoffHealthCheck;
     terminal: { enabled: boolean };
     onlineModels: { enabled: boolean; configured: boolean };
   };
@@ -110,6 +120,15 @@ export async function buildHealthReport(db: RealmOSDatabase): Promise<HealthRepo
     latestPacketStatus: lifecycleSummary.latestPacket?.status ?? null
   };
 
+  const runStateSummary = await buildRunStateHandoffStatus();
+  const runStateStatus: RunStateHandoffHealthCheck = {
+    totalCount: runStateSummary.totalCount,
+    handoffRequiredCount: runStateSummary.handoffRequiredCount,
+    handoffUpdatedCount: runStateSummary.handoffUpdatedCount,
+    latestRunStateId: runStateSummary.latestRunState?.id ?? null,
+    latestNextRecommendedInitiative: runStateSummary.latestRunState?.nextRecommendedInitiative ?? null
+  };
+
   const onlineEnabled = process.env.REALMOS_ALLOW_ONLINE_MODELS === "true";
   const onlineConfigured = Boolean(process.env.OPENAI_API_KEY?.trim());
 
@@ -118,7 +137,7 @@ export async function buildHealthReport(db: RealmOSDatabase): Promise<HealthRepo
   return {
     status: degraded ? "degraded" : "ok",
     service: "realmos-api",
-    version: "0.26.0",
+    version: "0.27.0",
     timestamp: new Date().toISOString(),
     checks: {
       database: databaseStatus,
@@ -126,6 +145,7 @@ export async function buildHealthReport(db: RealmOSDatabase): Promise<HealthRepo
       firebase: firebaseStatus,
       executor: executorStatus,
       lifecycle: lifecycleStatus,
+      runState: runStateStatus,
       terminal: { enabled: isTerminalExecutionEnabled() },
       onlineModels: { enabled: onlineEnabled, configured: onlineConfigured }
     }

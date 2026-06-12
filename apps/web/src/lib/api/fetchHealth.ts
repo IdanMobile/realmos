@@ -61,6 +61,13 @@ export type HealthReport = {
     firebase: FirebaseHealthCheck;
     executor: ExecutorHealthCheck;
     lifecycle: WorkPacketLifecycleHealthCheck;
+    runState: {
+      totalCount: number;
+      handoffRequiredCount: number;
+      handoffUpdatedCount: number;
+      latestRunStateId: string | null;
+      latestNextRecommendedInitiative: string | null;
+    };
     terminal: { enabled: boolean };
     onlineModels: { enabled: boolean; configured: boolean };
   };

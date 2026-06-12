@@ -7,7 +7,8 @@ import { createRealmStore } from "../src/lib/persistence/create-realm-store";
 import { createPlatformInfraStore } from "../src/lib/persistence/create-platform-infra-store";
 import { createExecutorStore } from "../src/lib/persistence/create-executor-store";
 import { createWorkPacketLifecycleStore } from "../src/lib/persistence/create-work-packet-lifecycle-store";
-import { buildLocalExecutorDispatch, buildWorkPacketLifecycle } from "@realmos/work-loop";
+import { createRunStateHandoffStore } from "../src/lib/persistence/create-run-state-handoff-store";
+import { buildLocalExecutorDispatch, buildWorkPacketLifecycle, buildRunStateFromWorkPacket } from "@realmos/work-loop";
 import { buildFleetConsole } from "../src/lib/fleet-store";
 import { makeWorkLoopId } from "@realmos/work-loop";
 import type { WorkItem } from "@realmos/contracts";
@@ -164,5 +165,32 @@ describe("operational persistence", () => {
     const loaded = await storeB.getWorkPacketLifecycleRecord("wpl_persist_test");
     expect(loaded?.status).toBe("draft");
     expect(loaded?.realmId).toBe("realm_realmos");
+  });
+
+  it("retains run-state handoff records across store re-instantiation", async () => {
+    const adapter = createMemoryOperationalAdapter();
+    const lifecycleStore = createWorkPacketLifecycleStore(adapter);
+    const runStateStore = createRunStateHandoffStore(adapter);
+    const packet = buildWorkPacketLifecycle(
+      {
+        realmId: "realm_realmos",
+        repositoryId: "repo_realmos",
+        allowedPaths: ["packages/**"],
+        forbiddenPaths: [".env"],
+        objective: "Persist run state",
+        instructions: "Dry-run only.",
+        verificationCommands: ["pnpm test"],
+        expectedArtifacts: ["persistence test"]
+      },
+      "wpl_run_state_persist"
+    );
+    await lifecycleStore.createWorkPacketLifecycleRecord(packet);
+    const { state } = buildRunStateFromWorkPacket(packet);
+    await runStateStore.createRunState(state);
+
+    const reloaded = createRunStateHandoffStore(adapter);
+    const loaded = await reloaded.getRunState(state.id);
+    expect(loaded?.sourcePacketId).toBe("wpl_run_state_persist");
+    expect(loaded?.nextRecommendedInitiative).toContain("0.28");
   });
 });

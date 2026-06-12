@@ -1,18 +1,18 @@
 # RealmOS — Project State
 
-Version: 0.26.0  
+Version: 0.27.0  
 Prepared: 2026-06-12
 
 ## Current Phase
 
 ```text
-Initiative 0.26 — Command Center Task Approval + Run Monitor (complete)
+Initiative 0.27 — Self-Handoff / Durable Run State Updates (complete)
 ```
 
 ## Current Task
 
 ```text
-Await operator approval for Initiative 0.27 — Self-Handoff / Durable Run State Updates
+Await operator approval for Initiative 0.28 — Dogfood RealmOS Managing One Real RealmOS Task
 ```
 
 ## Roadmap gate (locked)
@@ -20,21 +20,22 @@ Await operator approval for Initiative 0.27 — Self-Handoff / Durable Run State
 **No side projects until RealmOS self-management milestone is complete.**
 
 - **GUING bootstrap:** blocked
-- **Recommended next:** **0.27 — Self-Handoff / Durable Run State Updates**
+- **Recommended next:** **0.28 — Dogfood RealmOS Managing One Real RealmOS Task**
 
 ## Handoff
 
 - Handoff: `docs/realmos-package/99_handoffs/latest_cursor_handoff.md`
 - New chat prompt: `docs/realmos-package/99_handoffs/new_chat_prompt.md`
+- Latest durable handoff: `GET /api/run-state/handoff/latest`
 
 ## Current Status
 
-Strict verification bar is **green**. Command Center exposes lifecycle approval, dry-run dispatch monitoring, and manual result/verification recording. **No automatic shell execution or Cursor CLI invocation.**
+Strict verification bar is **green**. Durable run-state/handoff records lifecycle outcomes without arbitrary file writes. **No automatic shell execution or Cursor CLI invocation.**
 
 ## Last Completed
 
 ```text
-Initiative 0.26 — Command Center task approval + run monitor (UI, API clients, tests, docs)
+Initiative 0.27 — Self-handoff / durable run state (contract, service, API, persistence, Command Center, tests)
 ```
 
 ## Verification (strict)
@@ -50,7 +51,7 @@ pnpm test:postgres     # optional
 
 ## Docs
 
+- Self-handoff: `docs/realmos-package/06_operations/self_handoff_run_state_v0_27.md`
+- Audit: `docs/realmos-package/99_audits/self_handoff_run_state_audit_v0_27.md`
 - Command Center monitor: `docs/realmos-package/06_operations/command_center_task_monitor_v0_26.md`
-- Audit: `docs/realmos-package/99_audits/command_center_task_monitor_audit_v0_26.md`
-- Lifecycle: `docs/realmos-package/06_operations/work_packet_lifecycle_v0_25.md`
 - Verification: `VERIFICATION_COMMANDS.md`

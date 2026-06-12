@@ -97,5 +97,7 @@ export async function buildApp(options: AppOptions = {}) {
   registerExecutorBridgeRoutes(app, db);
   const { registerWorkPacketLifecycleRoutes } = await import("./work-packet-lifecycle-routes");
   registerWorkPacketLifecycleRoutes(app, db);
+  const { registerRunStateHandoffRoutes } = await import("./run-state-handoff-routes");
+  registerRunStateHandoffRoutes(app, db);
   return { app, db };
 }

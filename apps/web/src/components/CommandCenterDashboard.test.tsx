@@ -67,6 +67,7 @@ describe("Command Center dashboard", () => {
     const dashboard = renderDashboard();
     expect(dashboard.getByLabelText("System status panel")).toBeInTheDocument();
     expect(dashboard.getByLabelText("Work packet task monitor panel")).toBeInTheDocument();
+    expect(dashboard.getByLabelText("Run state handoff panel")).toBeInTheDocument();
     expect(dashboard.getByLabelText("Operator guide panel")).toBeInTheDocument();
   });
 

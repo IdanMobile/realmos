@@ -23,6 +23,7 @@ import {
 type WorkPacketTaskMonitorPanelProps = {
   dataSource: "api" | "mock";
   health?: HealthReport | null;
+  onSelectedPacketChange?: (packetId: string | null) => void;
 };
 
 function statusBadgeClass(status: string): string {
@@ -38,7 +39,11 @@ function statusBadgeClass(status: string): string {
   return "bg-slate-500/15 text-slate-200";
 }
 
-export function WorkPacketTaskMonitorPanel({ dataSource, health }: WorkPacketTaskMonitorPanelProps) {
+export function WorkPacketTaskMonitorPanel({
+  dataSource,
+  health,
+  onSelectedPacketChange
+}: WorkPacketTaskMonitorPanelProps) {
   const [packets, setPackets] = useState<WorkPacketLifecycle[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [executorStatus, setExecutorStatus] = useState<Awaited<ReturnType<typeof fetchExecutorBridgeStatus>>>(null);
@@ -74,7 +79,11 @@ export function WorkPacketTaskMonitorPanel({ dataSource, health }: WorkPacketTas
       setPackets([]);
     } else {
       setPackets(packetResult.data);
-      setSelectedId((current) => current ?? packetResult.data[0]?.id ?? null);
+      setSelectedId((current) => {
+        const id = current ?? packetResult.data[0]?.id ?? null;
+        if (!current) onSelectedPacketChange?.(id);
+        return id;
+      });
     }
 
     setExecutorStatus(execStatus);
@@ -204,7 +213,10 @@ export function WorkPacketTaskMonitorPanel({ dataSource, health }: WorkPacketTas
                     className={`w-full rounded-lg border p-3 text-left text-sm ${
                       selectedId === packet.id ? "border-cyan-500/50 bg-cyan-500/5" : "border-border/70 bg-surface"
                     }`}
-                    onClick={() => setSelectedId(packet.id)}
+                    onClick={() => {
+                      setSelectedId(packet.id);
+                      onSelectedPacketChange?.(packet.id);
+                    }}
                   >
                     <div className="flex items-center justify-between gap-2">
                       <span className="font-semibold">{packet.objective}</span>

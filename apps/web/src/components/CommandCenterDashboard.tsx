@@ -29,6 +29,7 @@ import { RepositoryBoundaryPanel } from "@/components/panels/RepositoryBoundaryP
 import { SelfBuildConsolePanel } from "@/components/panels/SelfBuildConsolePanel";
 import { SystemStatusPanel } from "@/components/panels/SystemStatusPanel";
 import { WorkPacketTaskMonitorPanel } from "@/components/panels/WorkPacketTaskMonitorPanel";
+import { RunStateHandoffPanel } from "@/components/panels/RunStateHandoffPanel";
 
 type CommandCenterDashboardProps = {
   data: DashboardMockData;
@@ -48,6 +49,7 @@ export function CommandCenterDashboard({
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(
     data.communicationThreads[0]?.id ?? null
   );
+  const [selectedLifecyclePacketId, setSelectedLifecyclePacketId] = useState<string | null>(null);
 
   const monthlyBudget = useMemo(
     () => data.budgets.find((budget) => budget.scope === "global") ?? data.budgets[0],
@@ -79,7 +81,12 @@ export function CommandCenterDashboard({
     <CommandCenterLayout dataSource={dataSource}>
       <div className="grid gap-4 lg:grid-cols-2" data-testid="command-center-dashboard">
         <SystemStatusPanel health={health} dataSource={dataSource} />
-        <WorkPacketTaskMonitorPanel health={health} dataSource={dataSource} />
+        <WorkPacketTaskMonitorPanel
+          health={health}
+          dataSource={dataSource}
+          onSelectedPacketChange={setSelectedLifecyclePacketId}
+        />
+        <RunStateHandoffPanel dataSource={dataSource} selectedPacketId={selectedLifecyclePacketId} />
         <OperatorGuidePanel />
         <SelfBuildConsolePanel {...data.workLoop} />
         <FleetControlPanel {...data.fleet} />

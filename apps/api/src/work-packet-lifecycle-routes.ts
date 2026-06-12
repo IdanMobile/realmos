@@ -24,6 +24,7 @@ import type { RealmOSDatabase } from "./db/types";
 import { recordAudit } from "./lib/audit";
 import { executorStore } from "./lib/executor-store";
 import { workPacketLifecycleStore } from "./lib/work-packet-lifecycle-store";
+import { syncRunStateForPacket } from "./run-state-handoff-routes";
 
 export async function buildWorkPacketLifecycleStatus() {
   const packets = await workPacketLifecycleStore.listWorkPacketLifecycleRecords();
@@ -180,6 +181,8 @@ export function registerWorkPacketLifecycleRoutes(app: FastifyInstance, db: Real
       }
     }
 
+    await syncRunStateForPacket(updated);
+
     return updated;
   });
 
@@ -212,6 +215,7 @@ export function registerWorkPacketLifecycleRoutes(app: FastifyInstance, db: Real
     }
 
     await workPacketLifecycleStore.updateWorkPacketLifecycleRecord(id, updated);
+    await syncRunStateForPacket(updated);
     return updated;
   });
 
@@ -240,6 +244,7 @@ export function registerWorkPacketLifecycleRoutes(app: FastifyInstance, db: Real
     }
 
     await workPacketLifecycleStore.updateWorkPacketLifecycleRecord(id, updated);
+    await syncRunStateForPacket(updated);
     return updated;
   });
 }

@@ -23,7 +23,8 @@ export const OperationalTables = {
   prototypeApprovals: "operational_prototype_approvals",
   isolationViolations: "operational_isolation_violations",
   executorDispatches: "operational_executor_dispatches",
-  workPacketLifecycle: "operational_work_packet_lifecycle"
+  workPacketLifecycle: "operational_work_packet_lifecycle",
+  runStateHandoff: "operational_run_state_handoff"
 } as const;
 
 export type OperationalTableName = (typeof OperationalTables)[keyof typeof OperationalTables];

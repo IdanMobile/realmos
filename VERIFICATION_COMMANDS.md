@@ -1,6 +1,6 @@
-# RealmOS — Verification Commands v0.26
+# RealmOS — Verification Commands v0.27
 
-Initiative 0.26 adds Command Center task approval + run monitor UI. Initiative 0.25 adds work packet lifecycle. Initiative 0.24 adds local executor bridge (dry-run file queue).
+Initiative 0.27 adds durable self-handoff / run-state records. Initiative 0.26 adds Command Center task monitor. Initiative 0.25 adds work packet lifecycle.
 
 ## Full verification (recommended)
 
@@ -194,6 +194,19 @@ curl http://localhost:4100/api/executor/status
 
 Requires live API for operator actions. Mock dashboard mode shows safety banner but disables actions.
 
+## Self-handoff / run state (Initiative 0.27)
+
+Setup: `docs/realmos-package/06_operations/self_handoff_run_state_v0_27.md`
+
+```bash
+curl http://localhost:4100/api/run-state/status
+curl http://localhost:4100/api/run-state/handoff/latest
+curl http://localhost:4100/api/run-state/next-chat-prompt/latest
+curl http://localhost:4100/api/health | jq '.checks.runState'
+```
+
+Run state is stored in operational persistence — no arbitrary repo file writes.
+
 ## Local Ollama (optional, machine-level)
 
 Ollama is **not** installed by the repo. Models live on the operator machine.
@@ -275,6 +288,7 @@ pnpm --filter @realmos/platform-infra test
 - Local executor bridge: `docs/realmos-package/99_audits/local_executor_bridge_audit_v0_24.md`
 - Work packet lifecycle: `docs/realmos-package/99_audits/work_packet_lifecycle_audit_v0_25.md`
 - Command Center task monitor: `docs/realmos-package/99_audits/command_center_task_monitor_audit_v0_26.md`
+- Self-handoff run state: `docs/realmos-package/99_audits/self_handoff_run_state_audit_v0_27.md`
 - Firebase baseline: `docs/realmos-package/99_audits/firebase_baseline_audit_v0_23.md`
 - Ollama local node: `docs/realmos-package/99_audits/ollama_local_node_audit_v0_22.md`
 - Postgres CI smoke: `docs/realmos-package/99_audits/postgres_ci_smoke_audit_v0_21.md`

@@ -9,6 +9,10 @@ import {
   createWorkPacketLifecycleStore,
   type WorkPacketLifecycleStore
 } from "./create-work-packet-lifecycle-store";
+import {
+  createRunStateHandoffStore,
+  type RunStateHandoffStore
+} from "./create-run-state-handoff-store";
 import { OperationalTables } from "./operational-tables";
 import { createDefaultWorkLoopSeed } from "../work-loop-seed";
 import { createDefaultFleetSeed } from "../fleet-seed";
@@ -23,7 +27,8 @@ const storeRefs = {
   realm: createRealmStore(activeAdapter),
   platformInfra: createPlatformInfraStore(activeAdapter),
   executor: createExecutorStore(activeAdapter),
-  workPacketLifecycle: createWorkPacketLifecycleStore(activeAdapter)
+  workPacketLifecycle: createWorkPacketLifecycleStore(activeAdapter),
+  runStateHandoff: createRunStateHandoffStore(activeAdapter)
 };
 
 function bindStoreProxy<T extends object>(getter: () => T): T {
@@ -45,6 +50,7 @@ export const realmStore = bindStoreProxy(() => storeRefs.realm);
 export const platformInfraStore = bindStoreProxy(() => storeRefs.platformInfra);
 export const executorStore = bindStoreProxy(() => storeRefs.executor);
 export const workPacketLifecycleStore = bindStoreProxy(() => storeRefs.workPacketLifecycle);
+export const runStateHandoffStore = bindStoreProxy(() => storeRefs.runStateHandoff);
 
 export function getOperationalPersistenceAdapter(): OperationalPersistenceAdapter {
   return activeAdapter;
@@ -58,6 +64,7 @@ export function configureOperationalPersistence(adapter: OperationalPersistenceA
   storeRefs.platformInfra = createPlatformInfraStore(adapter);
   storeRefs.executor = createExecutorStore(adapter);
   storeRefs.workPacketLifecycle = createWorkPacketLifecycleStore(adapter);
+  storeRefs.runStateHandoff = createRunStateHandoffStore(adapter);
 }
 
 export async function seedOperationalStoresIfEmpty(): Promise<void> {
@@ -81,4 +88,4 @@ export async function resetOperationalPersistenceForTests(): Promise<void> {
   await seedOperationalStoresIfEmpty();
 }
 
-export type { WorkLoopStore, FleetStore, RealmStore, PlatformInfraStore, ExecutorStore, WorkPacketLifecycleStore };
+export type { WorkLoopStore, FleetStore, RealmStore, PlatformInfraStore, ExecutorStore, WorkPacketLifecycleStore, RunStateHandoffStore };
