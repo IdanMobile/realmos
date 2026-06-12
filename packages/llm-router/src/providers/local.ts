@@ -1,3 +1,8 @@
+import {
+  getOllamaBaseUrl,
+  normalizeOllamaModelName
+} from "../ollama-config";
+
 export type LocalModelResult = {
   provider: "ollama";
   model: string;
@@ -6,18 +11,13 @@ export type LocalModelResult = {
   source: "ollama" | "stub";
 };
 
-function normalizeOllamaModel(model: string): string {
-  const trimmed = model.replace(/^ollama\//, "").trim();
-  return trimmed || process.env.REALMOS_LOCAL_MODEL || "qwen3.5:latest";
-}
-
 export async function invokeLocalModelStub(input: {
   model: string;
   prompt: string;
 }): Promise<LocalModelResult> {
   return {
     provider: "ollama",
-    model: normalizeOllamaModel(input.model),
+    model: normalizeOllamaModelName(input.model),
     output: `[local-stub] ${input.prompt.slice(0, 120)}`,
     tokensUsed: Math.max(40, Math.ceil(input.prompt.length / 4)),
     source: "stub"
@@ -29,8 +29,8 @@ export async function invokeLocalModel(input: {
   prompt: string;
   baseUrl?: string;
 }): Promise<LocalModelResult> {
-  const model = normalizeOllamaModel(input.model);
-  const baseUrl = (input.baseUrl ?? process.env.OLLAMA_BASE_URL ?? "http://localhost:11434").replace(/\/$/, "");
+  const model = normalizeOllamaModelName(input.model);
+  const baseUrl = (input.baseUrl ?? getOllamaBaseUrl()).replace(/\/$/, "");
 
   try {
     const response = await fetch(`${baseUrl}/api/generate`, {
@@ -61,7 +61,7 @@ export async function invokeLocalModel(input: {
   }
 }
 
-export async function probeOllama(baseUrl = process.env.OLLAMA_BASE_URL ?? "http://localhost:11434"): Promise<{
+export async function probeOllama(baseUrl = getOllamaBaseUrl()): Promise<{
   reachable: boolean;
   models: string[];
 }> {

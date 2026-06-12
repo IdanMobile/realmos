@@ -3,6 +3,8 @@ export {
   GITHUB_SOURCE_CONTROL_CONFIG,
   M1_PRO_LOCAL_NODE_CONFIG,
   OLLAMA_LOCAL_LLM_CONFIG,
+  buildLocalNodeConfigFromEnv,
+  buildOllamaRuntimeConfigFromEnv,
   type FirebaseBaselineConfig,
   type GitHubSourceControlConfig,
   type LocalNodeConfig,

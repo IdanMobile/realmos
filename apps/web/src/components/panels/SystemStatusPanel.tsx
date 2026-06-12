@@ -37,15 +37,27 @@ export function SystemStatusPanel({ health, dataSource }: SystemStatusPanelProps
               </span>
             </div>
           </li>
-          <li className="rounded-lg border border-border/70 bg-surface p-3 text-sm">
+          <li className="rounded-lg border border-border/70 bg-surface p-3 text-sm sm:col-span-2">
             <div className="flex items-center justify-between gap-2">
-              <span className="font-semibold">Ollama</span>
+              <span className="font-semibold">Local LLM (Ollama)</span>
               <span className={`badge ${statusBadge(health.checks.ollama.status)}`}>
                 {health.checks.ollama.status}
               </span>
             </div>
+            <p className="mt-2 text-xs text-textSecondary">
+              {health.checks.ollama.baseUrl} · default {health.checks.ollama.defaultModel}
+            </p>
+            <p className="mt-1 text-xs text-textSecondary">
+              Fallback: {health.checks.ollama.fallbackActive ? "active (stub/degraded responses)" : "inactive (live Ollama)"}
+            </p>
+            {health.checks.ollama.defaultModelAvailable === false &&
+            health.checks.ollama.status === "ok" ? (
+              <p className="mt-1 text-xs text-amber-200">
+                Default model not installed — run <code className="text-xs">ollama pull {health.checks.ollama.defaultModel}</code>
+              </p>
+            ) : null}
             {health.checks.ollama.models?.length ? (
-              <p className="mt-1 text-xs text-textSecondary">{health.checks.ollama.models.join(", ")}</p>
+              <p className="mt-1 text-xs text-textSecondary">Installed: {health.checks.ollama.models.join(", ")}</p>
             ) : null}
           </li>
           <li className="rounded-lg border border-border/70 bg-surface p-3 text-sm">
@@ -56,7 +68,7 @@ export function SystemStatusPanel({ health, dataSource }: SystemStatusPanelProps
               </span>
             </div>
           </li>
-          <li className="rounded-lg border border-border/70 bg-surface p-3 text-sm sm:col-span-2">
+          <li className="rounded-lg border border-border/70 bg-surface p-3 text-sm">
             <div className="flex items-center justify-between gap-2">
               <span className="font-semibold">Online models</span>
               <span className={`badge ${statusBadge(health.checks.onlineModels.enabled ? "enabled" : "disabled")}`}>

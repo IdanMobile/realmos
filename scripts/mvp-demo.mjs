@@ -35,7 +35,17 @@ async function main() {
   console.log("=== RealmOS MVP Demo ===\n");
 
   const health = await request("GET", "/api/health");
-  console.log("Health:", health.status, "| Ollama:", health.checks.ollama.status);
+  const ollama = health.checks.ollama;
+  console.log(
+    "Health:",
+    health.status,
+    "| Ollama:",
+    ollama.status,
+    "| model:",
+    ollama.defaultModel,
+    "| fallback:",
+    ollama.fallbackActive ? "active" : "inactive"
+  );
   assert(health.service === "realmos-api", "API health missing service id");
 
   const created = await request("POST", "/api/jarvis/commands/create-business-from-idea", {

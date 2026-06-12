@@ -10,8 +10,8 @@ import {
   createRealmOSPlatformResources,
   FIREBASE_BASELINE_CONFIG,
   GITHUB_SOURCE_CONTROL_CONFIG,
-  M1_PRO_LOCAL_NODE_CONFIG,
-  OLLAMA_LOCAL_LLM_CONFIG
+  buildLocalNodeConfigFromEnv,
+  buildOllamaRuntimeConfigFromEnv
 } from "@realmos/platform-infra";
 
 export function createDefaultPlatformInfraSeed() {
@@ -22,9 +22,9 @@ export function createDefaultPlatformInfraSeed() {
     prototypeApprovals: [] as TemporaryPrototypeInfrastructureApproval[],
     isolationViolations: [] as InfrastructureIsolationViolation[],
     firebaseConfig: FIREBASE_BASELINE_CONFIG,
-    localNodeConfig: M1_PRO_LOCAL_NODE_CONFIG,
+    localNodeConfig: buildLocalNodeConfigFromEnv(),
     githubConfig: GITHUB_SOURCE_CONTROL_CONFIG,
-    ollamaConfig: OLLAMA_LOCAL_LLM_CONFIG
+    ollamaConfig: buildOllamaRuntimeConfigFromEnv()
   };
 }
 

@@ -1,5 +1,14 @@
 import { getApiBaseUrl } from "./client";
 
+export type OllamaHealthCheck = {
+  status: "ok" | "unreachable" | "disabled";
+  baseUrl: string;
+  defaultModel: string;
+  fallbackActive: boolean;
+  defaultModelAvailable?: boolean;
+  models?: string[];
+};
+
 export type HealthReport = {
   status: "ok" | "degraded";
   service: string;
@@ -7,7 +16,7 @@ export type HealthReport = {
   timestamp: string;
   checks: {
     database: { status: "ok" | "error"; detail?: string };
-    ollama: { status: "ok" | "unreachable" | "disabled"; models?: string[] };
+    ollama: OllamaHealthCheck;
     terminal: { enabled: boolean };
     onlineModels: { enabled: boolean; configured: boolean };
   };

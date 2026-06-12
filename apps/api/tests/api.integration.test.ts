@@ -764,19 +764,32 @@ describe("RealmOS API integration", () => {
     expect(registryResponse.json()).toMatchObject({ terminalExecutionEnabled: false });
   });
 
-  it("returns expanded health report", async () => {
+  it("returns expanded health report with Ollama node details", async () => {
     const db = createMemoryDatabase();
     const { app } = await buildApp({ database: db });
 
     const response = await app.inject({ method: "GET", url: "/api/health" });
     const body = response.json() as {
       status: string;
-      checks: { database: { status: string }; terminal: { enabled: boolean } };
+      checks: {
+        database: { status: string };
+        terminal: { enabled: boolean };
+        ollama: {
+          status: string;
+          baseUrl: string;
+          defaultModel: string;
+          fallbackActive: boolean;
+        };
+      };
     };
 
     expect(body.status).toMatch(/ok|degraded/);
     expect(body.checks.database.status).toBe("ok");
     expect(typeof body.checks.terminal.enabled).toBe("boolean");
+    expect(body.checks.ollama.baseUrl).toMatch(/11434/);
+    expect(body.checks.ollama.defaultModel.length).toBeGreaterThan(0);
+    expect(typeof body.checks.ollama.fallbackActive).toBe("boolean");
+    expect(body.checks.ollama.status).toMatch(/ok|unreachable|disabled/);
   });
 
   it("exports full data bundle", async () => {

@@ -20,6 +20,17 @@ export {
 export { routeAndLogCost, routeModelRequest } from "./router";
 export { invokeRoutedModel, type ModelInvokeOutcome, type ModelInvokeRequest } from "./invoke";
 export {
+  buildOllamaHealthSnapshot,
+  getDefaultLocalRoutingModel,
+  getOllamaBaseUrl,
+  getOllamaDefaultModel,
+  isOllamaEnabled,
+  isOllamaModelInstalled,
+  isOllamaOfflineFallbackEnabled,
+  normalizeOllamaModelName,
+  type OllamaHealthSnapshot
+} from "./ollama-config";
+export {
   invokeLocalModel,
   invokeLocalModelStub,
   probeOllama,

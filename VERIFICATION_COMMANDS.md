@@ -1,6 +1,6 @@
-# RealmOS — Verification Commands v0.21
+# RealmOS — Verification Commands v0.22
 
-Initiative 0.21 adds GitHub Actions CI with Postgres smoke (2026-06-12).
+Initiative 0.22 adds local Ollama node integration (2026-06-12).
 
 ## Full verification (recommended)
 
@@ -133,6 +133,36 @@ Operational state (work loop, fleet, realm, platform infra) persists across API 
 
 Default demo remains memory mode when `REALMOS_USE_MEMORY_DB=true`.
 
+## Local Ollama (optional, machine-level)
+
+Ollama is **not** installed by the repo. Models live on the operator machine.
+
+Setup guide: `docs/realmos-package/06_operations/ollama_local_node_setup_v0_22.md`
+
+```bash
+ollama --version
+curl http://localhost:11434
+ollama list
+ollama pull llama3.2:3b   # if missing
+```
+
+`.env` (gitignored):
+
+```bash
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_DEFAULT_MODEL=llama3.2:3b
+```
+
+Health check:
+
+```bash
+curl http://localhost:4100/api/health | jq '.checks.ollama'
+```
+
+Expected when live: `status: ok`, `fallbackActive: false`, `defaultModelAvailable: true`.
+
+CI does **not** require Ollama — tests mock probe/invoke paths.
+
 ## MVP demo (Gate H)
 
 Terminal 1 — API (uses root `.env` via `tsx --env-file`):
@@ -147,7 +177,7 @@ Terminal 2 — demo script:
 pnpm demo:mvp
 ```
 
-Requires API on `http://localhost:4100`. Ollama optional (`stub` fallback if unreachable).
+Requires API on `http://localhost:4100`. Ollama optional — live when server + `llama3.2:3b` installed; otherwise stub fallback.
 
 ## Web dev
 
@@ -181,6 +211,7 @@ pnpm --filter @realmos/platform-infra test
 
 ## Audits
 
+- Ollama local node: `docs/realmos-package/99_audits/ollama_local_node_audit_v0_22.md`
 - Postgres CI smoke: `docs/realmos-package/99_audits/postgres_ci_smoke_audit_v0_21.md`
 - Postgres smoke: `docs/realmos-package/99_audits/postgres_smoke_audit_v0_20.md`
 - Persistence: `docs/realmos-package/99_audits/durable_persistence_audit_v0_19.md`

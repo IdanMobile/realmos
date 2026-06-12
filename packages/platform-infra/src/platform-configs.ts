@@ -32,6 +32,23 @@ export type OllamaRuntimeConfig = {
   placeholder: true;
 };
 
+export function buildOllamaRuntimeConfigFromEnv(): OllamaRuntimeConfig {
+  const baseUrl = (process.env.OLLAMA_BASE_URL ?? "http://localhost:11434").replace(/\/$/, "");
+  const defaultModel = (
+    process.env.OLLAMA_DEFAULT_MODEL?.trim() ||
+    process.env.REALMOS_LOCAL_MODEL?.trim() ||
+    "llama3.2:3b"
+  ).replace(/^ollama\//, "");
+
+  return {
+    baseUrl,
+    defaultModels: [defaultModel],
+    offlineFallback: true,
+    notes: "Local Ollama runtime for Jarvis conversation, summaries, routing, and offline fallback.",
+    placeholder: true
+  };
+}
+
 export const FIREBASE_BASELINE_CONFIG: FirebaseBaselineConfig = {
   projectId: "realmos-orchestration",
   enabledUsages: [
@@ -81,8 +98,15 @@ export const GITHUB_SOURCE_CONTROL_CONFIG: GitHubSourceControlConfig = {
 
 export const OLLAMA_LOCAL_LLM_CONFIG: OllamaRuntimeConfig = {
   baseUrl: "http://127.0.0.1:11434",
-  defaultModels: ["llama3.2", "qwen2.5-coder"],
+  defaultModels: ["llama3.2:3b"],
   offlineFallback: true,
-  notes: "Local LLM runtime for simple tasks and offline fallback.",
+  notes: "Local Ollama runtime for Jarvis conversation, summaries, routing, and offline fallback.",
   placeholder: true
 };
+
+export function buildLocalNodeConfigFromEnv(): LocalNodeConfig {
+  return {
+    ...M1_PRO_LOCAL_NODE_CONFIG,
+    ollamaHost: buildOllamaRuntimeConfigFromEnv().baseUrl
+  };
+}

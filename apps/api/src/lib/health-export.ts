@@ -1,6 +1,15 @@
 import type { RealmOSDatabase } from "../db/types";
-import { probeOllama } from "@realmos/llm-router";
+import { buildOllamaHealthSnapshot, probeOllama } from "@realmos/llm-router";
 import { isTerminalExecutionEnabled } from "@realmos/tool-runner";
+
+export type OllamaHealthCheck = {
+  status: "ok" | "unreachable" | "disabled";
+  baseUrl: string;
+  defaultModel: string;
+  fallbackActive: boolean;
+  defaultModelAvailable?: boolean;
+  models?: string[];
+};
 
 export type HealthReport = {
   status: "ok" | "degraded";
@@ -9,7 +18,7 @@ export type HealthReport = {
   timestamp: string;
   checks: {
     database: { status: "ok" | "error"; detail?: string };
-    ollama: { status: "ok" | "unreachable" | "disabled"; models?: string[] };
+    ollama: OllamaHealthCheck;
     terminal: { enabled: boolean };
     onlineModels: { enabled: boolean; configured: boolean };
   };
@@ -26,22 +35,17 @@ export async function buildHealthReport(db: RealmOSDatabase): Promise<HealthRepo
     };
   }
 
-  const ollamaProbe = await probeOllama();
-  const ollamaStatus = ollamaProbe.reachable
-    ? { status: "ok" as const, models: ollamaProbe.models.slice(0, 5) }
-    : { status: "unreachable" as const };
+  const ollamaStatus = await buildOllamaHealthSnapshot(probeOllama);
 
   const onlineEnabled = process.env.REALMOS_ALLOW_ONLINE_MODELS === "true";
   const onlineConfigured = Boolean(process.env.OPENAI_API_KEY?.trim());
 
-  const degraded =
-    databaseStatus.status === "error" ||
-    ollamaStatus.status === "unreachable";
+  const degraded = databaseStatus.status === "error";
 
   return {
     status: degraded ? "degraded" : "ok",
     service: "realmos-api",
-    version: "0.12.0",
+    version: "0.22.0",
     timestamp: new Date().toISOString(),
     checks: {
       database: databaseStatus,

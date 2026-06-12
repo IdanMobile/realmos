@@ -1,4 +1,5 @@
 import type { ModelClass } from "@realmos/contracts";
+import { getDefaultLocalRoutingModel } from "./ollama-config";
 import { estimateRoutingCost } from "./cost-estimator";
 import { estimateAndCheckApproval, findApplicableBudget, logCostEntry } from "./cost-logger";
 import type { CostLoggerStore, RoutingDecision, RoutingRequest } from "./types";
@@ -29,7 +30,7 @@ export function routeModelRequest(
     return {
       provider: "local",
       modelClass: "local_simple",
-      model: "ollama/qwen3.5:latest",
+      model: getDefaultLocalRoutingModel(),
       requiresApproval: false,
       estimatedCostUsd: amountUsd,
       reason: "Online models disabled; falling back to local model."
@@ -38,7 +39,7 @@ export function routeModelRequest(
 
   const provider = complexity === "simple" || !input.modelProfile.allowOnline ? "local" : "online";
   const modelClass = selectModelClass(complexity, input.modelProfile.allowOnline);
-  const model = provider === "local" ? "ollama/qwen3.5:latest" : "openai/gpt-4.1-mini";
+  const model = provider === "local" ? getDefaultLocalRoutingModel() : "openai/gpt-4.1-mini";
   const { amountUsd, requiresApproval } = estimateAndCheckApproval({
     provider,
     tokens: estimatedTokens,

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import type { Budget, CostEntry } from "@realmos/contracts";
 import {
   DEFAULT_MODEL_PROFILE,
@@ -40,6 +40,10 @@ function createCostStore(): CostLoggerStore & { entries: CostEntry[] } {
 }
 
 describe("@realmos/llm-router", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("selects local model for simple tasks", () => {
     const decision = routeModelRequest({
       taskSummary: "Summarize this status update",
@@ -124,6 +128,14 @@ describe("@realmos/llm-router", () => {
   });
 
   it("invokeRoutedModel completes local route without approval", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => ({
+        ok: false,
+        status: 503
+      })) as unknown as typeof fetch
+    );
+
     const store = createCostStore();
     const result = await invokeRoutedModel(store, {
       taskSummary: "Summarize notes",
@@ -136,6 +148,7 @@ describe("@realmos/llm-router", () => {
     if (result.status === "completed") {
       expect(result.output.length).toBeGreaterThan(0);
       expect(result.costEntry).toBeDefined();
+      expect(result.source).toBe("stub");
     }
   });
 

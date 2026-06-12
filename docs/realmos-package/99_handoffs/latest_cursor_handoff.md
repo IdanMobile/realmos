@@ -1,7 +1,7 @@
-# Latest Cursor Handoff — Directory Switch / GitHub Repo Resume
+# Latest Cursor Handoff — Post Initiative 0.22
 
 Updated: 2026-06-12  
-**Purpose:** Resume in a new workspace (GitHub clone) from the same position as the local `realmos/` directory.
+**Purpose:** Continue from Local Ollama Node Integration complete.
 
 ---
 
@@ -9,193 +9,83 @@ Updated: 2026-06-12
 
 | Field | Value |
 |-------|--------|
-| **Project version** | `0.21.0` (`PROJECT_STATE.md`) |
+| **Project version** | `0.22.0` (`PROJECT_STATE.md`) |
 | **SSOT phases** | 0–12, 6.5–6.8, 2.5–2.6 complete and approved |
-| **Post-MVP initiatives complete** | 0.18 Stabilization, 0.19 Durable Persistence, 0.20 Live Postgres Smoke, 0.21 Postgres CI Smoke |
+| **Post-MVP initiatives complete** | 0.18–0.22 (through Local Ollama Node) |
 | **Active phase** | None — await operator-scoped next initiative |
-| **Strict verification** | **GREEN** (last run 2026-06-12) |
-| **Operating mode** | MVP functional; durable Postgres path proven locally + CI workflow added |
+| **Strict verification** | **GREEN** |
+| **GitHub CI** | **GREEN** (run #2 after pnpm setup fix) |
+| **Operating mode** | MVP functional; Postgres durable path + local Ollama Jarvis LLM path |
 
 ---
 
-## What was last completed
+## Initiative 0.22 — Local Ollama Node Integration (complete)
 
-### Initiative 0.19 — Durable operational persistence
-- Migration `006_operational_state.sql` (21 JSONB operational tables)
-- `OperationalPersistenceAdapter` (memory + Postgres backends)
-- Work loop, fleet, realm, platform-infra stores persist via adapter
-- Memory DB delegates work loop to shared store
+- Env: `OLLAMA_BASE_URL`, `OLLAMA_DEFAULT_MODEL` (default `llama3.2:3b`)
+- `@realmos/llm-router` — `ollama-config.ts`, env-driven routing, health snapshot
+- Live invoke via Ollama `/api/generate`; stub fallback when unavailable
+- API health — expanded `checks.ollama` (baseUrl, defaultModel, fallbackActive)
+- Dashboard `SystemStatusPanel` — local LLM status card
+- Platform infra seed reads Ollama config from env
+- Tests: `packages/llm-router/tests/ollama-local.test.ts`
+- Docs: `docs/realmos-package/06_operations/ollama_local_node_setup_v0_22.md`
+- Audit: `docs/realmos-package/99_audits/ollama_local_node_audit_v0_22.md`
 
-### Initiative 0.20 — Live Postgres smoke (local)
-- `pnpm test:postgres` (excluded from default `pnpm test`)
-- `tests/operational-persistence.postgres.test.ts` (3 tests)
-- **Proven locally** on operator machine with Docker `realmos-postgres`
+### Operator machine (Ollama)
 
-### Initiative 0.21 — Postgres CI smoke
-- `.github/workflows/ci.yml` — test, typecheck, build, test:postgres with Postgres 16 service
-- Docs updated (`VERIFICATION_COMMANDS.md`, audits)
-
-### Operator local setup (this machine, not in git)
-- Docker container: `realmos-postgres` (Postgres 16, `:5432`)
-- `.env`: `REALMOS_USE_MEMORY_DB=false`, `DATABASE_URL=postgres://realmos:realmos@localhost:5432/realmos`
-- API was running durable Postgres mode on `:4100` (may need restart after clone)
+- Ollama CLI: available (0.30.7)
+- Server: `http://localhost:11434`
+- Model: `llama3.2:3b` pulled locally (machine-level, not in repo)
+- `.env` updated locally (gitignored): `OLLAMA_DEFAULT_MODEL=llama3.2:3b`
 
 ---
 
 ## Tests passing / failing
 
-| Command | Status (2026-06-12) |
-|---------|---------------------|
-| `pnpm test` | **PASS** (17/17 packages; Postgres smoke excluded) |
+| Command | Status |
+|---------|--------|
+| `pnpm test` | **PASS** |
 | `pnpm typecheck` | **PASS** |
 | `pnpm build` | **PASS** |
 | `pnpm check:clean-start` | **PASS** |
-| `pnpm demo:mvp` | **PASS** (API on :4100, Ollama optional) |
-| `pnpm test:postgres` | **PASS** (when `realmos-postgres` running) |
-| GitHub Actions CI | **Added, not yet confirmed green on remote** — first push will trigger |
-
----
-
-## Commands last run
-
-```bash
-pnpm test
-pnpm typecheck
-pnpm build
-pnpm check:clean-start
-pnpm test:postgres   # PASS (3/3)
-
-# Operator machine (earlier same day)
-docker run --name realmos-postgres ... postgres:16
-pnpm test:postgres   # PASS
-REALMOS_USE_MEMORY_DB=false pnpm --filter @realmos/api dev   # database: ok
-```
+| `pnpm demo:mvp` | **PASS** (API on :4100) |
+| GitHub Actions CI | **PASS** |
 
 ---
 
 ## Important decisions (do not revert without operator approval)
 
-1. **Default local demo** remains memory-capable (`REALMOS_USE_MEMORY_DB=true` in `.env.example`); operator machine uses `false` for durable dev.
-2. **Postgres smoke** is opt-in locally, mandatory in CI.
-3. **Fleet `executionEnabled`** stays hardcoded `false`.
-4. **No Firebase / Ollama / GUING / UI polish** unless explicitly scoped.
-5. **Platform decisions** unchanged (Firebase baseline selected, not wired).
+1. **Ollama models are machine-level** — never commit model files to repo.
+2. **Local Ollama is not for coding** — Jarvis conversation, summaries, routing, offline fallback only.
+3. **Default local model:** `llama3.2:3b`
+4. **Offline fallback stays on** — API `ok` even when Ollama unreachable; stub responses used.
+5. **No Firebase / GUING / UI polish** unless explicitly scoped.
 
 ---
 
-## Key files (persistence + CI)
-
-```
-.github/workflows/ci.yml
-apps/api/src/db/migrations/006_operational_state.sql
-apps/api/src/db/postgres.ts                    # MIGRATION_FILES export, migrations/ path
-apps/api/src/lib/persistence/                  # adapter + store factories
-apps/api/src/lib/persistence/configure-operational-stores.ts
-apps/api/tests/operational-persistence.test.ts
-apps/api/tests/operational-persistence.postgres.test.ts
-apps/api/tests/helpers/postgres-smoke-env.ts
-apps/api/vitest.config.ts                      # excludes *.postgres.test.ts
-apps/api/vitest.postgres.config.ts
-package.json                                   # test:postgres script
-apps/api/package.json                            # test:postgres script
-```
-
----
-
-## Before opening the GitHub clone — operator checklist
-
-1. **Commit and push** all work from this directory to the GitHub remote (includes `.github/workflows/ci.yml`, persistence layer, docs).  
-   `.env` is **not** committed — copy it manually or recreate from `.env.example`.
-
-2. **Clone / open** the GitHub repo as workspace root:
-   ```text
-   realmos/    ← workspace root (not parent folder)
-   ```
-
-3. **Local setup after clone:**
-   ```bash
-   cp .env.example .env   # then edit as needed
-   pnpm install
-   docker start realmos-postgres   # or create container (see VERIFICATION_COMMANDS.md)
-   ```
-
-4. **Optional durable dev** (match operator machine):
-   ```bash
-   # .env
-   DATABASE_URL=postgres://realmos:realmos@localhost:5432/realmos
-   REALMOS_USE_MEMORY_DB=false
-   pnpm --filter @realmos/api dev
-   ```
-
-5. **Verify clone matches this handoff:**
-   ```bash
-   pnpm test && pnpm typecheck && pnpm build && pnpm check:clean-start
-   pnpm test:postgres   # with Postgres running
-   ```
-
-6. **Confirm CI on GitHub** after push — Actions tab should run `.github/workflows/ci.yml`.
-
----
-
-## Exact next task (for new chat)
+## Exact next task
 
 ```text
 Await operator-scoped next initiative.
 ```
 
-Recommended options (operator chooses):
+Recommended options:
 
-- **Verify GitHub Actions CI** green after push (0.21 follow-up)
-- **0.22 Firebase baseline wiring** (scoped, no full deploy)
-- **0.22 Local Ollama node integration**
-
-**Do not auto-start:** Firebase full wiring, Ollama unless scoped, GUING bootstrap, UI polish, GitHub Actions changes beyond verifying existing workflow.
+- **Firebase baseline wiring** (scoped, no full deploy)
+- **GUING bootstrap** (only if explicitly scoped)
 
 ---
 
-## Known blockers
+## Resume instructions
 
-| Blocker | Notes |
-|---------|--------|
-| GitHub CI not yet observed | Workflow exists locally; needs push + Actions run |
-| `.env` not in repo | Operator must copy secrets/flags locally |
-| Docker Postgres | Local only; CI uses GHA service container |
-| Ollama unreachable | Expected; demo uses stub fallback |
-
----
-
-## Risks
-
-1. **Clone without push** — GitHub repo may lack 0.19–0.21 work if not committed/pushed from this directory.
-2. **Stale CURSOR_SSOT active phase** — read `PROJECT_STATE.md` + this handoff over SSOT section 1 if conflict.
-3. **Global operational store singleton** — integration tests share module state.
-4. **Lint is echo stubs** — strict bar is test + typecheck + build.
-
----
-
-## Do not auto-start
-
-Firebase wiring, Ollama/local node, GUING bootstrap, UI polish, unrelated features.
-
----
-
-## Resume instructions (new Cursor chat in GitHub clone)
-
-1. Open workspace at repo root `realmos/`.
-2. Paste prompt from `docs/realmos-package/99_handoffs/new_chat_prompt.md`.
-3. Read in order: `CURSOR_SSOT.md` → this file → `PROJECT_STATE.md` → `SSOT_TODO_CHECKLIST.md`.
-4. Run verification commands to confirm clone parity.
-5. Continue only from operator-scoped initiative.
+1. Read `CURSOR_SSOT.md` → this file → `PROJECT_STATE.md`
+2. Run strict verification
+3. For Ollama: ensure Desktop running + `ollama list` shows `llama3.2:3b`
+4. Continue only from operator-scoped initiative
 
 ---
 
 ## Audits (newest first)
 
+- `docs/realmos-package/99_audits/ollama_local_node_audit_v0_22.md`
 - `docs/realmos-package/99_audits/postgres_ci_smoke_audit_v0_21.md`
-- `docs/realmos-package/99_audits/postgres_smoke_audit_v0_20.md`
-- `docs/realmos-package/99_audits/durable_persistence_audit_v0_19.md`
-- `docs/realmos-package/99_audits/mvp_stabilization_audit_v0_18.md`
-
-## Verification reference
-
-`VERIFICATION_COMMANDS.md`
