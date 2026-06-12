@@ -1,4 +1,5 @@
 import type { FirebaseRealmOSUsage, LocalNodeUsage } from "@realmos/contracts";
+import { buildFirebaseRuntimeConfigFromEnv } from "./firebase-config";
 
 export type FirebaseBaselineConfig = {
   projectId: string;
@@ -50,7 +51,7 @@ export function buildOllamaRuntimeConfigFromEnv(): OllamaRuntimeConfig {
 }
 
 export const FIREBASE_BASELINE_CONFIG: FirebaseBaselineConfig = {
-  projectId: "realmos-orchestration",
+  projectId: "not-configured",
   enabledUsages: [
     "auth",
     "hosting",
@@ -68,6 +69,16 @@ export const FIREBASE_BASELINE_CONFIG: FirebaseBaselineConfig = {
   notes: "Firebase stores RealmOS coordination only — not project product runtime.",
   placeholder: true
 };
+
+export function buildFirebaseBaselineConfigFromEnv(): FirebaseBaselineConfig {
+  const runtime = buildFirebaseRuntimeConfigFromEnv();
+  return {
+    projectId: runtime.projectId ?? FIREBASE_BASELINE_CONFIG.projectId,
+    enabledUsages: runtime.enabledUsages,
+    notes: runtime.notes,
+    placeholder: true
+  };
+}
 
 export const M1_PRO_LOCAL_NODE_CONFIG: LocalNodeConfig = {
   runtime: "m1_pro_macbook",

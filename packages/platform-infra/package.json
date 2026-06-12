@@ -14,5 +14,8 @@
     "@types/node": "latest",
     "typescript": "^5.8.0",
     "vitest": "latest"
+  },
+  "dependencies": {
+    "firebase-admin": "^14.0.0"
   }
 }

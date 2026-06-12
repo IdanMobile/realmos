@@ -36,6 +36,7 @@ async function main() {
 
   const health = await request("GET", "/api/health");
   const ollama = health.checks.ollama;
+  const firebase = health.checks.firebase;
   console.log(
     "Health:",
     health.status,
@@ -45,6 +46,14 @@ async function main() {
     ollama.defaultModel,
     "| fallback:",
     ollama.fallbackActive ? "active" : "inactive"
+  );
+  console.log(
+    "Firebase:",
+    firebase.status,
+    "| mode:",
+    firebase.mode,
+    "| project:",
+    firebase.projectId ?? "none"
   );
   assert(health.service === "realmos-api", "API health missing service id");
 

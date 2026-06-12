@@ -764,7 +764,7 @@ describe("RealmOS API integration", () => {
     expect(registryResponse.json()).toMatchObject({ terminalExecutionEnabled: false });
   });
 
-  it("returns expanded health report with Ollama node details", async () => {
+  it("returns expanded health report with Ollama and Firebase baseline details", async () => {
     const db = createMemoryDatabase();
     const { app } = await buildApp({ database: db });
 
@@ -780,6 +780,13 @@ describe("RealmOS API integration", () => {
           defaultModel: string;
           fallbackActive: boolean;
         };
+        firebase: {
+          status: string;
+          mode: string;
+          projectId: string | null;
+          adminStatus: string;
+          services: { auth: string; firestore: string; storage: string };
+        };
       };
     };
 
@@ -790,6 +797,10 @@ describe("RealmOS API integration", () => {
     expect(body.checks.ollama.defaultModel.length).toBeGreaterThan(0);
     expect(typeof body.checks.ollama.fallbackActive).toBe("boolean");
     expect(body.checks.ollama.status).toMatch(/ok|unreachable|disabled/);
+    expect(body.checks.firebase.status).toMatch(/not_configured|configured|disabled/);
+    expect(body.checks.firebase.mode).toMatch(/none|emulator|production/);
+    expect(typeof body.checks.firebase.adminStatus).toBe("string");
+    expect(body.checks.firebase.services.firestore).toMatch(/not_configured|emulator|production/);
   });
 
   it("exports full data bundle", async () => {

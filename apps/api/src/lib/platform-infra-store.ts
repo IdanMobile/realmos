@@ -8,7 +8,7 @@ import {
   createDefaultGuingInfrastructurePlan,
   createDefaultPlatformDecision,
   createRealmOSPlatformResources,
-  FIREBASE_BASELINE_CONFIG,
+  buildFirebaseBaselineConfigFromEnv,
   GITHUB_SOURCE_CONTROL_CONFIG,
   buildLocalNodeConfigFromEnv,
   buildOllamaRuntimeConfigFromEnv
@@ -21,7 +21,7 @@ export function createDefaultPlatformInfraSeed() {
     projectInfrastructurePlans: [createDefaultGuingInfrastructurePlan()],
     prototypeApprovals: [] as TemporaryPrototypeInfrastructureApproval[],
     isolationViolations: [] as InfrastructureIsolationViolation[],
-    firebaseConfig: FIREBASE_BASELINE_CONFIG,
+    firebaseConfig: buildFirebaseBaselineConfigFromEnv(),
     localNodeConfig: buildLocalNodeConfigFromEnv(),
     githubConfig: GITHUB_SOURCE_CONTROL_CONFIG,
     ollamaConfig: buildOllamaRuntimeConfigFromEnv()

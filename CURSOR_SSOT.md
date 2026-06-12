@@ -45,7 +45,7 @@ realmos_cursor_ready_v1_14/
 
 ```text
 ACTIVE_MODE = mvp_stabilized
-ACTIVE_PHASE = Initiative 0.21 complete — Postgres CI smoke; await operator-scoped next initiative
+ACTIVE_PHASE = Initiative 0.23 complete — Firebase baseline wiring; await operator-scoped next initiative
 IMPLEMENTATION_ALLOWED = false (unless operator scopes a new initiative)
 ARCHITECTURE_CHANGES_ALLOWED = false (unless operator approves)
 FEATURE_WORK_ALLOWED = false (unless operator scopes a new initiative)
@@ -53,7 +53,7 @@ USER_APPROVAL_REQUIRED_BEFORE_NEXT_PHASE = true
 ```
 
 SSOT phases 0–12, 6.5–6.8, 2.5–2.6 are implemented and checkpoint-approved.  
-Post-MVP initiatives 0.18–0.21 (stabilization, durable persistence, Postgres smoke, Postgres CI) are complete.  
+Post-MVP initiatives 0.18–0.23 (stabilization, Postgres, CI, Ollama, Firebase baseline) are complete.  
 Start new work from `PROJECT_STATE.md`, `latest_cursor_handoff.md`, and operator-scoped initiatives — not Phase 0 bootstrap.
 
 ---
@@ -187,6 +187,39 @@ Project apps must own their own:
 
 Temporary prototype/mock use requires explicit user approval and an exit plan.
 
+### Initiative roadmap gate (locked 2026-06-12)
+
+RealmOS is **not complete** until it can manage work itself end-to-end:
+
+- create a work packet
+- dispatch it to an executor
+- monitor execution
+- verify results
+- persist run state
+- produce handoff/state updates
+- ask the operator only when human approval is required
+
+**No side projects until the RealmOS self-management milestone is complete.**
+
+Firebase baseline (Initiative 0.23) is **platform wiring only** — it does not unlock product work or side-project bootstrap.
+
+**Forbidden next initiatives (until milestone):**
+
+```text
+GUING bootstrap
+any side project bootstrap
+product work outside RealmOS
+UI polish not required for RealmOS operation
+voice / Jarvis personality work
+unrelated product features
+```
+
+**GUING is explicitly blocked** until RealmOS can orchestrate real work end-to-end.
+
+**Recommended next initiative:** `0.24 — Local Executor / Cursor CLI Bridge` (RealmOS executor/work orchestration infrastructure).
+
+Cursor must not recommend GUING bootstrap, sync-agent product work, or UI polish as the default next step while this gate is active.
+
 ### Realm / Project Boundary
 
 ```text
@@ -270,6 +303,7 @@ Cursor must not:
 - mix global RealmOS with project/realm ecosystems
 - touch forbidden paths from a work packet
 - continue implementation when context is at 85%+ (handoff only)
+- recommend or start GUING bootstrap, side projects, or product work outside RealmOS while the self-management milestone gate is active (see Section 5)
 
 ---
 

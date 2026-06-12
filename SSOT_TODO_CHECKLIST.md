@@ -940,3 +940,43 @@ Review:
 - Does the project have its own dedicated app/runtime infra plan?
 - Is any temporary prototype infra clearly marked and approved?
 - Are delayed platforms still delayed unless a real need exists?
+
+---
+
+# Post-MVP initiative gate — RealmOS self-management milestone
+
+**Locked 2026-06-12.** Until RealmOS can manage work itself end-to-end, all initiatives must stay focused on **RealmOS infrastructure** — not side projects or product bootstrap.
+
+## Milestone criteria (incomplete)
+
+RealmOS must be able to:
+
+- [ ] create a work packet
+- [ ] dispatch it to an executor
+- [ ] monitor execution
+- [ ] verify results
+- [ ] persist run state
+- [ ] produce handoff/state updates
+- [ ] ask the operator only when human approval is required
+
+## Forbidden until milestone
+
+- GUING bootstrap (explicitly blocked)
+- any side project bootstrap
+- product work outside RealmOS
+- UI polish not required for RealmOS operation
+- voice / Jarvis personality work
+- unrelated product features
+
+## Completed post-MVP initiatives
+
+- [x] 0.18 MVP stabilization
+- [x] 0.19 Durable persistence
+- [x] 0.20 Postgres smoke
+- [x] 0.21 Postgres CI smoke
+- [x] 0.22 Local Ollama node integration
+- [x] 0.23 Firebase baseline wiring (platform only — no product unlock)
+
+## Recommended next
+
+- [ ] **0.24 — Local Executor / Cursor CLI Bridge** (RealmOS executor/work orchestration infrastructure)

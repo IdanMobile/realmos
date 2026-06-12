@@ -39,6 +39,36 @@ export function SystemStatusPanel({ health, dataSource }: SystemStatusPanelProps
           </li>
           <li className="rounded-lg border border-border/70 bg-surface p-3 text-sm sm:col-span-2">
             <div className="flex items-center justify-between gap-2">
+              <span className="font-semibold">Cloud platform (Firebase)</span>
+              <span className={`badge ${statusBadge(health.checks.firebase.status === "configured" ? "ok" : health.checks.firebase.status)}`}>
+                {health.checks.firebase.status}
+              </span>
+            </div>
+            <p className="mt-2 text-xs text-textSecondary">
+              Mode: {health.checks.firebase.mode}
+              {health.checks.firebase.projectId ? ` · project ${health.checks.firebase.projectId}` : ""}
+            </p>
+            <p className="mt-1 text-xs text-textSecondary">
+              Admin: {health.checks.firebase.adminStatus} · Auth {health.checks.firebase.services.auth} · Firestore{" "}
+              {health.checks.firebase.services.firestore} · Storage {health.checks.firebase.services.storage}
+            </p>
+            {health.checks.firebase.mode === "emulator" ? (
+              <p className="mt-1 text-xs text-textSecondary">
+                Emulators:{" "}
+                {[
+                  health.checks.firebase.emulatorHosts.auth && `auth ${health.checks.firebase.emulatorHosts.auth}`,
+                  health.checks.firebase.emulatorHosts.firestore &&
+                    `firestore ${health.checks.firebase.emulatorHosts.firestore}`,
+                  health.checks.firebase.emulatorHosts.storage &&
+                    `storage ${health.checks.firebase.emulatorHosts.storage}`
+                ]
+                  .filter(Boolean)
+                  .join(" · ") || "hosts not set"}
+              </p>
+            ) : null}
+          </li>
+          <li className="rounded-lg border border-border/70 bg-surface p-3 text-sm sm:col-span-2">
+            <div className="flex items-center justify-between gap-2">
               <span className="font-semibold">Local LLM (Ollama)</span>
               <span className={`badge ${statusBadge(health.checks.ollama.status)}`}>
                 {health.checks.ollama.status}

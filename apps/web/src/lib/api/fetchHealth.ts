@@ -9,6 +9,23 @@ export type OllamaHealthCheck = {
   models?: string[];
 };
 
+export type FirebaseHealthCheck = {
+  status: "not_configured" | "configured" | "disabled";
+  mode: "none" | "emulator" | "production";
+  projectId: string | null;
+  adminStatus: "ready" | "not_configured" | "disabled" | "init_error" | "not_initialized";
+  services: {
+    auth: "not_configured" | "emulator" | "production";
+    firestore: "not_configured" | "emulator" | "production";
+    storage: "not_configured" | "emulator" | "production";
+  };
+  emulatorHosts: {
+    auth?: string;
+    firestore?: string;
+    storage?: string;
+  };
+};
+
 export type HealthReport = {
   status: "ok" | "degraded";
   service: string;
@@ -17,6 +34,7 @@ export type HealthReport = {
   checks: {
     database: { status: "ok" | "error"; detail?: string };
     ollama: OllamaHealthCheck;
+    firebase: FirebaseHealthCheck;
     terminal: { enabled: boolean };
     onlineModels: { enabled: boolean; configured: boolean };
   };

@@ -1,6 +1,6 @@
-# RealmOS — Verification Commands v0.22
+# RealmOS — Verification Commands v0.23
 
-Initiative 0.22 adds local Ollama node integration (2026-06-12).
+Initiative 0.23 adds Firebase baseline wiring (2026-06-12). Initiative 0.22 adds local Ollama node integration.
 
 ## Full verification (recommended)
 
@@ -133,6 +133,28 @@ Operational state (work loop, fleet, realm, platform infra) persists across API 
 
 Default demo remains memory mode when `REALMOS_USE_MEMORY_DB=true`.
 
+No Firebase login, Ollama, secrets, or external accounts required for CI or default local verification.
+
+## Firebase baseline (optional)
+
+Setup guide: `docs/realmos-package/06_operations/firebase_baseline_setup_v0_23.md`
+
+Without `FIREBASE_PROJECT_ID`, health reports `checks.firebase.status: not_configured`. MVP demo and CI pass unchanged.
+
+Optional emulator env (local `.env`, gitignored):
+
+```bash
+FIREBASE_PROJECT_ID=demo-realmos
+FIRESTORE_EMULATOR_HOST=127.0.0.1:8080
+FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099
+```
+
+```bash
+curl http://localhost:4100/api/health | jq '.checks.firebase'
+```
+
+Requires Firebase CLI + `firebase emulators:start` only for live emulator experiments — not for CI.
+
 ## Local Ollama (optional, machine-level)
 
 Ollama is **not** installed by the repo. Models live on the operator machine.
@@ -211,6 +233,7 @@ pnpm --filter @realmos/platform-infra test
 
 ## Audits
 
+- Firebase baseline: `docs/realmos-package/99_audits/firebase_baseline_audit_v0_23.md`
 - Ollama local node: `docs/realmos-package/99_audits/ollama_local_node_audit_v0_22.md`
 - Postgres CI smoke: `docs/realmos-package/99_audits/postgres_ci_smoke_audit_v0_21.md`
 - Postgres smoke: `docs/realmos-package/99_audits/postgres_smoke_audit_v0_20.md`
