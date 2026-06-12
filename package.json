@@ -4,7 +4,9 @@
   "version": "1.14.0",
   "description": "RealmOS / Jarvis HQ personal agentic operating system",
   "scripts": {
-    "dev": "turbo dev",
+    "preinstall": "npx only-allow pnpm",
+    "bootstrap": "node scripts/setup.mjs",
+    "dev": "bash scripts/dev.sh",
     "build": "turbo build",
     "typecheck": "turbo typecheck",
     "test": "turbo test",
@@ -22,6 +24,9 @@
     "turbo": "^2.0.0",
     "typescript": "^5.8.0",
     "vitest": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=22"
   },
   "packageManager": "pnpm@9.0.0",
   "pnpm": {

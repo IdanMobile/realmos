@@ -12,18 +12,67 @@ First Cursor prompt (new sessions):
 Read docs/realmos-package/99_handoffs/new_chat_prompt.md and follow it.
 ```
 
-## Manual Verify
+## Getting started (fresh GitHub clone)
+
+**Use pnpm — not npm.** This is a pnpm workspace. `npm install` will fail.
+
+### Prerequisites
+
+- **Node.js 22+** ([nodejs.org](https://nodejs.org/) or nvm)
+- **pnpm 9** (installed automatically via Corepack — see below)
+
+### One-time setup
 
 ```bash
 corepack enable
-pnpm install
+pnpm bootstrap
+```
+
+`pnpm bootstrap` creates `.env` from `.env.example` (if missing) and runs `pnpm install`.
+
+If you already ran `npm install` and hit errors, reset and use pnpm:
+
+```bash
+rm -rf node_modules package-lock.json
+corepack enable
+pnpm bootstrap
+```
+
+### Run locally (one command)
+
+```bash
+pnpm dev
+```
+
+Starts API + web in one terminal (creates `.env` and installs deps on first run). Press **Ctrl+C** to stop.
+
+- Web: http://localhost:3000
+- API health: http://localhost:4100/api/health
+
+If ports are already in use by healthy RealmOS processes, those services are reused instead of failing.
+
+Optional MVP demo (with dev servers running):
+
+```bash
+pnpm demo:mvp
+```
+
+### Run services individually (optional)
+
+```bash
+pnpm --filter @realmos/api dev   # or ./scripts/dev-api.sh
+pnpm --filter @realmos/web dev   # or ./scripts/dev-web.sh
+```
+
+### Verify
+
+```bash
 pnpm test
 pnpm typecheck
 pnpm build
-pnpm demo:mvp   # requires API on :4100
 ```
 
-See `VERIFICATION_COMMANDS.md` for full commands.
+See `VERIFICATION_COMMANDS.md` for Postgres smoke, CI, and other commands.
 
 ## Locked Decisions
 

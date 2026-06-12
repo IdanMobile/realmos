@@ -113,3 +113,25 @@ Operator choice:
 - **GUING bootstrap** (only if explicitly scoped)
 
 Do not start UI polish without explicit scope.
+
+---
+
+## 0.21.1 follow-up — CI Setup pnpm fix (2026-06-12)
+
+**Remote run #1:** Failed at `Setup pnpm` ([run 27432224378](https://github.com/IdanMobile/realmos/actions/runs/27432224378)).
+
+**Likely cause:** Floating `pnpm/action-setup@v4` tag plus ambiguous `version: 9` (YAML number) instead of exact `9.0.0` matching `packageManager`.
+
+**Fix applied locally (pending push):**
+
+| Change | Before | After |
+|--------|--------|-------|
+| pnpm action pin | `@v4` (floating) | `@v4.1.0` |
+| pnpm version | `9` | `9.0.0` |
+| run_install | unset | `false` |
+| setup-node cache path | unset | `cache-dependency-path: pnpm-lock.yaml` |
+| permissions | unset | `contents: read` |
+
+**Local verification after fix:** test, typecheck, build, check:clean-start, test:postgres — **PASS**.
+
+**Remote CI green:** Pending push + Actions re-run (manual verification required).
