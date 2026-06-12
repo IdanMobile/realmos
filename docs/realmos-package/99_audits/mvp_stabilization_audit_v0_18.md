@@ -108,14 +108,13 @@ These are **scope limits**, not verification failures.
 
 ## Recommended next initiative
 
-Operator must choose explicitly. Suggested order after stabilization:
+> **Governance superseded (2026-06-12):** Historical 0.18 options below — **not active**.
 
-1. **Real lint/CI gate** (optional hardening) — replace echo lint with ESLint in CI
-2. **Durable persistence** — if daily-use retention matters
-3. **Firebase wiring** — if cloud orchestration is next
-4. **Ollama/local node** — if local LLM should be live not stub
+**Historical (0.18 context):** lint/CI gate, durable persistence, Firebase wiring, Ollama/local node.
 
-Do **not** continue automatically without operator scope.
+**Current recommended next (RealmOS-only):** **0.28 — Dogfood RealmOS Managing One Real RealmOS Task**. See `CURSOR_SSOT.md` Section 5.
+
+Do not start GUING, side projects, or product bootstrap.
 
 ---
 

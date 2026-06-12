@@ -1,5 +1,7 @@
 # RealmOS — Seed Data Plan v1
 
+> **Governance note (2026-06-12):** Seed businesses below are mock/dashboard scaffolding only. Side projects (including GUING) are **not active roadmap work** until the RealmOS base system is complete and the operator chooses from inside working RealmOS/Jarvis. See `CURSOR_SSOT.md` Section 5.
+
 ## Purpose
 
 Seed data lets us build the dashboard before the full engine exists.

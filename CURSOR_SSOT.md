@@ -187,38 +187,72 @@ Project apps must own their own:
 
 Temporary prototype/mock use requires explicit user approval and an exit plan.
 
-### Initiative roadmap gate (locked 2026-06-12)
+### Initiative roadmap gate (locked 2026-06-12, reinforced)
 
-RealmOS is **not complete** until it can manage work itself end-to-end:
+**Hard rule:** Do not start, recommend, prepare, mention as next initiative, or scope any side project until the **RealmOS base system is complete and verified**.
 
-- create a work packet
-- dispatch it to an executor
-- monitor execution
-- verify results
-- persist run state
-- produce handoff/state updates
-- ask the operator only when human approval is required
+Side projects remain blocked until the operator explicitly decides from inside a **working RealmOS/Jarvis environment** what to do next — not from Cursor chat history or roadmap docs.
 
-**No side projects until the RealmOS self-management milestone is complete.**
+**Main goal:** Finish RealmOS as much as possible so the operator can move from Cursor IDE into RealmOS and manage tasks, changes, planning, execution, verification, and handoff from RealmOS itself.
+
+**RealmOS base system must be completed and verified first**, including:
+
+- Command Center
+- navigation
+- UI correctness against locked project screenshots / UI references
+- Jarvis local interaction path
+- Necromancer
+- work packet lifecycle
+- executor bridge
+- run monitor
+- durable run-state / self-handoff
+- approvals
+- verification reporting
+- memory/state persistence
+- safety/governance
+- local Ollama path
+- Postgres persistence
+- Firebase baseline only as platform wiring
+- all other RealmOS base modules already introduced in this project
+
+**Next roadmap remains RealmOS-only** until the base system is complete and verified.
 
 Firebase baseline (Initiative 0.23) is **platform wiring only** — it does not unlock product work or side-project bootstrap.
 
-**Forbidden next initiatives (until milestone):**
+**Forbidden — do not start, recommend, prepare, or scope (until base system complete):**
 
 ```text
-GUING bootstrap
-any side project bootstrap
+GUING
+any previous side project
+any product bootstrap
+any external client/project work
+any “project idea” initiative
+any non-RealmOS work
 product work outside RealmOS
 UI polish not required for RealmOS operation
 voice / Jarvis personality work
 unrelated product features
+operator choice: GUING
+side project once ready
 ```
 
-**GUING is explicitly blocked** until RealmOS can orchestrate real work end-to-end.
+**Allowed upcoming RealmOS-only initiatives (examples — operator approval still required):**
 
-**Recommended next initiative:** `0.28 — Dogfood RealmOS Managing One Real RealmOS Task` (end-to-end self-management on a real RealmOS task).
+```text
+0.28 — Dogfood RealmOS Managing One Real RealmOS Task
+Testing & Quality Gate constitution
+UI/navigation verification against locked screenshots/references
+Jarvis interaction path verification
+Necromancer verification
+Command Center operator flow hardening
+Real verification evidence capture
+Cursor CLI/local executor bridge only when safe and explicitly approved
+RealmOS self-management milestone validation
+```
 
-Cursor must not recommend GUING bootstrap, sync-agent product work, or UI polish as the default next step while this gate is active.
+**Recommended next initiative:** `0.28 — Dogfood RealmOS Managing One Real RealmOS Task` (RealmOS-only dogfood on a real RealmOS task).
+
+Cursor must not recommend GUING, sync-agent product work, side projects, external project work, or UI polish as the default next step while this gate is active.
 
 ### Realm / Project Boundary
 
@@ -303,7 +337,7 @@ Cursor must not:
 - mix global RealmOS with project/realm ecosystems
 - touch forbidden paths from a work packet
 - continue implementation when context is at 85%+ (handoff only)
-- recommend or start GUING bootstrap, side projects, or product work outside RealmOS while the self-management milestone gate is active (see Section 5)
+- recommend or start GUING, side projects, product bootstrap, external client/project work, or any non-RealmOS work while the base-system gate is active (see Section 5)
 
 ---
 

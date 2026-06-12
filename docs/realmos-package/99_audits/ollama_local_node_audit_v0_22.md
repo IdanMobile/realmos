@@ -88,9 +88,10 @@ ollama list               # shows llama3.2:3b
 
 ## Recommended next initiative
 
-Operator choice:
+> **Governance superseded (2026-06-12):** Side projects are blocked until the RealmOS base system is complete. Historical recommendation below — **not active**.
 
-- **Firebase baseline wiring** (scoped, no full deploy)
-- **GUING bootstrap** (only if explicitly scoped)
+**Historical (0.22 context):** Firebase baseline wiring or local Ollama node integration were the next RealmOS-only options.
 
-Do not start UI polish or voice without explicit scope.
+**Current recommended next (RealmOS-only):** **0.28 — Dogfood RealmOS Managing One Real RealmOS Task**. See `CURSOR_SSOT.md` Section 5.
+
+Do not start GUING, side projects, or product bootstrap.

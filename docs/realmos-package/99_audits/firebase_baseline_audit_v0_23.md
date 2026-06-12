@@ -75,8 +75,10 @@ API overall status stays `ok` (Firebase absence is not a degradation).
 
 ## Recommended next initiative
 
-**0.24 — Local Executor / Cursor CLI Bridge** (RealmOS executor/work orchestration infrastructure).
+**Historical (0.23 context):** 0.24 Local Executor / Cursor CLI Bridge — **complete**.
 
-**Blocked until self-management milestone:** GUING bootstrap, side projects, product work outside RealmOS, non-operational UI polish, voice.
+**Current recommended next (RealmOS-only):** **0.28 — Dogfood RealmOS Managing One Real RealmOS Task**. See `CURSOR_SSOT.md` Section 5.
 
-Firebase baseline does not unlock product work. Do not auto-start 0.24 without operator approval.
+**Blocked until RealmOS base system complete:** GUING, side projects, product bootstrap, external client/project work, any non-RealmOS work, non-operational UI polish, voice.
+
+Firebase baseline does not unlock product work.

@@ -53,6 +53,8 @@ Gitignored via `.gitignore` → `.realmos/`
 
 ## Recommended next initiative
 
-**0.25 — Work Packet Lifecycle** (end-to-end orchestration: create → dispatch → monitor → verify → persist → handoff)
+> **Historical (0.24 context):** 0.25 Work Packet Lifecycle — **complete**.
 
-**Blocked:** GUING bootstrap, side projects, UI polish, voice.
+**Current recommended next (RealmOS-only):** **0.28 — Dogfood RealmOS Managing One Real RealmOS Task**. See `CURSOR_SSOT.md` Section 5.
+
+**Blocked:** GUING, side projects, product bootstrap, external project work, any non-RealmOS work.

@@ -943,30 +943,73 @@ Review:
 
 ---
 
-# Post-MVP initiative gate — RealmOS self-management milestone
+# Post-MVP initiative gate — RealmOS base system completion (locked)
 
-**Locked 2026-06-12.** Until RealmOS can manage work itself end-to-end, all initiatives must stay focused on **RealmOS infrastructure** — not side projects or product bootstrap.
+**Locked 2026-06-12 (reinforced).** Do not start, recommend, prepare, mention as next initiative, or scope any side project until the **RealmOS base system is complete and verified**.
 
-## Milestone criteria (incomplete)
+**Main goal:** Finish RealmOS so the operator can move from Cursor IDE into RealmOS and manage tasks, changes, planning, execution, verification, and handoff from RealmOS itself.
+
+Side projects remain blocked until the operator explicitly decides from inside a **working RealmOS/Jarvis environment** what to do next.
+
+## Base system completion criteria (incomplete)
+
+RealmOS base system must be completed and verified, including:
+
+- [ ] Command Center
+- [ ] navigation
+- [ ] UI correctness against locked screenshots / UI references
+- [ ] Jarvis local interaction path
+- [ ] Necromancer
+- [x] work packet lifecycle
+- [x] executor bridge
+- [x] run monitor
+- [x] durable run-state / self-handoff
+- [ ] approvals (operator flow hardening)
+- [ ] verification reporting / evidence capture
+- [x] memory/state persistence (operational)
+- [x] safety/governance
+- [x] local Ollama path
+- [x] Postgres persistence
+- [x] Firebase baseline (platform wiring only)
+- [ ] end-to-end self-management milestone validation
+
+## Self-management milestone (incomplete)
 
 RealmOS must be able to:
 
-- [ ] create a work packet
-- [ ] dispatch it to an executor
-- [ ] monitor execution
-- [ ] verify results
-- [ ] persist run state
-- [ ] produce handoff/state updates
-- [ ] ask the operator only when human approval is required
+- [x] create a work packet
+- [x] dispatch it to an executor (dry-run; human approval required)
+- [x] monitor execution
+- [x] verify results
+- [x] persist run state
+- [x] produce handoff/state updates
+- [ ] ask the operator only when human approval is required (full dogfood validation pending)
 
-## Forbidden until milestone
+## Forbidden until base system complete
 
-- GUING bootstrap (explicitly blocked)
-- any side project bootstrap
-- product work outside RealmOS
+Do not start, recommend, prepare, or scope:
+
+- GUING
+- any previous side project
+- any product bootstrap
+- any external client/project work
+- any “project idea” initiative
+- any non-RealmOS work
 - UI polish not required for RealmOS operation
 - voice / Jarvis personality work
 - unrelated product features
+
+## Allowed upcoming RealmOS-only initiatives
+
+- [ ] **0.28 — Dogfood RealmOS Managing One Real RealmOS Task** (recommended next)
+- [ ] Testing & Quality Gate constitution
+- [ ] UI/navigation verification against locked screenshots/references
+- [ ] Jarvis interaction path verification
+- [ ] Necromancer verification
+- [ ] Command Center operator flow hardening
+- [ ] Real verification evidence capture
+- [ ] Cursor CLI/local executor bridge (only when safe and explicitly approved)
+- [ ] RealmOS self-management milestone validation
 
 ## Completed post-MVP initiatives
 
@@ -980,7 +1023,3 @@ RealmOS must be able to:
 - [x] 0.25 Work Packet Lifecycle
 - [x] 0.26 Command Center Task Approval + Run Monitor
 - [x] 0.27 Self-Handoff / Durable Run State Updates
-
-## Recommended next
-
-- [ ] **0.28 — Dogfood RealmOS Managing One Real RealmOS Task**

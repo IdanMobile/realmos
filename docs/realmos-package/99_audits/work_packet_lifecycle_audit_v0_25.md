@@ -49,6 +49,8 @@ Scope: End-to-end work packet lifecycle on dry-run executor bridge
 
 ## Recommended next initiative
 
-**0.26 — Command Center Task Approval + Run Monitor**
+> **Historical (0.25 context):** 0.26 Command Center Task Monitor — **complete**.
 
-GUING and side projects remain **blocked**.
+**Current recommended next (RealmOS-only):** **0.28 — Dogfood RealmOS Managing One Real RealmOS Task**. See `CURSOR_SSOT.md` Section 5.
+
+**Hard rule:** No side projects until RealmOS base system complete.

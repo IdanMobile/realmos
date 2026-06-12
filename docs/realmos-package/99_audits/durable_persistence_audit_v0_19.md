@@ -105,6 +105,10 @@ pnpm demo:mvp          # MVP Demo PASSED
 
 ## Recommended next initiative
 
-**0.20 — Firebase baseline wiring (scoped)** or **0.20 — Local Ollama node integration** — operator choice. Alternatively **Postgres CI smoke** to run operational persistence tests against a real database in CI.
+> **Governance superseded (2026-06-12):** Side projects are blocked until the RealmOS base system is complete. Historical recommendation below — **not active**.
 
-Do not start GUING bootstrap or UI polish unless explicitly scoped.
+**Historical (0.19 context):** Firebase baseline wiring, local Ollama node integration, or Postgres CI smoke.
+
+**Current recommended next (RealmOS-only):** **0.28 — Dogfood RealmOS Managing One Real RealmOS Task**. See `CURSOR_SSOT.md` Section 5.
+
+Do not start GUING, side projects, or product bootstrap.

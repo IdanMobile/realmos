@@ -164,6 +164,10 @@ pnpm test:postgres     # PASS (local — realmos-postgres container running)
 
 ## Recommended next initiative
 
-**0.21 — Postgres CI smoke** (GitHub Actions service container + `pnpm test:postgres` in CI), or operator choice: **Firebase baseline wiring** vs **local Ollama node integration**.
+> **Governance superseded (2026-06-12):** Side projects are blocked until the RealmOS base system is complete. Historical recommendation below — **not active**.
 
-Do not start GUING bootstrap or UI polish without explicit scope.
+**Historical (0.20 context):** 0.21 Postgres CI smoke, Firebase baseline wiring, or local Ollama node integration.
+
+**Current recommended next (RealmOS-only):** **0.28 — Dogfood RealmOS Managing One Real RealmOS Task**. See `CURSOR_SSOT.md` Section 5.
+
+Do not start GUING, side projects, or product bootstrap.

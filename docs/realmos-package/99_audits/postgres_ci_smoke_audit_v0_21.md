@@ -106,13 +106,13 @@ Note: CI workflow itself runs on GitHub after push — not executed locally in t
 
 ## Recommended next initiative
 
-Operator choice:
+> **Governance superseded (2026-06-12):** Side projects are blocked until the RealmOS base system is complete. Historical recommendation below — **not active**.
 
-- **Firebase baseline wiring** (scoped, no full cloud deploy)
-- **Local Ollama node integration**
-- **GUING bootstrap** (only if explicitly scoped)
+**Historical (0.21 context):** Firebase baseline wiring or local Ollama node integration were the next RealmOS-only options.
 
-Do not start UI polish without explicit scope.
+**Current recommended next (RealmOS-only):** **0.28 — Dogfood RealmOS Managing One Real RealmOS Task**. See `CURSOR_SSOT.md` Section 5.
+
+Do not start GUING, side projects, or product bootstrap.
 
 ---
 

@@ -53,6 +53,8 @@ When the dashboard falls back to mock seed data (`dataSource=mock`), the panel s
 
 ## Recommended next initiative
 
-**0.27 — Self-Handoff / Durable Run State Updates**
+> **Historical (0.26 context):** 0.27 Self-Handoff — **complete**.
 
-Still blocked: GUING, side projects, autonomous execution, shell execution.
+**Current recommended next (RealmOS-only):** **0.28 — Dogfood RealmOS Managing One Real RealmOS Task**. See `CURSOR_SSOT.md` Section 5.
+
+**Hard rule:** No side projects until RealmOS base system complete. Blocked: GUING, side projects, autonomous execution, shell execution.

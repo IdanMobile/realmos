@@ -327,16 +327,18 @@ Default `.env.example` uses `REALMOS_USE_MEMORY_DB=true` — no Postgres require
 3. Re-run `pnpm demo:mvp` and document result in handoff.
 4. Align version labels or document the 1.14.0 vs 0.17.0 distinction.
 
-**Then (operator choice):**
+**Then (RealmOS-only — historical options, superseded 2026-06-12):**
 
-| Option | When |
-|--------|------|
-| **Durable persistence** | After hardening; highest impact for daily use |
-| **Firebase wiring** | After persistence strategy clear |
-| **Local node/Ollama** | If local LLM is daily driver — install + model pull |
-| **GUING bootstrap** | When ready to treat GUING as first real project realm |
-| **UI polish vs references** | Large effort; separate initiative |
-| **Post-MVP feature** | Only with explicit scope |
+| Option | Status |
+|--------|--------|
+| **Durable persistence** | Complete (0.19) |
+| **Firebase wiring** | Complete (0.23 — platform only) |
+| **Local node/Ollama** | Complete (0.22) |
+| **GUING bootstrap** | **Blocked** — not a roadmap option |
+| **UI polish vs references** | RealmOS-only when scoped; not side-project work |
+| **Post-MVP feature** | RealmOS base system first |
+
+**Current recommended next (RealmOS-only):** **0.28 — Dogfood RealmOS Managing One Real RealmOS Task**. See `CURSOR_SSOT.md` Section 5.
 
 ---
 

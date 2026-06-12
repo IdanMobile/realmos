@@ -15,12 +15,18 @@ Initiative 0.27 — Self-Handoff / Durable Run State Updates (complete)
 Await operator approval for Initiative 0.28 — Dogfood RealmOS Managing One Real RealmOS Task
 ```
 
-## Roadmap gate (locked)
+## Roadmap gate (locked — reinforced 2026-06-12)
 
-**No side projects until RealmOS self-management milestone is complete.**
+**Hard rule:** No side projects until the **RealmOS base system is complete and verified**.
 
-- **GUING bootstrap:** blocked
+Side projects (GUING, prior side projects, product bootstrap, external client work, project ideas, any non-RealmOS work) are blocked until the operator decides from inside a **working RealmOS/Jarvis environment**.
+
+**Main goal:** Finish RealmOS so the operator can move from Cursor IDE into RealmOS for tasks, planning, execution, verification, and handoff.
+
+**Next roadmap:** RealmOS-only until base system complete.
+
 - **Recommended next:** **0.28 — Dogfood RealmOS Managing One Real RealmOS Task**
+- **Do not recommend or scope:** GUING, side projects, product bootstrap, external project work
 
 ## Handoff
 
@@ -55,3 +61,4 @@ pnpm test:postgres     # optional
 - Audit: `docs/realmos-package/99_audits/self_handoff_run_state_audit_v0_27.md`
 - Command Center monitor: `docs/realmos-package/06_operations/command_center_task_monitor_v0_26.md`
 - Verification: `VERIFICATION_COMMANDS.md`
+- Governance: `CURSOR_SSOT.md` Section 5

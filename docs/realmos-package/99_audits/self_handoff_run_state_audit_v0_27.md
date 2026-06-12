@@ -34,6 +34,6 @@ Scope: Durable run-state / self-handoff layer for work packet lifecycle
 
 ## Recommended next initiative
 
-**0.28 — Dogfood RealmOS Managing One Real RealmOS Task**
+**0.28 — Dogfood RealmOS Managing One Real RealmOS Task** (RealmOS-only).
 
-GUING and side projects remain **blocked**.
+**Hard rule:** No side projects until RealmOS base system is complete. Blocked: GUING, prior side projects, product bootstrap, external project work, any non-RealmOS work.

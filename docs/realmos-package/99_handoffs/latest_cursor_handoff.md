@@ -17,11 +17,17 @@ Updated: 2026-06-12
 
 ---
 
-## Roadmap gate (locked)
+## Roadmap gate (locked — reinforced)
 
-- **No side projects** until self-management milestone
-- **GUING blocked**
-- **Next:** **0.28 — Dogfood RealmOS Managing One Real RealmOS Task**
+**Hard rule:** No side projects until the **RealmOS base system is complete and verified**.
+
+Blocked (do not start, recommend, prepare, or scope): GUING, prior side projects, product bootstrap, external client/project work, project ideas, any non-RealmOS work.
+
+Side-project decisions happen only from inside a **working RealmOS/Jarvis environment** — not from Cursor chat.
+
+**Next roadmap:** RealmOS-only.
+
+- **Recommended next:** **0.28 — Dogfood RealmOS Managing One Real RealmOS Task**
 
 ---
 
@@ -42,7 +48,7 @@ Updated: 2026-06-12
 Await operator approval for Initiative 0.28 — Dogfood RealmOS Managing One Real RealmOS Task.
 ```
 
-Do not start GUING, side projects, or autonomous execution.
+Do not start 0.28 without approval. Do not start GUING, side projects, or autonomous execution.
 
 ---
 
