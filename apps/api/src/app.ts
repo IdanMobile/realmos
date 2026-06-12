@@ -95,5 +95,7 @@ export async function buildApp(options: AppOptions = {}) {
   registerPlatformInfraRoutes(app, db);
   const { registerExecutorBridgeRoutes } = await import("./executor-bridge-routes");
   registerExecutorBridgeRoutes(app, db);
+  const { registerWorkPacketLifecycleRoutes } = await import("./work-packet-lifecycle-routes");
+  registerWorkPacketLifecycleRoutes(app, db);
   return { app, db };
 }

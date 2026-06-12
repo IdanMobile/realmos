@@ -6,7 +6,8 @@ import { createFleetStore } from "../src/lib/persistence/create-fleet-store";
 import { createRealmStore } from "../src/lib/persistence/create-realm-store";
 import { createPlatformInfraStore } from "../src/lib/persistence/create-platform-infra-store";
 import { createExecutorStore } from "../src/lib/persistence/create-executor-store";
-import { buildLocalExecutorDispatch } from "@realmos/work-loop";
+import { createWorkPacketLifecycleStore } from "../src/lib/persistence/create-work-packet-lifecycle-store";
+import { buildLocalExecutorDispatch, buildWorkPacketLifecycle } from "@realmos/work-loop";
 import { buildFleetConsole } from "../src/lib/fleet-store";
 import { makeWorkLoopId } from "@realmos/work-loop";
 import type { WorkItem } from "@realmos/contracts";
@@ -137,6 +138,31 @@ describe("operational persistence", () => {
     const storeB = createExecutorStore(adapter);
     const loaded = await storeB.getExecutorDispatch("exec_persist_test");
     expect(loaded?.status).toBe("queued");
+    expect(loaded?.realmId).toBe("realm_realmos");
+  });
+
+  it("retains work packet lifecycle records across store re-instantiation", async () => {
+    const adapter = createMemoryOperationalAdapter();
+    const storeA = createWorkPacketLifecycleStore(adapter);
+    const packet = buildWorkPacketLifecycle(
+      {
+        realmId: "realm_realmos",
+        repositoryId: "repo_realmos",
+        allowedPaths: ["packages/**"],
+        forbiddenPaths: [".env"],
+        objective: "Persist lifecycle packet",
+        instructions: "Dry-run only.",
+        verificationCommands: ["pnpm test"],
+        expectedArtifacts: ["persistence test"]
+      },
+      "wpl_persist_test"
+    );
+
+    await storeA.createWorkPacketLifecycleRecord(packet);
+
+    const storeB = createWorkPacketLifecycleStore(adapter);
+    const loaded = await storeB.getWorkPacketLifecycleRecord("wpl_persist_test");
+    expect(loaded?.status).toBe("draft");
     expect(loaded?.realmId).toBe("realm_realmos");
   });
 });

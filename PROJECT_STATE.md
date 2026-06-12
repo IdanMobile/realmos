@@ -1,18 +1,18 @@
 # RealmOS — Project State
 
-Version: 0.24.0  
+Version: 0.25.0  
 Prepared: 2026-06-12
 
 ## Current Phase
 
 ```text
-Initiative 0.24 — Local Executor / Cursor CLI Bridge (complete)
+Initiative 0.25 — Work Packet Lifecycle (complete)
 ```
 
 ## Current Task
 
 ```text
-Await operator approval for Initiative 0.25 — Work Packet Lifecycle
+Await operator approval for Initiative 0.26 — Command Center Task Approval + Run Monitor
 ```
 
 ## Roadmap gate (locked)
@@ -20,7 +20,7 @@ Await operator approval for Initiative 0.25 — Work Packet Lifecycle
 **No side projects until RealmOS self-management milestone is complete.**
 
 - **GUING bootstrap:** blocked
-- **Recommended next:** **0.25 — Work Packet Lifecycle**
+- **Recommended next:** **0.26 — Command Center Task Approval + Run Monitor**
 
 ## Handoff
 
@@ -29,12 +29,12 @@ Await operator approval for Initiative 0.25 — Work Packet Lifecycle
 
 ## Current Status
 
-Strict verification bar is **green**. Local executor bridge: validated dispatch contract, dry-run file queue (`.realmos/executor-queue/`), API + persistence, health/dashboard visibility. **No automatic shell execution.**
+Strict verification bar is **green**. Work packet lifecycle: draft → approval → dispatch (dry-run queue) → manual result → verification record → close. **No automatic shell execution or Cursor CLI invocation.**
 
 ## Last Completed
 
 ```text
-Initiative 0.24 — Local executor / Cursor CLI bridge (dry-run queue, API, persistence, tests)
+Initiative 0.25 — Work packet lifecycle (contract, service, API, persistence, tests, docs)
 ```
 
 ## Verification (strict)
@@ -50,6 +50,7 @@ pnpm test:postgres     # optional
 
 ## Docs
 
+- Lifecycle: `docs/realmos-package/06_operations/work_packet_lifecycle_v0_25.md`
+- Audit: `docs/realmos-package/99_audits/work_packet_lifecycle_audit_v0_25.md`
 - Executor bridge: `docs/realmos-package/06_operations/local_executor_bridge_v0_24.md`
-- Audit: `docs/realmos-package/99_audits/local_executor_bridge_audit_v0_24.md`
 - Verification: `VERIFICATION_COMMANDS.md`

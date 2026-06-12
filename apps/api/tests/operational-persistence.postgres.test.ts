@@ -70,6 +70,7 @@ describe("operational persistence (live Postgres smoke)", () => {
 
   it("registers migration 006 in the migration runner", () => {
     expect(MIGRATION_FILES).toContain("006_operational_state.sql");
+    expect(MIGRATION_FILES).toContain("008_work_packet_lifecycle.sql");
   });
 
   it("connects, applies migrations, and exposes operational tables from migration 006", async () => {

@@ -45,7 +45,7 @@ realmos_cursor_ready_v1_14/
 
 ```text
 ACTIVE_MODE = mvp_stabilized
-ACTIVE_PHASE = Initiative 0.24 complete — Local executor bridge; await operator-scoped next initiative
+ACTIVE_PHASE = Initiative 0.25 complete — Work packet lifecycle; await operator-scoped next initiative
 IMPLEMENTATION_ALLOWED = false (unless operator scopes a new initiative)
 ARCHITECTURE_CHANGES_ALLOWED = false (unless operator approves)
 FEATURE_WORK_ALLOWED = false (unless operator scopes a new initiative)
@@ -53,7 +53,7 @@ USER_APPROVAL_REQUIRED_BEFORE_NEXT_PHASE = true
 ```
 
 SSOT phases 0–12, 6.5–6.8, 2.5–2.6 are implemented and checkpoint-approved.  
-Post-MVP initiatives 0.18–0.24 (stabilization, Postgres, CI, Ollama, Firebase baseline, local executor bridge) are complete.  
+Post-MVP initiatives 0.18–0.25 (stabilization, Postgres, CI, Ollama, Firebase baseline, local executor bridge, work packet lifecycle) are complete.  
 Start new work from `PROJECT_STATE.md`, `latest_cursor_handoff.md`, and operator-scoped initiatives — not Phase 0 bootstrap.
 
 ---
@@ -216,7 +216,7 @@ unrelated product features
 
 **GUING is explicitly blocked** until RealmOS can orchestrate real work end-to-end.
 
-**Recommended next initiative:** `0.25 — Work Packet Lifecycle` (end-to-end orchestration after dispatch).
+**Recommended next initiative:** `0.26 — Command Center Task Approval + Run Monitor` (approval UI + run monitoring after lifecycle).
 
 Cursor must not recommend GUING bootstrap, sync-agent product work, or UI polish as the default next step while this gate is active.
 

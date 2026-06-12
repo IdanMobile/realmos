@@ -12,7 +12,8 @@ export const MIGRATION_FILES = [
   "004_artifacts.sql",
   "005_tool_runs.sql",
   "006_operational_state.sql",
-  "007_executor_bridge.sql"
+  "007_executor_bridge.sql",
+  "008_work_packet_lifecycle.sql"
 ] as const;
 
 export async function runMigrations(connectionString: string): Promise<void> {

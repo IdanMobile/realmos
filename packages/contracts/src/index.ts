@@ -25,4 +25,5 @@ export * from "./repository";
 export * from "./platform";
 export * from "./project-infrastructure";
 export * from "./executor-bridge";
+export * from "./work-packet-lifecycle";
 export * from "./factories";

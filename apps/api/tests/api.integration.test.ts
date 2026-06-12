@@ -791,6 +791,10 @@ describe("RealmOS API integration", () => {
           mode: string;
           queueRoot: string;
         };
+        lifecycle: {
+          totalCount: number;
+          approvalNeededCount: number;
+        };
       };
     };
 
@@ -807,6 +811,8 @@ describe("RealmOS API integration", () => {
     expect(body.checks.firebase.services.firestore).toMatch(/not_configured|emulator|production/);
     expect(body.checks.executor.mode).toBe("dry_run");
     expect(typeof body.checks.executor.queueRoot).toBe("string");
+    expect(typeof body.checks.lifecycle.totalCount).toBe("number");
+    expect(typeof body.checks.lifecycle.approvalNeededCount).toBe("number");
   });
 
   it("exports full data bundle", async () => {
@@ -1086,5 +1092,113 @@ describe("RealmOS API integration", () => {
     const listResponse = await app.inject({ method: "GET", url: "/api/executor/dispatches" });
     const listBody = listResponse.json() as { items: Array<{ id: string }> };
     expect(listBody.items.some((item) => item.id === created.id)).toBe(true);
+  });
+
+  it("runs work packet lifecycle from draft through dispatch and close", async () => {
+    const db = createMemoryDatabase();
+    const { app } = await buildApp({ database: db });
+
+    const createResponse = await app.inject({
+      method: "POST",
+      url: "/api/lifecycle/packets",
+      payload: {
+        realmId: "realm_realmos",
+        repositoryId: "repo_realmos",
+        allowedPaths: ["packages/**"],
+        forbiddenPaths: [".env"],
+        objective: "Lifecycle smoke test",
+        instructions: "Dry-run lifecycle only.",
+        verificationCommands: ["pnpm test"],
+        expectedArtifacts: ["lifecycle record"]
+      }
+    });
+    expect(createResponse.statusCode).toBe(201);
+    const created = createResponse.json() as { id: string; status: string };
+    expect(created.status).toBe("draft");
+
+    const readyResponse = await app.inject({
+      method: "POST",
+      url: `/api/lifecycle/packets/${created.id}/ready`
+    });
+    expect(readyResponse.statusCode).toBe(200);
+    expect((readyResponse.json() as { status: string }).status).toBe("ready_for_approval");
+
+    const blockedDispatch = await app.inject({
+      method: "POST",
+      url: `/api/lifecycle/packets/${created.id}/dispatch`
+    });
+    expect(blockedDispatch.statusCode).toBe(409);
+
+    await app.inject({
+      method: "POST",
+      url: `/api/lifecycle/packets/${created.id}/approve`,
+      payload: { approvedBy: "operator" }
+    });
+
+    const dispatchResponse = await app.inject({
+      method: "POST",
+      url: `/api/lifecycle/packets/${created.id}/dispatch`,
+      payload: { cwd: process.cwd() }
+    });
+    expect(dispatchResponse.statusCode).toBe(200);
+    const dispatched = dispatchResponse.json() as {
+      packet: { status: string; dispatchId?: string };
+      dispatch: { status: string };
+    };
+    expect(dispatched.packet.status).toBe("awaiting_result");
+    expect(dispatched.packet.dispatchId).toBeTruthy();
+    expect(dispatched.dispatch.status).toBe("dispatched");
+
+    const resultResponse = await app.inject({
+      method: "POST",
+      url: `/api/lifecycle/packets/${created.id}/result`,
+      payload: { status: "completed", resultSummary: "Operator recorded dry-run result." }
+    });
+    expect(resultResponse.statusCode).toBe(200);
+    expect((resultResponse.json() as { status: string }).status).toBe("verification_pending");
+
+    const verifyResponse = await app.inject({
+      method: "POST",
+      url: `/api/lifecycle/packets/${created.id}/verification`,
+      payload: {
+        reportedStatus: "pass",
+        outputSummary: "pnpm test passed",
+        artifactsSummary: "lifecycle API verified"
+      }
+    });
+    expect(verifyResponse.statusCode).toBe(200);
+    expect((verifyResponse.json() as { status: string }).status).toBe("verified");
+
+    const closeResponse = await app.inject({
+      method: "POST",
+      url: `/api/lifecycle/packets/${created.id}/close`,
+      payload: { status: "completed", handoffUpdated: true }
+    });
+    expect(closeResponse.statusCode).toBe(200);
+    expect((closeResponse.json() as { status: string }).status).toBe("completed");
+
+    const statusResponse = await app.inject({ method: "GET", url: "/api/lifecycle/status" });
+    const statusBody = statusResponse.json() as { totalCount: number };
+    expect(statusBody.totalCount).toBeGreaterThan(0);
+  });
+
+  it("blocks GUING realm in work packet lifecycle create", async () => {
+    const db = createMemoryDatabase();
+    const { app } = await buildApp({ database: db });
+
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/lifecycle/packets",
+      payload: {
+        realmId: "realm_guing",
+        repositoryId: "repo_guing",
+        allowedPaths: ["apps/**"],
+        forbiddenPaths: [".env"],
+        objective: "Side project",
+        instructions: "Should be blocked.",
+        verificationCommands: ["pnpm test"]
+      }
+    });
+    expect(response.statusCode).toBe(400);
   });
 });

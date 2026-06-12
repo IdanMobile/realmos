@@ -89,6 +89,25 @@ export function SystemStatusPanel({ health, dataSource }: SystemStatusPanelProps
               ) : null}
             </li>
           ) : null}
+          {health.checks.lifecycle ? (
+            <li className="rounded-lg border border-border/70 bg-surface p-3 text-sm sm:col-span-2">
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-semibold">Work packet lifecycle</span>
+                <span className={`badge ${statusBadge("ok")}`}>{health.checks.lifecycle.totalCount} total</span>
+              </div>
+              <p className="mt-1 text-xs text-textSecondary">
+                Approval needed {health.checks.lifecycle.approvalNeededCount} · Dispatched{" "}
+                {health.checks.lifecycle.dispatchedCount} · Awaiting result{" "}
+                {health.checks.lifecycle.awaitingResultCount} · Verification pending{" "}
+                {health.checks.lifecycle.verificationPendingCount}
+              </p>
+              {health.checks.lifecycle.latestPacketId ? (
+                <p className="mt-1 text-xs text-textSecondary">
+                  Latest: {health.checks.lifecycle.latestPacketId} ({health.checks.lifecycle.latestPacketStatus})
+                </p>
+              ) : null}
+            </li>
+          ) : null}
           <li className="rounded-lg border border-border/70 bg-surface p-3 text-sm sm:col-span-2">
             <div className="flex items-center justify-between gap-2">
               <span className="font-semibold">Local LLM (Ollama)</span>

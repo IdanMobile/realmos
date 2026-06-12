@@ -22,3 +22,18 @@ export {
   type ExecutorBridgeValidationError,
   type ExecutorQueueArtifacts
 } from "./executor-bridge";
+export {
+  approveWorkPacketLifecycle,
+  attachWorkPacketVerification,
+  buildExecutorDispatchInputFromLifecycle,
+  buildWorkPacketLifecycle,
+  canTransitionWorkPacketLifecycle,
+  closeWorkPacketLifecycle,
+  markWorkPacketDispatched,
+  markWorkPacketReadyForApproval,
+  recordWorkPacketExecutorResult,
+  summarizeWorkPacketLifecycle,
+  validateWorkPacketLifecycleInput,
+  validateWorkPacketLifecycleReadiness,
+  type WorkPacketLifecycleValidationError
+} from "./work-packet-lifecycle";

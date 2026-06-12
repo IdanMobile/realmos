@@ -40,6 +40,16 @@ export type ExecutorHealthCheck = {
   lastDispatchStatus: string | null;
 };
 
+export type WorkPacketLifecycleHealthCheck = {
+  totalCount: number;
+  approvalNeededCount: number;
+  dispatchedCount: number;
+  awaitingResultCount: number;
+  verificationPendingCount: number;
+  latestPacketId: string | null;
+  latestPacketStatus: string | null;
+};
+
 export type HealthReport = {
   status: "ok" | "degraded";
   service: string;
@@ -50,6 +60,7 @@ export type HealthReport = {
     ollama: OllamaHealthCheck;
     firebase: FirebaseHealthCheck;
     executor: ExecutorHealthCheck;
+    lifecycle: WorkPacketLifecycleHealthCheck;
     terminal: { enabled: boolean };
     onlineModels: { enabled: boolean; configured: boolean };
   };

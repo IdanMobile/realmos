@@ -5,6 +5,10 @@ import { createFleetStore, type FleetStore } from "./create-fleet-store";
 import { createRealmStore, type RealmStore } from "./create-realm-store";
 import { createPlatformInfraStore, type PlatformInfraStore } from "./create-platform-infra-store";
 import { createExecutorStore, type ExecutorStore } from "./create-executor-store";
+import {
+  createWorkPacketLifecycleStore,
+  type WorkPacketLifecycleStore
+} from "./create-work-packet-lifecycle-store";
 import { OperationalTables } from "./operational-tables";
 import { createDefaultWorkLoopSeed } from "../work-loop-seed";
 import { createDefaultFleetSeed } from "../fleet-seed";
@@ -18,7 +22,8 @@ const storeRefs = {
   fleet: createFleetStore(activeAdapter),
   realm: createRealmStore(activeAdapter),
   platformInfra: createPlatformInfraStore(activeAdapter),
-  executor: createExecutorStore(activeAdapter)
+  executor: createExecutorStore(activeAdapter),
+  workPacketLifecycle: createWorkPacketLifecycleStore(activeAdapter)
 };
 
 function bindStoreProxy<T extends object>(getter: () => T): T {
@@ -39,6 +44,7 @@ export const fleetStore = bindStoreProxy(() => storeRefs.fleet);
 export const realmStore = bindStoreProxy(() => storeRefs.realm);
 export const platformInfraStore = bindStoreProxy(() => storeRefs.platformInfra);
 export const executorStore = bindStoreProxy(() => storeRefs.executor);
+export const workPacketLifecycleStore = bindStoreProxy(() => storeRefs.workPacketLifecycle);
 
 export function getOperationalPersistenceAdapter(): OperationalPersistenceAdapter {
   return activeAdapter;
@@ -51,6 +57,7 @@ export function configureOperationalPersistence(adapter: OperationalPersistenceA
   storeRefs.realm = createRealmStore(adapter);
   storeRefs.platformInfra = createPlatformInfraStore(adapter);
   storeRefs.executor = createExecutorStore(adapter);
+  storeRefs.workPacketLifecycle = createWorkPacketLifecycleStore(adapter);
 }
 
 export async function seedOperationalStoresIfEmpty(): Promise<void> {
@@ -74,4 +81,4 @@ export async function resetOperationalPersistenceForTests(): Promise<void> {
   await seedOperationalStoresIfEmpty();
 }
 
-export type { WorkLoopStore, FleetStore, RealmStore, PlatformInfraStore, ExecutorStore };
+export type { WorkLoopStore, FleetStore, RealmStore, PlatformInfraStore, ExecutorStore, WorkPacketLifecycleStore };
