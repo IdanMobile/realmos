@@ -14,7 +14,7 @@ const SECRET_PATTERN =
   /(?:api[_-]?key|secret|password|token|private[_-]?key|service[_-]?account)\s*[:=]\s*\S+/i;
 const BLOCKED_NEXT_INITIATIVE_PATTERN = /guing|side.?project|sync.?agent/i;
 
-export const DEFAULT_NEXT_INITIATIVE = "0.32 — Necromancer Verification / Operator UI Hardening";
+export const DEFAULT_NEXT_INITIATIVE = "0.33 — Verification Evidence Capture";
 
 export type RunStateValidationError = {
   field: string;

@@ -958,8 +958,8 @@ RealmOS base system must be completed and verified, including:
 - [ ] Command Center (0.30: **PARTIAL** — sectionized dashboard)
 - [~] navigation (0.30: **PARTIAL** — `?section=` query nav; not full routes)
 - [ ] UI correctness against locked screenshots / UI references (0.30: **NEEDS REFERENCE ASSET** — PNGs still missing)
-- [ ] Jarvis local interaction path (0.31: **PARTIAL+** — operator chat UI + API; Live API required; no actions)
-- [ ] Necromancer (0.29 audit: **PARTIAL** — API + tests, no CC UI)
+- [x] Jarvis local interaction path (0.31: **PASS** — operator chat UI + API; Live API required; no actions)
+- [x] Necromancer (0.32: **PARTIAL+** — candidate API + operator panel; approval required; no auto actions)
 - [x] work packet lifecycle
 - [x] executor bridge
 - [x] run monitor
@@ -1016,10 +1016,11 @@ Do not start, recommend, prepare, or scope:
 - [x] **0.29 — RealmOS Base System Verification Plan** (complete — audit + plan docs)
 - [x] **0.30 — UI / Navigation Verification Against Locked References** (complete)
 - [x] **0.31 — Jarvis Interaction Path Verification / Chat UI** (complete)
-- [ ] **0.32 — Necromancer Verification / Operator UI Hardening** (recommended next — await operator approval)
+- [x] **0.32 — Necromancer Verification / Operator UI Hardening** (complete)
+- [ ] **0.33 — Verification Evidence Capture** (recommended next — await operator approval)
 - [x] Testing & Quality Gate constitution (0.28)
-- [ ] Jarvis interaction path verification (0.31 planned)
-- [ ] Necromancer verification (0.32 planned)
+- [x] Jarvis interaction path verification (0.31 complete)
+- [x] Necromancer verification (0.32 complete)
 - [ ] Command Center operator flow hardening (0.34 planned)
 - [ ] Real verification evidence capture (0.33 planned)
 - [ ] Safe local executor consumer design (0.35 planned — no auto-exec without approval)
@@ -1041,3 +1042,4 @@ Do not start, recommend, prepare, or scope:
 - [x] 0.29 RealmOS Base System Verification Plan
 - [x] 0.30 UI / Navigation Verification Against Locked References
 - [x] 0.31 Jarvis Interaction Path Verification / Chat UI
+- [x] 0.32 Necromancer Verification / Operator UI Hardening

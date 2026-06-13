@@ -19,6 +19,7 @@ import { FleetControlPanel } from "@/components/panels/FleetControlPanel";
 import { IntelligenceOptimizerPanel, KnowledgeVaultPanel, ModelScoutPanel } from "@/components/panels/IntelligencePanels";
 import { JarvisBriefingPanel } from "@/components/panels/JarvisBriefingPanel";
 import { MemoryPanel } from "@/components/panels/MemorySummariesPanel";
+import { NecromancerOperatorPanel } from "@/components/panels/NecromancerOperatorPanel";
 import { OperatorGuidePanel } from "@/components/panels/OperatorGuidePanel";
 import { ProjectInfrastructurePanel } from "@/components/panels/ProjectInfrastructurePanel";
 import { RecentActivityPanel } from "@/components/panels/RecentActivityPanel";
@@ -149,6 +150,7 @@ export function CommandCenterSectionContent(props: SectionContentProps) {
       return (
         <SectionGrid sectionId="agents">
           <GovernanceSafetyBanner health={props.health} dataSource={props.dataSource} />
+          <NecromancerOperatorPanel dataSource={props.dataSource} />
           <ActiveAgentsPanel agents={props.data.agents} />
           <FleetControlPanel {...props.data.fleet} />
           <CapabilityScoutPanel reports={props.data.capabilityReports} />

@@ -38,3 +38,26 @@ export {
   prepareAgentCreationFromProposal,
   type PrepareAgentCreationResult
 } from "./necromancer/create-from-proposal";
+
+export {
+  detectNecromancerCandidates,
+  findNecromancerCandidate,
+  isSideProjectScope,
+  type NecromancerCandidate,
+  type NecromancerCandidateClassification,
+  type NecromancerCandidateKind,
+  type NecromancerRecommendedAction,
+  type NecromancerRiskLevel
+} from "./necromancer/candidates";
+
+export {
+  prepareNecromancerRecommendation,
+  type NecromancerRecommendation
+} from "./necromancer/recommendations";
+
+export {
+  isBlockedNecromancerActionText,
+  validateNecromancerOperatorAction,
+  type NecromancerActionValidation,
+  type NecromancerOperatorAction
+} from "./necromancer/operator-actions";

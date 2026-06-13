@@ -1,5 +1,7 @@
 # RealmOS — Verification Commands v0.31
 
+Initiative 0.32 adds Necromancer operator verification. See `docs/realmos-package/06_operations/necromancer_operator_flow_v0_32.md` for manual smoke.
+
 Initiative 0.31 adds Jarvis operator chat verification. See `docs/realmos-package/06_operations/jarvis_interaction_path_v0_31.md` for manual smoke.
 
 ## Testing & Quality Gate (locked)
@@ -311,6 +313,8 @@ pnpm --filter @realmos/platform-infra test
 
 ## Audits
 
+- Necromancer readiness: `docs/realmos-package/99_audits/necromancer_readiness_audit_v0_32.md`
+- Necromancer operator flow: `docs/realmos-package/06_operations/necromancer_operator_flow_v0_32.md`
 - Jarvis chat readiness: `docs/realmos-package/99_audits/jarvis_chat_readiness_audit_v0_31.md`
 - Jarvis interaction path: `docs/realmos-package/06_operations/jarvis_interaction_path_v0_31.md`
 - UI/navigation readiness: `docs/realmos-package/99_audits/ui_navigation_readiness_audit_v0_30.md`

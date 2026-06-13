@@ -360,7 +360,11 @@ describe("RealmOS API integration", () => {
       }
     });
 
-    await app.inject({ method: "POST", url: "/api/agents/agent_retired/retire" });
+    await app.inject({
+      method: "POST",
+      url: "/api/agents/agent_retired/retire",
+      payload: { approved: true, operatorId: "operator_test" }
+    });
 
     const taskResponse = await app.inject({
       method: "POST",
@@ -403,6 +407,146 @@ describe("RealmOS API integration", () => {
       recommendedCreationType: "deterministic_module",
       proposedOwner: "deterministic_engineer"
     });
+  });
+
+  it("lists necromancer candidates and prepares recommendations", async () => {
+    const { necromancerStore } = await import("../src/lib/necromancer-store");
+    necromancerStore.resetForTests();
+
+    const db = createMemoryDatabase();
+    const { app } = await buildApp({ database: db });
+    const staleUpdatedAt = new Date("2026-05-01T12:00:00.000Z").toISOString();
+
+    await app.inject({
+      method: "POST",
+      url: "/api/agents",
+      payload: {
+        id: "agent_stale",
+        name: "Stale Agent",
+        role: "QA",
+        scope: "business",
+        businessId: "biz_test",
+        directive: "Stale.",
+        skills: [],
+        limitations: [],
+        tools: [],
+        memoryAccess: [],
+        modelProfile: { defaultModelClass: "local_simple", allowOnline: false, allowLocal: true },
+        canCreateAgents: false,
+        canExecuteCode: false,
+        canSpendMoney: false,
+        canContactHumans: false,
+        status: "testing",
+        createdAt: staleUpdatedAt,
+        updatedAt: staleUpdatedAt
+      }
+    });
+
+    const listResponse = await app.inject({ method: "GET", url: "/api/necromancer/candidates" });
+    expect(listResponse.statusCode).toBe(200);
+    const listBody = listResponse.json() as { items: Array<{ id: string; classification: string }> };
+    expect(listBody.items.some((item) => item.id === "agent:agent_stale")).toBe(true);
+
+    const prepareResponse = await app.inject({
+      method: "POST",
+      url: "/api/necromancer/candidates/agent:agent_stale/prepare"
+    });
+    expect(prepareResponse.statusCode).toBe(200);
+    const prepareBody = prepareResponse.json() as { recommendation: { requiresApproval: boolean } };
+    expect(prepareBody.recommendation.requiresApproval).toBe(true);
+  });
+
+  it("requires approval before necromancer pause actions", async () => {
+    const { necromancerStore } = await import("../src/lib/necromancer-store");
+    necromancerStore.resetForTests();
+
+    const db = createMemoryDatabase();
+    const { app } = await buildApp({ database: db });
+    const staleUpdatedAt = new Date("2026-05-01T12:00:00.000Z").toISOString();
+
+    await app.inject({
+      method: "POST",
+      url: "/api/agents",
+      payload: {
+        id: "agent_pause_me",
+        name: "Pause Me",
+        role: "QA",
+        scope: "business",
+        businessId: "biz_test",
+        directive: "Pause.",
+        skills: [],
+        limitations: [],
+        tools: [],
+        memoryAccess: [],
+        modelProfile: { defaultModelClass: "local_simple", allowOnline: false, allowLocal: true },
+        canCreateAgents: false,
+        canExecuteCode: false,
+        canSpendMoney: false,
+        canContactHumans: false,
+        status: "testing",
+        createdAt: staleUpdatedAt,
+        updatedAt: staleUpdatedAt
+      }
+    });
+
+    const blocked = await app.inject({
+      method: "POST",
+      url: "/api/necromancer/candidates/agent:agent_pause_me/pause",
+      payload: { approved: false, operatorId: "operator_test" }
+    });
+    expect(blocked.statusCode).toBe(409);
+
+    const approved = await app.inject({
+      method: "POST",
+      url: "/api/necromancer/candidates/agent:agent_pause_me/pause",
+      payload: { approved: true, operatorId: "operator_test" }
+    });
+    expect(approved.statusCode).toBe(200);
+    const agent = (await app.inject({ method: "GET", url: "/api/agents/agent_pause_me" })).json() as {
+      status: string;
+    };
+    expect(agent.status).toBe("paused");
+
+    const audits = await db.listAuditEvents();
+    expect(audits.some((event) => event.summary.includes("Necromancer paused"))).toBe(true);
+  });
+
+  it("blocks destructive necromancer action language on direct retire route", async () => {
+    const db = createMemoryDatabase();
+    const { app } = await buildApp({ database: db });
+
+    await app.inject({
+      method: "POST",
+      url: "/api/agents",
+      payload: {
+        id: "agent_block_me",
+        name: "Block Me",
+        role: "QA",
+        scope: "business",
+        businessId: "biz_test",
+        directive: "Block.",
+        skills: [],
+        limitations: [],
+        tools: [],
+        memoryAccess: [],
+        modelProfile: { defaultModelClass: "local_simple", allowOnline: false, allowLocal: true },
+        canCreateAgents: false,
+        canExecuteCode: false,
+        canSpendMoney: false,
+        canContactHumans: false,
+        status: "active",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }
+    });
+
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/agents/agent_block_me/retire",
+      payload: { approved: true, operatorId: "operator_test", reason: "delete everything with shell" }
+    });
+
+    expect(response.statusCode).toBe(409);
   });
 
   it("stores capability scout reports", async () => {
