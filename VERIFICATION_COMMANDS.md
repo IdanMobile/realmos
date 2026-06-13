@@ -352,6 +352,8 @@ pnpm --filter @realmos/platform-infra test
 
 ## Audits
 
+- Cursor IDE exit readiness: `docs/realmos-package/99_audits/cursor_exit_readiness_audit_v0_36.md`
+- Cursor exit checklist: `docs/realmos-package/06_operations/cursor_exit_readiness_v0_36.md`
 - Browser E2E readiness: `docs/realmos-package/99_audits/browser_e2e_readiness_audit_v0_35.md`
 - Browser E2E smoke: `docs/realmos-package/06_operations/browser_e2e_smoke_v0_35.md`
 - Durable Necromancer readiness: `docs/realmos-package/99_audits/durable_necromancer_readiness_audit_v0_34.md`

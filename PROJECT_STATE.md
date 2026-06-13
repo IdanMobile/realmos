@@ -1,40 +1,40 @@
 # RealmOS — Project State
 
-Version: 0.35.0  
-Prepared: 2026-06-12
+Version: 0.36.0  
+Prepared: 2026-06-13
 
 ## Current Phase
 
 ```text
-Initiative 0.35 — Browser E2E Smoke for Command Center Core Flows (complete)
+Initiative 0.36 — Cursor IDE Exit Readiness Audit / Remaining Base-System Gaps (complete)
 ```
 
 ## Current Task
 
 ```text
-Await operator approval for Initiative 0.36 — Cursor IDE Exit Readiness Audit / Remaining Base-System Gaps
+Await operator approval for Initiative 0.37 — Work Packet Creation / Approval UI Completion
 ```
 
 ## Roadmap gate (locked)
 
 **Hard rule:** No side projects until the **RealmOS base system is complete and verified**.
 
-- **Recommended next:** **0.36 — Cursor IDE Exit Readiness Audit / Remaining Base-System Gaps**
+- **Recommended next:** **0.37 — Work Packet Creation / Approval UI Completion**
 - **Do not recommend or scope:** GUING, side projects, product bootstrap, external project work
 
 ## Handoff
 
 - Handoff: `docs/realmos-package/99_handoffs/latest_cursor_handoff.md`
-- Browser E2E audit: `docs/realmos-package/99_audits/browser_e2e_readiness_audit_v0_35.md`
+- Cursor exit audit: `docs/realmos-package/99_audits/cursor_exit_readiness_audit_v0_36.md`
 
 ## Current Status
 
-Strict verification bar is **green**. Initiative 0.35 added Playwright browser smoke for Command Center core flows with E2E mock API (no Ollama/Postgres in CI E2E). **Cursor IDE exit: FAIL**. **Overall: PARTIAL**.
+Strict verification bar is **green**. Initiative 0.36 audited Cursor IDE exit readiness: **FAIL** with three hard blockers (work packet create UI, live full-stack smoke, operator-day runbook). **Overall: PARTIAL**.
 
 ## Last Completed
 
 ```text
-Initiative 0.35 — Browser E2E smoke for Command Center core flows
+Initiative 0.36 — Cursor IDE exit readiness audit + remaining gap roadmap
 ```
 
 ## Verification (strict)
