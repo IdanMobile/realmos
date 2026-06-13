@@ -36,7 +36,19 @@ export type NecromancerActionRecord = {
   approved: boolean;
   outcome: "applied" | "blocked";
   summary: string;
-  timestamp: string;
+  createdAt: string;
+  timestamp?: string;
+  evidenceId?: string;
+  evidenceStatus?: "linked" | "missing" | "invalid";
+  blockReason?: string;
+};
+
+export type NecromancerPersistenceStatus = {
+  persistenceMode: "memory" | "postgres";
+  durable: boolean;
+  safetyNotice: string;
+  noDeleteEndpoint?: boolean;
+  noAutomaticCleanup?: boolean;
 };
 
 export type NecromancerApiResult<T> =
@@ -65,6 +77,8 @@ export async function fetchNecromancerCandidates(baseUrl = getApiBaseUrl()): Pro
     totalCount: number;
     protectedCount: number;
     safetyNotice: string;
+    persistenceMode: "memory" | "postgres";
+    durable: boolean;
   }>
 > {
   try {
@@ -114,7 +128,7 @@ export async function prepareNecromancerCandidate(
 export async function runNecromancerCandidateAction(
   id: string,
   action: "pause" | "retire" | "protect",
-  input: { approved: boolean; operatorId: string; reason?: string },
+  input: { approved: boolean; operatorId: string; reason?: string; evidenceId?: string },
   baseUrl = getApiBaseUrl()
 ): Promise<NecromancerApiResult<{ candidate: NecromancerCandidate; actionRecord: NecromancerActionRecord }>> {
   try {
@@ -132,8 +146,19 @@ export async function runNecromancerCandidateAction(
   }
 }
 
+export async function fetchNecromancerStatus(baseUrl = getApiBaseUrl()): Promise<
+  NecromancerApiResult<NecromancerPersistenceStatus>
+> {
+  try {
+    const response = await fetch(`${baseUrl}/api/necromancer/status`, { cache: "no-store" });
+    return parseJson(response);
+  } catch {
+    return { ok: false, status: 0, message: "API unavailable" };
+  }
+}
+
 export async function fetchNecromancerActions(baseUrl = getApiBaseUrl()): Promise<
-  NecromancerApiResult<{ items: NecromancerActionRecord[] }>
+  NecromancerApiResult<{ items: NecromancerActionRecord[]; persistenceMode: "memory" | "postgres"; durable: boolean }>
 > {
   try {
     const response = await fetch(`${baseUrl}/api/necromancer/actions`, { cache: "no-store" });

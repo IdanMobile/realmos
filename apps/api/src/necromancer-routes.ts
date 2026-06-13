@@ -1,5 +1,10 @@
 import type { FastifyInstance } from "fastify";
-import type { Agent, Task } from "@realmos/contracts";
+import type {
+  NecromancerCandidateSnapshot,
+  NecromancerEvidenceLinkStatus,
+  NecromancerOperatorActionRecord,
+  NecromancerRecommendationSnapshot
+} from "@realmos/contracts";
 import {
   createCreationProposal,
   detectNecromancerCandidates,
@@ -9,47 +14,141 @@ import {
   prepareAgentCreationFromProposal,
   prepareNecromancerRecommendation,
   retireAgent,
-  validateNecromancerOperatorAction
+  validateNecromancerOperatorAction,
+  type NecromancerCandidate
 } from "@realmos/agents";
 import { closeWorkPacketLifecycle } from "@realmos/work-loop";
 import type { RealmOSDatabase } from "./db/types";
 import { recordAudit } from "./lib/audit";
 import { necromancerStore } from "./lib/necromancer-store";
+import { getOperationalPersistenceAdapter } from "./lib/persistence/configure-operational-stores";
+import { verificationEvidenceStore } from "./lib/verification-evidence-store";
 import { workPacketLifecycleStore } from "./lib/work-packet-lifecycle-store";
 
 type OperatorBody = {
   approved?: boolean;
   operatorId?: string;
   reason?: string;
+  evidenceId?: string;
 };
 
-function parseApproval(body: OperatorBody | undefined): { approved: boolean; operatorId?: string; reason?: string } {
+function parseApproval(body: OperatorBody | undefined): {
+  approved: boolean;
+  operatorId?: string;
+  reason?: string;
+  evidenceId?: string;
+} {
   return {
     approved: body?.approved === true,
     operatorId: body?.operatorId,
-    reason: body?.reason
+    reason: body?.reason,
+    evidenceId: body?.evidenceId?.trim() || undefined
   };
 }
 
+function buildCandidateSnapshot(candidate: NecromancerCandidate): NecromancerCandidateSnapshot {
+  return {
+    id: candidate.id,
+    kind: candidate.kind,
+    entityId: candidate.entityId,
+    classification: candidate.classification,
+    riskLevel: candidate.riskLevel,
+    title: candidate.title,
+    currentStatus: candidate.currentStatus,
+    realmId: candidate.realmId,
+    repositoryId: candidate.repositoryId,
+    reason: candidate.reason
+  };
+}
+
+function buildRecommendationSnapshot(
+  candidate: NecromancerCandidate
+): NecromancerRecommendationSnapshot {
+  const recommendation = prepareNecromancerRecommendation(candidate);
+  return {
+    summary: recommendation.summary,
+    recommendation: recommendation.recommendation,
+    requiresApproval: recommendation.requiresApproval
+  };
+}
+
+async function resolveEvidenceReference(evidenceId?: string): Promise<{
+  evidenceId?: string;
+  evidenceStatus?: NecromancerEvidenceLinkStatus;
+}> {
+  if (!evidenceId) return {};
+
+  const record = await verificationEvidenceStore.getVerificationEvidenceRecord(evidenceId);
+  if (!record) {
+    return { evidenceId, evidenceStatus: "invalid" };
+  }
+
+  return { evidenceId: record.id, evidenceStatus: "linked" };
+}
+
 async function loadCandidates(db: RealmOSDatabase) {
-  const [agents, tasks, workPackets] = await Promise.all([
+  const [agents, tasks, workPackets, protectedIds] = await Promise.all([
     db.listAgents(),
     db.listTasks(),
-    workPacketLifecycleStore.listWorkPacketLifecycleRecords()
+    workPacketLifecycleStore.listWorkPacketLifecycleRecords(),
+    necromancerStore.listProtectedCandidateIds()
   ]);
 
   return detectNecromancerCandidates({
     agents,
     tasks,
     workPackets,
-    protectedIds: necromancerStore.listProtectedIds()
+    protectedIds
+  });
+}
+
+function persistenceMeta() {
+  const adapter = getOperationalPersistenceAdapter();
+  return {
+    persistenceMode: adapter.mode,
+    durable: adapter.mode === "postgres",
+    safetyNotice: "No autonomous destructive actions. Approval required for pause/retire/protect."
+  };
+}
+
+async function recordOperatorAction(input: {
+  candidate: NecromancerCandidate;
+  action: NecromancerOperatorActionRecord["action"];
+  operatorId: string;
+  approved: boolean;
+  outcome: NecromancerOperatorActionRecord["outcome"];
+  summary: string;
+  blockReason?: string;
+  reason?: string;
+  evidenceId?: string;
+  includeRecommendation?: boolean;
+}): Promise<NecromancerOperatorActionRecord> {
+  const evidence = await resolveEvidenceReference(input.evidenceId);
+
+  return necromancerStore.appendAction({
+    candidateId: input.candidate.id,
+    action: input.action,
+    operatorId: input.operatorId,
+    approved: input.approved,
+    outcome: input.outcome,
+    summary: input.summary,
+    realmId: input.candidate.realmId,
+    blockReason: input.blockReason,
+    candidateSnapshot: buildCandidateSnapshot(input.candidate),
+    recommendationSnapshot: input.includeRecommendation
+      ? buildRecommendationSnapshot(input.candidate)
+      : undefined,
+    evidenceId: evidence.evidenceId,
+    evidenceStatus: evidence.evidenceStatus,
+    approvalMetadata: input.reason ? { reason: input.reason } : undefined,
+    payload: input.reason ? { reason: input.reason } : undefined
   });
 }
 
 async function applyCandidatePause(
   db: RealmOSDatabase,
   candidate: ReturnType<typeof findNecromancerCandidate>
-): Promise<{ entity: Agent | Task | unknown }> {
+): Promise<{ entity: unknown }> {
   if (!candidate) throw new Error("Candidate not found");
 
   if (candidate.kind === "agent") {
@@ -85,7 +184,7 @@ async function applyCandidatePause(
 async function applyCandidateRetire(
   db: RealmOSDatabase,
   candidate: ReturnType<typeof findNecromancerCandidate>
-): Promise<{ entity: Agent | Task | unknown }> {
+): Promise<{ entity: unknown }> {
   if (!candidate) throw new Error("Candidate not found");
 
   if (candidate.kind === "agent") {
@@ -119,13 +218,19 @@ async function applyCandidateRetire(
 }
 
 export function registerNecromancerRoutes(app: FastifyInstance, db: RealmOSDatabase): void {
+  app.get("/api/necromancer/status", async () => ({
+    ...persistenceMeta(),
+    noDeleteEndpoint: true,
+    noAutomaticCleanup: true
+  }));
+
   app.get("/api/necromancer/candidates", async () => {
     const candidates = await loadCandidates(db);
     return {
       items: candidates,
       totalCount: candidates.length,
       protectedCount: candidates.filter((item) => item.protected).length,
-      safetyNotice: "No autonomous destructive actions. Approval required for pause/retire/protect."
+      ...persistenceMeta()
     };
   });
 
@@ -143,26 +248,29 @@ export function registerNecromancerRoutes(app: FastifyInstance, db: RealmOSDatab
 
   app.post("/api/necromancer/candidates/:id/prepare", async (request, reply) => {
     const { id } = request.params as { id: string };
+    const body = parseApproval((request.body ?? {}) as OperatorBody);
     const candidates = await loadCandidates(db);
     const candidate = findNecromancerCandidate(candidates, id);
     if (!candidate) return reply.code(404).send({ error: "Candidate not found" });
 
     const recommendation = prepareNecromancerRecommendation(candidate);
-    const record = necromancerStore.appendAction({
-      candidateId: id,
+    const record = await recordOperatorAction({
+      candidate,
       action: "prepare",
-      operatorId: "operator_preview",
+      operatorId: body.operatorId?.trim() || "operator_preview",
       approved: true,
       outcome: "applied",
-      summary: recommendation.summary
+      summary: recommendation.summary,
+      evidenceId: body.evidenceId,
+      includeRecommendation: true
     });
 
     await recordAudit(db, {
       actorType: "user",
-      actorId: "operator_preview",
+      actorId: body.operatorId ?? "operator_preview",
       eventType: "risk_detected",
       summary: `Necromancer prepared recommendation for ${id}`,
-      payload: { candidateId: id, recommendation, actionRecordId: record.id }
+      payload: { candidateId: id, recommendation, actionRecordId: record.id, evidenceId: record.evidenceId }
     });
 
     return reply.send({ candidate, recommendation, actionRecord: record });
@@ -183,13 +291,16 @@ export function registerNecromancerRoutes(app: FastifyInstance, db: RealmOSDatab
     });
 
     if (!validation.allowed) {
-      const record = necromancerStore.appendAction({
-        candidateId: id,
+      const record = await recordOperatorAction({
+        candidate,
         action: "pause",
         operatorId: body.operatorId ?? "unknown",
         approved: body.approved,
         outcome: "blocked",
-        summary: validation.reason ?? "Blocked"
+        summary: validation.reason ?? "Blocked",
+        blockReason: validation.reason,
+        reason: body.reason,
+        evidenceId: body.evidenceId
       });
       await recordAudit(db, {
         actorType: "user",
@@ -202,14 +313,15 @@ export function registerNecromancerRoutes(app: FastifyInstance, db: RealmOSDatab
     }
 
     const result = await applyCandidatePause(db, candidate);
-    const record = necromancerStore.appendAction({
-      candidateId: id,
+    const record = await recordOperatorAction({
+      candidate,
       action: "pause",
       operatorId: body.operatorId!,
       approved: true,
       outcome: "applied",
       summary: `Paused ${candidate.kind} ${candidate.entityId}`,
-      payload: { reason: body.reason }
+      reason: body.reason,
+      evidenceId: body.evidenceId
     });
 
     await recordAudit(db, {
@@ -217,7 +329,7 @@ export function registerNecromancerRoutes(app: FastifyInstance, db: RealmOSDatab
       actorId: body.operatorId,
       eventType: "run_completed",
       summary: `Necromancer paused ${id}`,
-      payload: { candidateId: id, actionRecordId: record.id, result }
+      payload: { candidateId: id, actionRecordId: record.id, result, evidenceId: record.evidenceId }
     });
 
     return reply.send({ candidate, result, actionRecord: record });
@@ -238,13 +350,16 @@ export function registerNecromancerRoutes(app: FastifyInstance, db: RealmOSDatab
     });
 
     if (!validation.allowed) {
-      const record = necromancerStore.appendAction({
-        candidateId: id,
+      const record = await recordOperatorAction({
+        candidate,
         action: "retire",
         operatorId: body.operatorId ?? "unknown",
         approved: body.approved,
         outcome: "blocked",
-        summary: validation.reason ?? "Blocked"
+        summary: validation.reason ?? "Blocked",
+        blockReason: validation.reason,
+        reason: body.reason,
+        evidenceId: body.evidenceId
       });
       await recordAudit(db, {
         actorType: "user",
@@ -257,14 +372,15 @@ export function registerNecromancerRoutes(app: FastifyInstance, db: RealmOSDatab
     }
 
     const result = await applyCandidateRetire(db, candidate);
-    const record = necromancerStore.appendAction({
-      candidateId: id,
+    const record = await recordOperatorAction({
+      candidate,
       action: "retire",
       operatorId: body.operatorId!,
       approved: true,
       outcome: "applied",
       summary: `Retired ${candidate.kind} ${candidate.entityId}`,
-      payload: { reason: body.reason }
+      reason: body.reason,
+      evidenceId: body.evidenceId
     });
 
     await recordAudit(db, {
@@ -272,7 +388,7 @@ export function registerNecromancerRoutes(app: FastifyInstance, db: RealmOSDatab
       actorId: body.operatorId,
       eventType: "run_completed",
       summary: `Necromancer retired ${id}`,
-      payload: { candidateId: id, actionRecordId: record.id, result }
+      payload: { candidateId: id, actionRecordId: record.id, result, evidenceId: record.evidenceId }
     });
 
     return reply.send({ candidate, result, actionRecord: record });
@@ -293,17 +409,45 @@ export function registerNecromancerRoutes(app: FastifyInstance, db: RealmOSDatab
     });
 
     if (!validation.allowed) {
-      return reply.code(409).send({ error: validation.reason });
+      const record = await recordOperatorAction({
+        candidate,
+        action: "protect",
+        operatorId: body.operatorId ?? "unknown",
+        approved: body.approved,
+        outcome: "blocked",
+        summary: validation.reason ?? "Blocked",
+        blockReason: validation.reason,
+        reason: body.reason,
+        evidenceId: body.evidenceId
+      });
+      await recordAudit(db, {
+        actorType: "user",
+        actorId: body.operatorId,
+        eventType: "policy_blocked",
+        summary: `Necromancer protect blocked for ${id}`,
+        payload: { candidateId: id, reason: validation.reason, actionRecordId: record.id }
+      });
+      return reply.code(409).send({ error: validation.reason, actionRecord: record });
     }
 
-    necromancerStore.markProtected(id);
-    const record = necromancerStore.appendAction({
+    const evidence = await resolveEvidenceReference(body.evidenceId);
+    await necromancerStore.markProtected({
       candidateId: id,
+      realmId: candidate.realmId,
+      operatorId: body.operatorId!,
+      reason: body.reason,
+      evidenceId: evidence.evidenceId
+    });
+
+    const record = await recordOperatorAction({
+      candidate,
       action: "protect",
       operatorId: body.operatorId!,
       approved: true,
       outcome: "applied",
-      summary: `Protected ${id}`
+      summary: `Protected ${id}`,
+      reason: body.reason,
+      evidenceId: body.evidenceId
     });
 
     await recordAudit(db, {
@@ -311,16 +455,35 @@ export function registerNecromancerRoutes(app: FastifyInstance, db: RealmOSDatab
       actorId: body.operatorId,
       eventType: "run_completed",
       summary: `Necromancer protected ${id}`,
-      payload: { candidateId: id, actionRecordId: record.id }
+      payload: { candidateId: id, actionRecordId: record.id, evidenceId: record.evidenceId }
     });
 
     const refreshed = findNecromancerCandidate(await loadCandidates(db), id);
     return reply.send({ candidate: refreshed, actionRecord: record });
   });
 
-  app.get("/api/necromancer/actions", async () => ({
-    items: necromancerStore.listActions()
-  }));
+  app.get("/api/necromancer/actions", async (request) => {
+    const query = request.query as {
+      candidateId?: string;
+      action?: NecromancerOperatorActionRecord["action"];
+      operatorId?: string;
+      outcome?: NecromancerOperatorActionRecord["outcome"];
+      limit?: string;
+    };
+
+    const items = await necromancerStore.listActions({
+      candidateId: query.candidateId,
+      action: query.action,
+      operatorId: query.operatorId,
+      outcome: query.outcome,
+      limit: query.limit ? Number(query.limit) : undefined
+    });
+
+    return {
+      items,
+      ...persistenceMeta()
+    };
+  });
 
   app.post("/api/necromancer/proposals/classify", async (request) => {
     const body = request.body as {

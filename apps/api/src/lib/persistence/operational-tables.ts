@@ -25,7 +25,9 @@ export const OperationalTables = {
   executorDispatches: "operational_executor_dispatches",
   workPacketLifecycle: "operational_work_packet_lifecycle",
   runStateHandoff: "operational_run_state_handoff",
-  verificationEvidence: "operational_verification_evidence"
+  verificationEvidence: "operational_verification_evidence",
+  necromancerProtections: "operational_necromancer_protections",
+  necromancerActions: "operational_necromancer_actions"
 } as const;
 
 export type OperationalTableName = (typeof OperationalTables)[keyof typeof OperationalTables];

@@ -28,4 +28,5 @@ export * from "./executor-bridge";
 export * from "./work-packet-lifecycle";
 export * from "./run-state-handoff";
 export * from "./verification-evidence";
+export * from "./necromancer-persistence";
 export * from "./factories";

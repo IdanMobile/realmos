@@ -411,7 +411,7 @@ describe("RealmOS API integration", () => {
 
   it("lists necromancer candidates and prepares recommendations", async () => {
     const { necromancerStore } = await import("../src/lib/necromancer-store");
-    necromancerStore.resetForTests();
+    await necromancerStore.resetForTests();
 
     const db = createMemoryDatabase();
     const { app } = await buildApp({ database: db });
@@ -458,7 +458,7 @@ describe("RealmOS API integration", () => {
 
   it("requires approval before necromancer pause actions", async () => {
     const { necromancerStore } = await import("../src/lib/necromancer-store");
-    necromancerStore.resetForTests();
+    await necromancerStore.resetForTests();
 
     const db = createMemoryDatabase();
     const { app } = await buildApp({ database: db });
@@ -509,6 +509,69 @@ describe("RealmOS API integration", () => {
 
     const audits = await db.listAuditEvents();
     expect(audits.some((event) => event.summary.includes("Necromancer paused"))).toBe(true);
+
+    const blockedActions = await app.inject({
+      method: "GET",
+      url: "/api/necromancer/actions?outcome=blocked"
+    });
+    expect(blockedActions.statusCode).toBe(200);
+    const blockedBody = blockedActions.json() as { items: Array<{ action: string; outcome: string }> };
+    expect(blockedBody.items.some((item) => item.action === "pause" && item.outcome === "blocked")).toBe(true);
+  });
+
+  it("persists necromancer protect registry and action history", async () => {
+    const { necromancerStore } = await import("../src/lib/necromancer-store");
+    await necromancerStore.resetForTests();
+
+    const db = createMemoryDatabase();
+    const { app } = await buildApp({ database: db });
+    const staleUpdatedAt = new Date("2026-05-01T12:00:00.000Z").toISOString();
+
+    await app.inject({
+      method: "POST",
+      url: "/api/agents",
+      payload: {
+        id: "agent_protect_me",
+        name: "Protect Me",
+        role: "QA",
+        scope: "business",
+        businessId: "biz_test",
+        directive: "Protect.",
+        skills: [],
+        limitations: [],
+        tools: [],
+        memoryAccess: [],
+        modelProfile: { defaultModelClass: "local_simple", allowOnline: false, allowLocal: true },
+        canCreateAgents: false,
+        canExecuteCode: false,
+        canSpendMoney: false,
+        canContactHumans: false,
+        status: "testing",
+        createdAt: staleUpdatedAt,
+        updatedAt: staleUpdatedAt
+      }
+    });
+
+    const protectResponse = await app.inject({
+      method: "POST",
+      url: "/api/necromancer/candidates/agent:agent_protect_me/protect",
+      payload: { approved: true, operatorId: "operator_test" }
+    });
+    expect(protectResponse.statusCode).toBe(200);
+
+    const listResponse = await app.inject({ method: "GET", url: "/api/necromancer/candidates" });
+    const listBody = listResponse.json() as { items: Array<{ id: string; protected: boolean }> };
+    expect(listBody.items.find((item) => item.id === "agent:agent_protect_me")?.protected).toBe(true);
+
+    const actionsResponse = await app.inject({ method: "GET", url: "/api/necromancer/actions" });
+    const actionsBody = actionsResponse.json() as { items: Array<{ action: string; outcome: string }> };
+    expect(actionsBody.items.some((item) => item.action === "protect" && item.outcome === "applied")).toBe(true);
+
+    const statusResponse = await app.inject({ method: "GET", url: "/api/necromancer/status" });
+    expect(statusResponse.statusCode).toBe(200);
+    const statusBody = statusResponse.json() as { noDeleteEndpoint: boolean; persistenceMode: string };
+    expect(statusBody.noDeleteEndpoint).toBe(true);
+    expect(statusBody.persistenceMode).toBe("memory");
   });
 
   it("blocks destructive necromancer action language on direct retire route", async () => {

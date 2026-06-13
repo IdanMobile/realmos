@@ -1,4 +1,4 @@
-# Latest Cursor Handoff — Post Initiative 0.33
+# Latest Cursor Handoff — Post Initiative 0.34
 
 Updated: 2026-06-13
 
@@ -8,10 +8,10 @@ Updated: 2026-06-13
 
 | Field | Value |
 |-------|--------|
-| **Project version** | `0.33.0` |
-| **Post-MVP complete** | 0.18–0.33 |
+| **Project version** | `0.34.0` |
+| **Post-MVP complete** | 0.18–0.34 |
 | **Jarvis operator chat** | **PASS** (Live API required) |
-| **Necromancer operator flow** | **PASS** (Live API required) |
+| **Necromancer operator flow** | **PASS** (Live API + durable persistence in Postgres mode) |
 | **Verification evidence capture** | **PASS** (Live API required) |
 | **Cursor IDE exit** | **NOT READY** |
 | **Executor mode** | `dry_run` |
@@ -20,37 +20,33 @@ Updated: 2026-06-13
 
 ## Roadmap gate (locked)
 
-- **Recommended next:** **0.34 — Durable Necromancer Evidence / Persistence Hardening**
+- **Recommended next:** **0.35 — Browser E2E Smoke for Command Center Core Flows**
 - **Blocked:** GUING, side projects
 
-**Do not start 0.34 until operator explicitly approves.**
+**Do not start 0.35 until operator explicitly approves.**
 
 ---
 
-## Initiative 0.33 summary
+## Initiative 0.34 summary
 
-- `VerificationEvidenceRecord` contract + default verification gates
-- Redaction/blocking for secrets, private keys, service account JSON, `.env` content
-- API: list, summary, attach output, attach CI metadata (manual URL only)
-- Postgres migration `010_verification_evidence.sql`
-- Run-state `evidenceSummary` synced on attach; handoff text includes evidence line
-- Command Center Runs section → Verification Evidence panel
-- No shell execution, no Cursor CLI, no automatic CI scraping
+- Postgres migration `011_necromancer_persistence.sql`
+- Durable protect registry + operator action history (applied + blocked)
+- Optional `evidenceId` link to 0.33 verification evidence records
+- GET `/api/necromancer/status` exposes persistence mode
+- Command Center shows Durable Postgres vs Memory demo badge
+- No delete endpoint, no automatic cleanup, approval gates preserved
 
 ---
 
-## Initiative 0.32 summary (closed)
+## Initiative 0.33 summary (closed)
 
-- Necromancer candidate detection for stale/failed/orphaned agents, tasks, work packets
-- Approval-gated pause/retire/protect with audit events
-- Command Center Agents section → Necromancer Operator panel
-- GUING/side-project scope blocked from pause/retire
-- No deletion, shell, Cursor CLI, or autonomous actions
+- Verification evidence model, redaction, API, Postgres durability, Command Center evidence panel
+- No automatic shell execution or CI scraping
 
 ---
 
 ## Audits
 
+- `docs/realmos-package/99_audits/durable_necromancer_readiness_audit_v0_34.md`
+- `docs/realmos-package/06_operations/durable_necromancer_persistence_v0_34.md`
 - `docs/realmos-package/99_audits/verification_evidence_readiness_audit_v0_33.md`
-- `docs/realmos-package/06_operations/verification_evidence_capture_v0_33.md`
-- `docs/realmos-package/99_audits/necromancer_readiness_audit_v0_32.md`

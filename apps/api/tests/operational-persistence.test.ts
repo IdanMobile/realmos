@@ -191,7 +191,33 @@ describe("operational persistence", () => {
     const reloaded = createRunStateHandoffStore(adapter);
     const loaded = await reloaded.getRunState(state.id);
     expect(loaded?.sourcePacketId).toBe("wpl_run_state_persist");
-    expect(loaded?.nextRecommendedInitiative).toContain("0.34");
+    expect(loaded?.nextRecommendedInitiative).toContain("0.35");
+  });
+
+  it("retains necromancer protections and actions across store re-instantiation", async () => {
+    const adapter = createMemoryOperationalAdapter();
+    const { createNecromancerStore } = await import("../src/lib/persistence/create-necromancer-store");
+
+    const storeA = createNecromancerStore(adapter);
+    await storeA.markProtected({
+      candidateId: "agent:agent_protect_test",
+      operatorId: "operator",
+      realmId: "realm_realmos"
+    });
+
+    const action = await storeA.appendAction({
+      candidateId: "agent:agent_protect_test",
+      action: "protect",
+      operatorId: "operator",
+      approved: true,
+      outcome: "applied",
+      summary: "Protected candidate"
+    });
+
+    const storeB = createNecromancerStore(adapter);
+    expect(await storeB.isProtected("agent:agent_protect_test")).toBe(true);
+    const actions = await storeB.listActions({ candidateId: "agent:agent_protect_test" });
+    expect(actions.some((entry) => entry.id === action.id)).toBe(true);
   });
 
   it("retains verification evidence records across store re-instantiation", async () => {

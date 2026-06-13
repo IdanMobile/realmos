@@ -5,10 +5,12 @@ import {
   fetchNecromancerActions,
   fetchNecromancerCandidate,
   fetchNecromancerCandidates,
+  fetchNecromancerStatus,
   prepareNecromancerCandidate,
   runNecromancerCandidateAction,
   type NecromancerActionRecord,
   type NecromancerCandidate,
+  type NecromancerPersistenceStatus,
   type NecromancerRecommendation
 } from "@/lib/api/necromancer";
 
@@ -27,27 +29,31 @@ export function NecromancerOperatorPanel({ dataSource }: NecromancerOperatorPane
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [recommendation, setRecommendation] = useState<NecromancerRecommendation | null>(null);
   const [actions, setActions] = useState<NecromancerActionRecord[]>([]);
+  const [persistence, setPersistence] = useState<NecromancerPersistenceStatus | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [approved, setApproved] = useState(false);
   const [operatorId, setOperatorId] = useState("operator");
+  const [evidenceId, setEvidenceId] = useState("");
 
   const refresh = useCallback(async () => {
     if (dataSource !== "api") {
       setLoadError("Necromancer operator flow requires live API.");
       setCandidates([]);
       setActions([]);
+      setPersistence(null);
       return;
     }
 
     setLoading(true);
     setLoadError(null);
 
-    const [candidateResult, actionResult] = await Promise.all([
+    const [candidateResult, actionResult, statusResult] = await Promise.all([
       fetchNecromancerCandidates(),
-      fetchNecromancerActions()
+      fetchNecromancerActions(),
+      fetchNecromancerStatus()
     ]);
 
     if (!candidateResult.ok) {
@@ -56,10 +62,30 @@ export function NecromancerOperatorPanel({ dataSource }: NecromancerOperatorPane
     } else {
       setCandidates(candidateResult.data.items);
       setSelectedId((current) => current ?? candidateResult.data.items[0]?.id ?? null);
+      if (statusResult.ok) {
+        setPersistence(statusResult.data);
+      } else {
+        setPersistence({
+          persistenceMode: candidateResult.data.persistenceMode,
+          durable: candidateResult.data.durable,
+          safetyNotice: candidateResult.data.safetyNotice
+        });
+      }
     }
 
     if (actionResult.ok) {
       setActions(actionResult.data.items);
+      if (!statusResult.ok) {
+        setPersistence({
+          persistenceMode: actionResult.data.persistenceMode,
+          durable: actionResult.data.durable,
+          safetyNotice: "No autonomous destructive actions. Approval required for pause/retire/protect."
+        });
+      }
+    }
+
+    if (statusResult.ok) {
+      setPersistence(statusResult.data);
     }
 
     setLoading(false);
@@ -120,7 +146,8 @@ export function NecromancerOperatorPanel({ dataSource }: NecromancerOperatorPane
 
     const result = await runNecromancerCandidateAction(selectedId, action, {
       approved: true,
-      operatorId: operatorId.trim()
+      operatorId: operatorId.trim(),
+      evidenceId: evidenceId.trim() || undefined
     });
 
     if (!result.ok) {
@@ -141,11 +168,18 @@ export function NecromancerOperatorPanel({ dataSource }: NecromancerOperatorPane
             Review stale, failed, or orphaned agents, tasks, and work packets.
           </p>
         </div>
-        <span className="badge bg-amber-500/15 text-amber-200">Approval required</span>
+        <div className="flex flex-col items-end gap-1">
+          <span className="badge bg-amber-500/15 text-amber-200">Approval required</span>
+          {persistence ? (
+            <span className={`badge ${persistence.durable ? "bg-emerald-500/15 text-emerald-200" : "bg-slate-500/15 text-slate-200"}`}>
+              {persistence.durable ? "Durable Postgres" : "Memory demo"}
+            </span>
+          ) : null}
+        </div>
       </div>
 
       <p className="mb-3 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">
-        No autonomous destructive actions. Necromancer never deletes data, runs shell, or invokes Cursor CLI.
+        No autonomous cleanup or destructive delete. Necromancer never deletes data, runs shell, or invokes Cursor CLI.
       </p>
 
       {loading ? <p className="text-sm text-textSecondary">Loading candidates…</p> : null}
@@ -180,6 +214,9 @@ export function NecromancerOperatorPanel({ dataSource }: NecromancerOperatorPane
                 <p className="text-xs text-textSecondary">
                   {candidate.kind} · {candidate.classification} · {candidate.currentStatus}
                 </p>
+                {candidate.protected ? (
+                  <p className="mt-1 text-xs text-emerald-200">Protected (durable registry)</p>
+                ) : null}
                 {candidate.sideProjectBlocked ? (
                   <p className="mt-1 text-xs text-amber-200">Side-project scope blocked</p>
                 ) : null}
@@ -220,6 +257,15 @@ export function NecromancerOperatorPanel({ dataSource }: NecromancerOperatorPane
                     onChange={(event) => setOperatorId(event.target.value)}
                   />
                 </label>
+                <label className="block text-sm">
+                  Verification evidence ID (optional)
+                  <input
+                    className="mt-1 w-full rounded-md border border-border/70 bg-surface px-2 py-1 font-mono text-xs"
+                    value={evidenceId}
+                    onChange={(event) => setEvidenceId(event.target.value)}
+                    placeholder="Link 0.33 evidence record"
+                  />
+                </label>
 
                 <div className="flex flex-wrap gap-2">
                   <button type="button" className="btn-secondary" onClick={() => void runAction("Prepare", "prepare")}>
@@ -250,11 +296,13 @@ export function NecromancerOperatorPanel({ dataSource }: NecromancerOperatorPane
 
             {actions.length > 0 ? (
               <div>
-                <h4 className="mb-2 text-sm font-semibold">Recent actions</h4>
+                <h4 className="mb-2 text-sm font-semibold">Recent actions (persisted)</h4>
                 <ul className="space-y-1 text-xs text-textSecondary">
                   {actions.slice(0, 5).map((item) => (
                     <li key={item.id}>
-                      {item.timestamp} · {item.action} · {item.outcome} · {item.summary}
+                      {item.createdAt ?? item.timestamp} · {item.action} · {item.outcome} · {item.summary}
+                      {item.evidenceId ? ` · evidence:${item.evidenceId}` : ""}
+                      {item.evidenceStatus ? ` (${item.evidenceStatus})` : ""}
                     </li>
                   ))}
                 </ul>

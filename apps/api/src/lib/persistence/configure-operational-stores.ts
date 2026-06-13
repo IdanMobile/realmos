@@ -17,6 +17,7 @@ import {
   createVerificationEvidenceStore,
   type VerificationEvidenceStore
 } from "./create-verification-evidence-store";
+import { createNecromancerStore, type NecromancerStore } from "./create-necromancer-store";
 import { OperationalTables } from "./operational-tables";
 import { createDefaultWorkLoopSeed } from "../work-loop-seed";
 import { createDefaultFleetSeed } from "../fleet-seed";
@@ -33,7 +34,8 @@ const storeRefs = {
   executor: createExecutorStore(activeAdapter),
   workPacketLifecycle: createWorkPacketLifecycleStore(activeAdapter),
   runStateHandoff: createRunStateHandoffStore(activeAdapter),
-  verificationEvidence: createVerificationEvidenceStore(activeAdapter)
+  verificationEvidence: createVerificationEvidenceStore(activeAdapter),
+  necromancer: createNecromancerStore(activeAdapter)
 };
 
 function bindStoreProxy<T extends object>(getter: () => T): T {
@@ -57,6 +59,7 @@ export const executorStore = bindStoreProxy(() => storeRefs.executor);
 export const workPacketLifecycleStore = bindStoreProxy(() => storeRefs.workPacketLifecycle);
 export const runStateHandoffStore = bindStoreProxy(() => storeRefs.runStateHandoff);
 export const verificationEvidenceStore = bindStoreProxy(() => storeRefs.verificationEvidence);
+export const necromancerStore = bindStoreProxy(() => storeRefs.necromancer);
 
 export function getOperationalPersistenceAdapter(): OperationalPersistenceAdapter {
   return activeAdapter;
@@ -72,6 +75,7 @@ export function configureOperationalPersistence(adapter: OperationalPersistenceA
   storeRefs.workPacketLifecycle = createWorkPacketLifecycleStore(adapter);
   storeRefs.runStateHandoff = createRunStateHandoffStore(adapter);
   storeRefs.verificationEvidence = createVerificationEvidenceStore(adapter);
+  storeRefs.necromancer = createNecromancerStore(adapter);
 }
 
 export async function seedOperationalStoresIfEmpty(): Promise<void> {
@@ -95,4 +99,4 @@ export async function resetOperationalPersistenceForTests(): Promise<void> {
   await seedOperationalStoresIfEmpty();
 }
 
-export type { WorkLoopStore, FleetStore, RealmStore, PlatformInfraStore, ExecutorStore, WorkPacketLifecycleStore, RunStateHandoffStore, VerificationEvidenceStore };
+export type { WorkLoopStore, FleetStore, RealmStore, PlatformInfraStore, ExecutorStore, WorkPacketLifecycleStore, RunStateHandoffStore, VerificationEvidenceStore, NecromancerStore };

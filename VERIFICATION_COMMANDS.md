@@ -1,4 +1,6 @@
-# RealmOS — Verification Commands v0.33
+# RealmOS — Verification Commands v0.34
+
+Initiative 0.34 adds durable Necromancer persistence. See `docs/realmos-package/06_operations/durable_necromancer_persistence_v0_34.md` for manual smoke.
 
 Initiative 0.33 adds verification evidence capture. See `docs/realmos-package/06_operations/verification_evidence_capture_v0_33.md` for manual smoke.
 
@@ -215,6 +217,23 @@ curl -X POST http://localhost:4100/api/verification/evidence \
 
 Operator pastes command output or links CI URL manually. No automatic shell execution.
 
+## Durable Necromancer persistence (Initiative 0.34)
+
+Setup: `docs/realmos-package/06_operations/durable_necromancer_persistence_v0_34.md`
+
+```bash
+pnpm --filter @realmos/api dev
+pnpm --filter @realmos/web dev
+# Command Center → Agents → Necromancer Operator
+curl http://localhost:4100/api/necromancer/status
+curl http://localhost:4100/api/necromancer/actions
+curl -X POST http://localhost:4100/api/necromancer/candidates/<candidate-id>/protect \
+  -H 'Content-Type: application/json' \
+  -d '{"approved":true,"operatorId":"operator","evidenceId":"<optional-evidence-id>"}'
+```
+
+Protect registry and action history persist in Postgres when `DATABASE_URL` is set. Memory mode remains for local demo.
+
 ## Command Center task monitor (Initiative 0.26)
 
 Setup: `docs/realmos-package/06_operations/command_center_task_monitor_v0_26.md`
@@ -331,6 +350,8 @@ pnpm --filter @realmos/platform-infra test
 
 ## Audits
 
+- Durable Necromancer readiness: `docs/realmos-package/99_audits/durable_necromancer_readiness_audit_v0_34.md`
+- Durable Necromancer persistence: `docs/realmos-package/06_operations/durable_necromancer_persistence_v0_34.md`
 - Verification evidence readiness: `docs/realmos-package/99_audits/verification_evidence_readiness_audit_v0_33.md`
 - Verification evidence capture: `docs/realmos-package/06_operations/verification_evidence_capture_v0_33.md`
 - Necromancer readiness: `docs/realmos-package/99_audits/necromancer_readiness_audit_v0_32.md`

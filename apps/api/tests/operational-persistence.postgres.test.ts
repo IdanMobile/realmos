@@ -73,6 +73,7 @@ describe("operational persistence (live Postgres smoke)", () => {
     expect(MIGRATION_FILES).toContain("008_work_packet_lifecycle.sql");
     expect(MIGRATION_FILES).toContain("009_run_state_handoff.sql");
     expect(MIGRATION_FILES).toContain("010_verification_evidence.sql");
+    expect(MIGRATION_FILES).toContain("011_necromancer_persistence.sql");
   });
 
   it("connects, applies migrations, and exposes operational tables from migration 006", async () => {
@@ -92,7 +93,9 @@ describe("operational persistence (live Postgres smoke)", () => {
       OperationalTables.repositoryBindings,
       OperationalTables.projectInfrastructurePlans,
       OperationalTables.isolationViolations,
-      OperationalTables.verificationEvidence
+      OperationalTables.verificationEvidence,
+      OperationalTables.necromancerProtections,
+      OperationalTables.necromancerActions
     ];
 
     for (const table of checks) {
