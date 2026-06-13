@@ -27,7 +27,7 @@ Await operator approval for Initiative 0.38 — Live Full-Stack Operator Smoke
 
 ## Current Status
 
-Strict verification bar is **green** (pending final 0.37 verification). Work packet create→approve→dispatch available from Command Center UI. **Cursor IDE exit: FAIL** (H2/H3 remain). **Overall: PARTIAL**.
+Strict verification bar is **green** (CI #27467884329 on `239e93b`). Work packet create→approve→dispatch available from Command Center UI. **Cursor IDE exit: FAIL** (H1 resolved; H2/H3 remain). **Overall: PARTIAL**.
 
 ## Last Completed
 

@@ -13,6 +13,7 @@ Updated: 2026-06-13
 | **Work packet create UI** | **PASS** |
 | **Cursor IDE exit readiness** | **FAIL** (H2/H3 remain) |
 | **Browser E2E** | **PASS** (+ create flow smoke) |
+| **CI (0.37 close)** | GitHub Actions #27467884329 — **success** on `239e93b` |
 
 ---
 
