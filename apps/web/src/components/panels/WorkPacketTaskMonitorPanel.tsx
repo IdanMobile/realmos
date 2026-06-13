@@ -19,6 +19,7 @@ import {
   LIFECYCLE_SAFETY_FLAGS,
   summarizeLifecyclePackets
 } from "@/lib/lifecycle/mappers";
+import { WorkPacketCreatePanel } from "@/components/panels/WorkPacketCreatePanel";
 
 type WorkPacketTaskMonitorPanelProps = {
   dataSource: "api" | "mock";
@@ -55,6 +56,8 @@ export function WorkPacketTaskMonitorPanel({
   const [resultSummary, setResultSummary] = useState("");
   const [verifyOutput, setVerifyOutput] = useState("");
   const [verifyArtifacts, setVerifyArtifacts] = useState("");
+  const [operatorId, setOperatorId] = useState("operator");
+  const [lastDispatchArtifact, setLastDispatchArtifact] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
     if (dataSource !== "api") {
@@ -89,11 +92,20 @@ export function WorkPacketTaskMonitorPanel({
     setExecutorStatus(execStatus);
     setDispatches(execDispatches);
     setLoading(false);
-  }, [dataSource]);
+  }, [dataSource, onSelectedPacketChange]);
 
   useEffect(() => {
     void refresh();
   }, [refresh]);
+
+  const handlePacketCreated = useCallback(
+    (packetId: string) => {
+      setSelectedId(packetId);
+      onSelectedPacketChange?.(packetId);
+      void refresh();
+    },
+    [onSelectedPacketChange, refresh]
+  );
 
   const summary = useMemo(() => summarizeLifecyclePackets(packets), [packets]);
   const monitorGroups = useMemo(() => filterMonitorPackets(packets), [packets]);
@@ -118,7 +130,9 @@ export function WorkPacketTaskMonitorPanel({
   const healthLifecycle = health?.checks.lifecycle;
 
   return (
-    <section className="card lg:col-span-2" aria-label="Work packet task monitor panel">
+    <>
+      <WorkPacketCreatePanel dataSource={dataSource} onCreated={handlePacketCreated} />
+      <section className="card lg:col-span-2" aria-label="Work packet task monitor panel">
       <h3 className="panel-title">Work Packet Task Approval + Run Monitor</h3>
 
       <div className="mb-4 rounded-lg border border-cyan-500/30 bg-cyan-500/5 p-3 text-xs text-textSecondary">
@@ -203,7 +217,9 @@ export function WorkPacketTaskMonitorPanel({
         <div>
           <h4 className="mb-2 text-sm font-semibold">Lifecycle packets</h4>
           {packets.length === 0 ? (
-            <p className="text-sm text-textSecondary">No work packets yet. Create via POST /api/lifecycle/packets.</p>
+            <p className="text-sm text-textSecondary">
+              No work packets yet. Use the form above to create a draft work packet.
+            </p>
           ) : (
             <ul className="max-h-72 space-y-2 overflow-y-auto">
               {packets.map((packet) => (
@@ -313,11 +329,21 @@ export function WorkPacketTaskMonitorPanel({
               {dataSource === "api" ? (
                 <div className="mt-4 space-y-2">
                   <p className="text-xs font-semibold">Operator actions</p>
+                  <label className="block text-xs">
+                    Operator ID (required for approval)
+                    <input
+                      className="mt-1 w-full rounded border border-border bg-background px-2 py-1 font-mono text-xs"
+                      value={operatorId}
+                      onChange={(event) => setOperatorId(event.target.value)}
+                      data-testid="work-packet-operator-id"
+                    />
+                  </label>
                   <div className="flex flex-wrap gap-2">
                     {availableLifecycleActions(selected.status).includes("markReady") ? (
                       <button
                         type="button"
                         className="rounded-lg border border-border px-2 py-1 text-xs"
+                        data-testid="work-packet-mark-ready"
                         onClick={() =>
                           void runAction("Mark ready", async () => {
                             const result = await markLifecyclePacketReady(selected.id);
@@ -333,10 +359,15 @@ export function WorkPacketTaskMonitorPanel({
                     {availableLifecycleActions(selected.status).includes("approve") ? (
                       <button
                         type="button"
-                        className="rounded-lg bg-emerald-600/80 px-2 py-1 text-xs font-medium text-white"
+                        className="rounded-lg bg-emerald-600/80 px-2 py-1 text-xs font-medium text-white disabled:opacity-50"
+                        data-testid="work-packet-approve"
+                        disabled={!operatorId.trim()}
                         onClick={() =>
                           void runAction("Approve", async () => {
-                            const result = await approveLifecyclePacket(selected.id);
+                            if (!operatorId.trim()) {
+                              return { ok: false, message: "Operator ID is required for approval." };
+                            }
+                            const result = await approveLifecyclePacket(selected.id, operatorId.trim());
                             return result.ok ? { ok: true } : { ok: false, message: result.message };
                           })
                         }
@@ -348,9 +379,17 @@ export function WorkPacketTaskMonitorPanel({
                       <button
                         type="button"
                         className="rounded-lg bg-cyan-600/80 px-2 py-1 text-xs font-medium text-white"
+                        data-testid="work-packet-dispatch"
                         onClick={() =>
                           void runAction("Dispatch (dry-run queue)", async () => {
                             const result = await dispatchLifecyclePacket(selected.id);
+                            if (result.ok) {
+                              const artifactPath =
+                                result.data.dispatch.queueArtifactPath ??
+                                (result.data as { artifacts?: { packetDir?: string } }).artifacts?.packetDir ??
+                                null;
+                              setLastDispatchArtifact(artifactPath);
+                            }
                             return result.ok ? { ok: true } : { ok: false, message: result.message };
                           })
                         }
@@ -359,6 +398,25 @@ export function WorkPacketTaskMonitorPanel({
                       </button>
                     ) : null}
                   </div>
+                  {selected.dispatchId ? (
+                    <p className="text-xs text-emerald-200" data-testid="work-packet-dispatch-id">
+                      Dispatch ID: {selected.dispatchId}
+                      {linkedDispatch?.queueArtifactPath
+                        ? ` · queue artifact: ${linkedDispatch.queueArtifactPath}`
+                        : lastDispatchArtifact
+                          ? ` · queue artifact: ${lastDispatchArtifact}`
+                          : null}
+                    </p>
+                  ) : null}
+                  {["awaiting_result", "verification_pending", "dispatched", "in_progress"].includes(
+                    selected.status
+                  ) ? (
+                    <p className="text-xs text-textSecondary" data-testid="work-packet-awaiting-notice">
+                      Awaiting operator result / verification — record result manually or attach verification
+                      evidence in the Runs section. Code execution remains in your editor; RealmOS does not
+                      auto-run shell or Cursor CLI.
+                    </p>
+                  ) : null}
 
                   {availableLifecycleActions(selected.status).includes("recordResult") ? (
                     <div className="rounded-lg border border-border/70 p-2">
@@ -502,5 +560,6 @@ export function WorkPacketTaskMonitorPanel({
         </div>
       </div>
     </section>
+    </>
   );
 }

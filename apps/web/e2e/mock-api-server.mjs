@@ -54,7 +54,7 @@ const lifecyclePacket = {
   objective: "E2E smoke lifecycle packet",
   instructions: "Browser E2E verification only.",
   verificationCommands: ["pnpm test"],
-  expectedArtifacts: [],
+  expectedArtifacts: ["E2E verification notes"],
   approvalRequired: true,
   verificationStatus: "pending",
   handoffRequired: false,
@@ -64,6 +64,94 @@ const lifecyclePacket = {
   createdAt: "2026-06-12T00:00:00.000Z",
   updatedAt: "2026-06-12T00:00:00.000Z"
 };
+
+/** @type {typeof lifecyclePacket[]} */
+let lifecyclePackets = [structuredClone(lifecyclePacket)];
+/** @type {Array<{ id: string; status: string; queueArtifactPath?: string }>} */
+let executorDispatches = [];
+let lifecyclePacketCounter = 1;
+
+function splitLines(value) {
+  if (Array.isArray(value)) return value.map(String).filter(Boolean);
+  return String(value ?? "")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
+function validateLifecycleInput(body) {
+  const errors = [];
+  if (!body.realmId?.trim()) errors.push({ field: "realmId", message: "realmId is required." });
+  else if (/guing/i.test(body.realmId)) {
+    errors.push({
+      field: "realmId",
+      message: "GUING and side-project realms are blocked until RealmOS self-management milestone."
+    });
+  }
+  if (!body.repositoryId?.trim()) errors.push({ field: "repositoryId", message: "repositoryId is required." });
+  if (!body.objective?.trim()) errors.push({ field: "objective", message: "objective is required." });
+  if (!body.instructions?.trim()) errors.push({ field: "instructions", message: "instructions is required." });
+  if (!splitLines(body.allowedPaths).length) {
+    errors.push({ field: "allowedPaths", message: "allowedPaths must include at least one path." });
+  }
+  if (!splitLines(body.forbiddenPaths).length) {
+    errors.push({ field: "forbiddenPaths", message: "forbiddenPaths must include at least one path." });
+  }
+  if (!splitLines(body.verificationCommands).length) {
+    errors.push({ field: "verificationCommands", message: "verificationCommands must include at least one command." });
+  }
+  return errors;
+}
+
+function findLifecyclePacket(id) {
+  return lifecyclePackets.find((packet) => packet.id === id) ?? null;
+}
+
+function lifecycleSummary() {
+  const approvalNeededCount = lifecyclePackets.filter((p) => p.status === "ready_for_approval").length;
+  const awaitingResultCount = lifecyclePackets.filter((p) =>
+    ["awaiting_result", "dispatched", "in_progress"].includes(p.status)
+  ).length;
+  const verificationPendingCount = lifecyclePackets.filter((p) => p.status === "verification_pending").length;
+  const latest = [...lifecyclePackets].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))[0] ?? null;
+  return {
+    totalCount: lifecyclePackets.length,
+    approvalNeededCount,
+    dispatchedCount: lifecyclePackets.filter((p) => p.dispatchId).length,
+    awaitingResultCount,
+    verificationPendingCount,
+    latestPacketId: latest?.id ?? null,
+    latestPacketStatus: latest?.status ?? null
+  };
+}
+
+function buildLifecyclePacketFromInput(body) {
+  const now = new Date().toISOString();
+  const id = `wpl_e2e_create_${lifecyclePacketCounter++}`;
+  return {
+    id,
+    packetId: id,
+    sourceWorkItemId: body.sourceWorkItemId,
+    realmId: body.realmId.trim(),
+    repositoryId: body.repositoryId.trim(),
+    branchTarget: body.branchTarget?.trim() || undefined,
+    worktreeTarget: body.worktreeTarget?.trim() || undefined,
+    allowedPaths: splitLines(body.allowedPaths),
+    forbiddenPaths: splitLines(body.forbiddenPaths),
+    objective: body.objective.trim(),
+    instructions: body.instructions.trim(),
+    verificationCommands: splitLines(body.verificationCommands),
+    expectedArtifacts: splitLines(body.expectedArtifacts),
+    approvalRequired: body.approvalRequired ?? true,
+    verificationStatus: "pending",
+    handoffRequired: body.handoffRequired ?? false,
+    handoffUpdated: false,
+    status: "draft",
+    auditEvents: [{ eventType: "packet_created", timestamp: now, summary: `Draft created: ${id}` }],
+    createdAt: now,
+    updatedAt: now
+  };
+}
 
 const necromancerCandidate = {
   id: E2E_CANDIDATE_ID,
@@ -161,15 +249,7 @@ function healthReport() {
         lastDispatchId: null,
         lastDispatchStatus: null
       },
-      lifecycle: {
-        totalCount: 1,
-        approvalNeededCount: 0,
-        dispatchedCount: 0,
-        awaitingResultCount: 0,
-        verificationPendingCount: 1,
-        latestPacketId: E2E_PACKET_ID,
-        latestPacketStatus: "verification_pending"
-      },
+      lifecycle: lifecycleSummary(),
       runState: {
         totalCount: 0,
         handoffRequiredCount: 0,
@@ -216,7 +296,82 @@ const server = createServer(async (req, res) => {
   }
 
   if (pathname === "/api/lifecycle/packets" && method === "GET") {
-    return jsonResponse(res, 200, { items: [lifecyclePacket] });
+    return jsonResponse(res, 200, { items: lifecyclePackets });
+  }
+
+  if (pathname === "/api/lifecycle/packets" && method === "POST") {
+    const body = await readBody(req);
+    const errors = validateLifecycleInput(body);
+    if (errors.length) {
+      return jsonResponse(res, 400, { error: "Validation failed", details: errors });
+    }
+    const packet = buildLifecyclePacketFromInput(body);
+    lifecyclePackets.unshift(packet);
+    return jsonResponse(res, 201, packet);
+  }
+
+  if (pathname.startsWith("/api/lifecycle/packets/") && method === "POST") {
+    const segments = pathname.split("/");
+    const packetId = segments[4];
+    const action = segments[5];
+    const packet = findLifecyclePacket(packetId);
+    if (!packet) {
+      return jsonResponse(res, 404, { error: "Work packet lifecycle record not found" });
+    }
+
+    if (action === "ready") {
+      if (!packet.expectedArtifacts?.length) {
+        return jsonResponse(res, 400, {
+          error: "Readiness validation failed",
+          details: [{ field: "expectedArtifacts", message: "expectedArtifacts required" }]
+        });
+      }
+      if (packet.status !== "draft") {
+        return jsonResponse(res, 400, { error: "Only draft packets can be marked ready." });
+      }
+      packet.status = "ready_for_approval";
+      packet.updatedAt = new Date().toISOString();
+      return jsonResponse(res, 200, packet);
+    }
+
+    if (action === "approve") {
+      const body = await readBody(req);
+      if (!body.approvedBy?.trim()) {
+        return jsonResponse(res, 409, {
+          error: "Approval failed",
+          details: [{ field: "approvedBy", message: "approvedBy is required." }]
+        });
+      }
+      if (packet.status !== "ready_for_approval") {
+        return jsonResponse(res, 409, { error: "Approval failed", details: [{ field: "status", message: "not ready" }] });
+      }
+      packet.status = "approved";
+      packet.approvedBy = body.approvedBy.trim();
+      packet.approvedAt = new Date().toISOString();
+      packet.updatedAt = packet.approvedAt;
+      return jsonResponse(res, 200, packet);
+    }
+
+    if (action === "dispatch") {
+      if (packet.status !== "approved") {
+        return jsonResponse(res, 409, { error: "Only approved packets can be dispatched.", status: packet.status });
+      }
+      const dispatchId = `exec_e2e_${Date.now()}`;
+      const queueArtifactPath = `/tmp/realmos-e2e-queue/${dispatchId}/packet.json`;
+      const dispatch = { id: dispatchId, status: "dispatched", queueArtifactPath };
+      executorDispatches.unshift(dispatch);
+      packet.status = "awaiting_result";
+      packet.dispatchId = dispatchId;
+      packet.updatedAt = new Date().toISOString();
+      return jsonResponse(res, 200, { packet, dispatch, artifacts: { packetDir: queueArtifactPath } });
+    }
+  }
+
+  if (pathname.startsWith("/api/lifecycle/packets/") && method === "GET") {
+    const id = pathname.split("/").pop();
+    const packet = findLifecyclePacket(id);
+    if (!packet) return jsonResponse(res, 404, { error: "Work packet lifecycle record not found" });
+    return jsonResponse(res, 200, packet);
   }
 
   if (pathname === "/api/executor/status" && method === "GET") {
@@ -235,7 +390,7 @@ const server = createServer(async (req, res) => {
   }
 
   if (pathname === "/api/executor/dispatches" && method === "GET") {
-    return jsonResponse(res, 200, { items: [] });
+    return jsonResponse(res, 200, { items: executorDispatches });
   }
 
   if (pathname === "/api/necromancer/status" && method === "GET") {

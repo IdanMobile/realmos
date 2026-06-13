@@ -1,40 +1,38 @@
 # RealmOS — Project State
 
-Version: 0.36.0  
+Version: 0.37.0  
 Prepared: 2026-06-13
 
 ## Current Phase
 
 ```text
-Initiative 0.36 — Cursor IDE Exit Readiness Audit / Remaining Base-System Gaps (complete)
+Initiative 0.37 — Work Packet Creation / Approval UI Completion (complete)
 ```
 
 ## Current Task
 
 ```text
-Await operator approval for Initiative 0.37 — Work Packet Creation / Approval UI Completion
+Await operator approval for Initiative 0.38 — Live Full-Stack Operator Smoke
 ```
 
 ## Roadmap gate (locked)
 
-**Hard rule:** No side projects until the **RealmOS base system is complete and verified**.
-
-- **Recommended next:** **0.37 — Work Packet Creation / Approval UI Completion**
-- **Do not recommend or scope:** GUING, side projects, product bootstrap, external project work
+- **Recommended next:** **0.38 — Live Full-Stack Operator Smoke**
+- **Do not recommend or scope:** GUING, side projects, product bootstrap
 
 ## Handoff
 
-- Handoff: `docs/realmos-package/99_handoffs/latest_cursor_handoff.md`
-- Cursor exit audit: `docs/realmos-package/99_audits/cursor_exit_readiness_audit_v0_36.md`
+- `docs/realmos-package/99_handoffs/latest_cursor_handoff.md`
+- `docs/realmos-package/99_audits/work_packet_creation_ui_readiness_audit_v0_37.md`
 
 ## Current Status
 
-Strict verification bar is **green**. Initiative 0.36 audited Cursor IDE exit readiness: **FAIL** with three hard blockers (work packet create UI, live full-stack smoke, operator-day runbook). **Overall: PARTIAL**.
+Strict verification bar is **green** (pending final 0.37 verification). Work packet create→approve→dispatch available from Command Center UI. **Cursor IDE exit: FAIL** (H2/H3 remain). **Overall: PARTIAL**.
 
 ## Last Completed
 
 ```text
-Initiative 0.36 — Cursor IDE exit readiness audit + remaining gap roadmap
+Initiative 0.37 — Work packet creation / approval UI
 ```
 
 ## Verification (strict)

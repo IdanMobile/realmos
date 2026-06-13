@@ -4,6 +4,7 @@ import { WorkPacketTaskMonitorPanel } from "@/components/panels/WorkPacketTaskMo
 
 vi.mock("@/lib/api/work-packet-lifecycle", () => ({
   fetchLifecyclePackets: vi.fn(async () => ({ ok: true, data: [] })),
+  createLifecyclePacket: vi.fn(),
   markLifecyclePacketReady: vi.fn(),
   approveLifecyclePacket: vi.fn(),
   dispatchLifecyclePacket: vi.fn(),
@@ -41,6 +42,11 @@ describe("WorkPacketTaskMonitorPanel", () => {
 
   it("shows mock mode warning when API data source unavailable", () => {
     render(<WorkPacketTaskMonitorPanel dataSource="mock" health={null} />);
-    expect(screen.getByText(/Mock data mode/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Mock data mode/i).length).toBeGreaterThan(0);
+  });
+
+  it("renders work packet create panel in api mode", async () => {
+    render(<WorkPacketTaskMonitorPanel dataSource="api" health={null} />);
+    expect(await screen.findByTestId("work-packet-create-panel")).toBeInTheDocument();
   });
 });

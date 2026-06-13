@@ -135,10 +135,17 @@ export async function dispatchLifecyclePacket(
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({})
     });
-    return parseLifecycleResponse<{
+    const parsed = await parseLifecycleResponse<{
       packet: WorkPacketLifecycle;
       dispatch: { id: string; status: string; queueArtifactPath?: string };
+      artifacts?: { packetDir?: string };
     }>(response);
+    if (!parsed.ok) return parsed;
+    const dispatch = parsed.data.dispatch;
+    if (!dispatch.queueArtifactPath && parsed.data.artifacts?.packetDir) {
+      dispatch.queueArtifactPath = parsed.data.artifacts.packetDir;
+    }
+    return { ok: true, data: { packet: parsed.data.packet, dispatch } };
   } catch {
     return { ok: false, status: 0, message: "API unavailable" };
   }

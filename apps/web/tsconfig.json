@@ -19,6 +19,9 @@
       "@realmos/agents": ["../../packages/agents/src/index.ts"],
       "@realmos/governance": ["../../packages/governance/src/index.ts"],
       "@realmos/intelligence": ["../../packages/intelligence/src/index.ts"],
+      "@realmos/work-loop/work-packet-lifecycle": [
+        "../../packages/work-loop/src/work-packet-lifecycle.ts"
+      ],
       "@realmos/work-loop": ["../../packages/work-loop/src/index.ts"],
       "@realmos/fleet-control": ["../../packages/fleet-control/src/index.ts"],
       "@realmos/realm-scope": ["../../packages/realm-scope/src/index.ts"],

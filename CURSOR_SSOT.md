@@ -245,10 +245,11 @@ side project once ready
 0.35 — Browser E2E Smoke for Command Center Core Flows
 0.36 — Cursor IDE Exit Readiness Audit / Remaining Base-System Gaps
 0.37 — Work Packet Creation / Approval UI Completion
+0.38 — Live Full-Stack Operator Smoke
 RealmOS replaces Cursor IDE as primary operator surface
 ```
 
-**Recommended next initiative:** `0.37 — Work Packet Creation / Approval UI Completion`.
+**Recommended next initiative:** `0.38 — Live Full-Stack Operator Smoke`.
 
 Cursor must not recommend GUING, sync-agent product work, side projects, external project work, or UI polish as the default next step while this gate is active.
 

@@ -191,7 +191,7 @@ describe("operational persistence", () => {
     const reloaded = createRunStateHandoffStore(adapter);
     const loaded = await reloaded.getRunState(state.id);
     expect(loaded?.sourcePacketId).toBe("wpl_run_state_persist");
-    expect(loaded?.nextRecommendedInitiative).toContain("0.37");
+    expect(loaded?.nextRecommendedInitiative).toContain("0.38");
   });
 
   it("retains necromancer protections and actions across store re-instantiation", async () => {

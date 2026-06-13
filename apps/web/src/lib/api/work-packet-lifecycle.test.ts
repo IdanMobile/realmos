@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   approveLifecyclePacket,
+  createLifecyclePacket,
   dispatchLifecyclePacket,
   fetchLifecyclePackets,
   markLifecyclePacketReady
@@ -81,6 +82,30 @@ describe("work packet lifecycle API client", () => {
     expect(result.ok).toBe(true);
     expect(fetch).toHaveBeenCalledWith(
       "http://localhost:4100/api/lifecycle/packets/wpl_1/dispatch",
+      expect.objectContaining({ method: "POST" })
+    );
+  });
+
+  it("calls create endpoint", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(
+      new Response(JSON.stringify({ id: "wpl_new", status: "draft" }), { status: 201 })
+    );
+
+    const result = await createLifecyclePacket(
+      {
+        realmId: "realm_realmos",
+        repositoryId: "repo_realmos",
+        allowedPaths: ["apps/web"],
+        forbiddenPaths: [".env"],
+        objective: "Test",
+        instructions: "Safe instructions",
+        verificationCommands: ["pnpm test"]
+      },
+      "http://localhost:4100"
+    );
+    expect(result.ok).toBe(true);
+    expect(fetch).toHaveBeenCalledWith(
+      "http://localhost:4100/api/lifecycle/packets",
       expect.objectContaining({ method: "POST" })
     );
   });
