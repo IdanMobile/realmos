@@ -15,7 +15,7 @@ const SECRET_PATTERN =
   /(?:api[_-]?key|secret|password|token|private[_-]?key|service[_-]?account)\s*[:=]\s*\S+/i;
 const BLOCKED_NEXT_INITIATIVE_PATTERN = /guing|side.?project|sync.?agent/i;
 
-export const DEFAULT_NEXT_INITIATIVE = "0.35 — Browser E2E Smoke for Command Center Core Flows";
+export const DEFAULT_NEXT_INITIATIVE = "0.36 — Cursor IDE Exit Readiness Audit / Remaining Base-System Gaps";
 
 export type RunStateValidationError = {
   field: string;

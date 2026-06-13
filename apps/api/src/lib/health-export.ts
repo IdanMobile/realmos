@@ -137,7 +137,7 @@ export async function buildHealthReport(db: RealmOSDatabase): Promise<HealthRepo
   return {
     status: degraded ? "degraded" : "ok",
     service: "realmos-api",
-    version: "0.34.0",
+    version: "0.35.0",
     timestamp: new Date().toISOString(),
     checks: {
       database: databaseStatus,

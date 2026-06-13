@@ -344,12 +344,16 @@ pnpm --filter @realmos/contracts test
 pnpm --filter @realmos/api test
 pnpm --filter @realmos/api test:postgres   # optional, requires Postgres
 pnpm --filter @realmos/web test
+pnpm test:e2e              # Playwright browser smoke (mock API; no Ollama/Postgres)
+pnpm test:e2e:install      # Install Chromium for E2E (once per machine/CI)
 pnpm --filter @realmos/realm-scope test
 pnpm --filter @realmos/platform-infra test
 ```
 
 ## Audits
 
+- Browser E2E readiness: `docs/realmos-package/99_audits/browser_e2e_readiness_audit_v0_35.md`
+- Browser E2E smoke: `docs/realmos-package/06_operations/browser_e2e_smoke_v0_35.md`
 - Durable Necromancer readiness: `docs/realmos-package/99_audits/durable_necromancer_readiness_audit_v0_34.md`
 - Durable Necromancer persistence: `docs/realmos-package/06_operations/durable_necromancer_persistence_v0_34.md`
 - Verification evidence readiness: `docs/realmos-package/99_audits/verification_evidence_readiness_audit_v0_33.md`

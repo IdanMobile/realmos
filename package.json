@@ -11,6 +11,8 @@
     "typecheck": "turbo typecheck",
     "test": "turbo test",
     "test:postgres": "pnpm --filter @realmos/api test:postgres",
+    "test:e2e": "pnpm --filter @realmos/web test:e2e",
+    "test:e2e:install": "pnpm --filter @realmos/web test:e2e:install",
     "test:contracts": "vitest run packages/contracts/src",
     "lint": "turbo lint",
     "format": "prettier --write .",

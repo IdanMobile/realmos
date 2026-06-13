@@ -8,6 +8,9 @@
     "start": "next start --port 3000",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
+    "test:e2e:build": "NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:4199 next build",
+    "test:e2e": "pnpm run test:e2e:build && playwright test && playwright test --config playwright.mock.config.ts",
+    "test:e2e:install": "playwright install chromium",
     "lint": "echo \"lint web\""
   },
   "dependencies": {
@@ -17,6 +20,7 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.51.0",
     "@testing-library/jest-dom": "^6.6.0",
     "@testing-library/react": "^16.2.0",
     "@types/node": "^22.0.0",

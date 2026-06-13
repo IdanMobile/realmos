@@ -60,5 +60,11 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Install Playwright Chromium
+        run: pnpm --filter @realmos/web exec playwright install chromium --with-deps
+
+      - name: Browser E2E smoke
+        run: pnpm test:e2e
+
       - name: Postgres operational persistence smoke
         run: pnpm test:postgres
