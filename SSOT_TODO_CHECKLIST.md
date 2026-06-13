@@ -955,9 +955,9 @@ Side projects remain blocked until the operator explicitly decides from inside a
 
 RealmOS base system must be completed and verified, including:
 
-- [ ] Command Center (0.29 audit: **PARTIAL** — single-page dashboard)
-- [ ] navigation (0.29 audit: **FAIL** — sidebar non-functional)
-- [ ] UI correctness against locked screenshots / UI references (0.29 audit: **NEEDS MANUAL VERIFICATION** — most PNGs missing from repo)
+- [ ] Command Center (0.30: **PARTIAL** — sectionized dashboard)
+- [~] navigation (0.30: **PARTIAL** — `?section=` query nav; not full routes)
+- [ ] UI correctness against locked screenshots / UI references (0.30: **NEEDS REFERENCE ASSET** — PNGs still missing)
 - [ ] Jarvis local interaction path (0.29 audit: **PARTIAL** — API yes, chat UI no)
 - [ ] Necromancer (0.29 audit: **PARTIAL** — API + tests, no CC UI)
 - [x] work packet lifecycle
@@ -1014,7 +1014,8 @@ Do not start, recommend, prepare, or scope:
 ## Allowed upcoming RealmOS-only initiatives
 
 - [x] **0.29 — RealmOS Base System Verification Plan** (complete — audit + plan docs)
-- [ ] **0.30 — UI / Navigation Verification Against Locked References** (recommended next — await operator approval)
+- [x] **0.30 — UI / Navigation Verification Against Locked References** (complete)
+- [ ] **0.31 — Jarvis Interaction Path Verification / Chat UI** (recommended next — await operator approval)
 - [x] Testing & Quality Gate constitution (0.28)
 - [ ] Jarvis interaction path verification (0.31 planned)
 - [ ] Necromancer verification (0.32 planned)
@@ -1037,3 +1038,4 @@ Do not start, recommend, prepare, or scope:
 - [x] 0.27 Self-Handoff / Durable Run State Updates
 - [x] 0.28 Dogfood RealmOS Managing One Real RealmOS Task
 - [x] 0.29 RealmOS Base System Verification Plan
+- [x] 0.30 UI / Navigation Verification Against Locked References

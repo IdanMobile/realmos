@@ -1,4 +1,6 @@
+import { Suspense } from "react";
 import { CommandCenterDashboard } from "@/components/CommandCenterDashboard";
+import { CommandCenterLoadingFallback } from "@/components/CommandCenterLoadingFallback";
 import { fetchDashboardFromApi } from "@/lib/api/fetchDashboard";
 import { fetchHealthFromApi } from "@/lib/api/fetchHealth";
 import { loadMockDashboard } from "@/lib/mock/loadMockDashboard";
@@ -9,6 +11,8 @@ export default async function HomePage() {
   const dataSource = apiData ? "api" : "mock";
 
   return (
-    <CommandCenterDashboard data={data} viewState="ready" health={health} dataSource={dataSource} />
+    <Suspense fallback={<CommandCenterLoadingFallback />}>
+      <CommandCenterDashboard data={data} viewState="ready" health={health} dataSource={dataSource} />
+    </Suspense>
   );
 }

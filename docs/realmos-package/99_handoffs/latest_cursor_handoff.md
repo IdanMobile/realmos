@@ -1,7 +1,7 @@
-# Latest Cursor Handoff — Post Initiative 0.29
+# Latest Cursor Handoff — Post Initiative 0.30
 
 Updated: 2026-06-12  
-**Purpose:** Continue from base system verification plan + readiness audit complete.
+**Purpose:** Continue from UI/navigation verification + section nav fix complete.
 
 ---
 
@@ -9,10 +9,11 @@ Updated: 2026-06-12
 
 | Field | Value |
 |-------|--------|
-| **Project version** | `0.29.0` |
-| **Post-MVP complete** | 0.18–0.29 |
+| **Project version** | `0.30.0` |
+| **Post-MVP complete** | 0.18–0.30 |
 | **Strict verification** | **GREEN** |
-| **Base system readiness** | **PARTIAL** (see audit) |
+| **Navigation** | **PARTIAL** — `?section=` query nav works |
+| **UI reference comparison** | **BLOCKED** — PNGs missing from repo |
 | **Cursor IDE exit** | **NOT READY** |
 | **Executor mode** | `dry_run` — no shell execution |
 
@@ -20,36 +21,33 @@ Updated: 2026-06-12
 
 ## Roadmap gate (locked)
 
-**Hard rule:** No side projects until RealmOS base system is complete and verified.
+- **Recommended next:** **0.31 — Jarvis Interaction Path Verification / Chat UI**
+- **Blocked:** GUING, side projects, product bootstrap
 
-- **Recommended next:** **0.30 — UI / Navigation Verification Against Locked References**
-- **Blocked:** GUING, side projects, product bootstrap, external project work
-
-**Do not start 0.30 until operator explicitly approves.**
+**Do not start 0.31 until operator explicitly approves.**
 
 ---
 
-## Initiative 0.29 summary
+## Initiative 0.30 summary
 
-- **Delivered:** Full verification plan + readiness audit for all base-system areas
-- **Key gaps:** Navigation (FAIL), Jarvis chat UI (missing), UI reference PNGs (mostly absent from repo), Cursor exit (FAIL)
-- **Key greens:** Lifecycle, executor dry-run, run-state, Postgres, Ollama, governance, Testing & Quality Gate
-- **Code change:** `DEFAULT_NEXT_INITIATIVE` → 0.30 only
+- Query-param section navigation for all 10 sidebar IA labels
+- Per-section focused panels; Decisions shows explicit placeholder
+- Search + Ask Jarvis disabled with honest labels (Jarvis → 0.31)
+- Governance safety banner on every section
+- Reference asset audit: 11 mockups + master board **missing** from repo
 
 ---
 
 ## Exact next task
 
 ```text
-Await operator approval for Initiative 0.30 — UI / Navigation Verification Against Locked References.
+Await operator approval for Initiative 0.31 — Jarvis Interaction Path Verification / Chat UI.
 ```
-
-Do not start GUING, side projects, or autonomous execution.
 
 ---
 
 ## Audits
 
+- `docs/realmos-package/99_audits/ui_navigation_readiness_audit_v0_30.md`
+- `docs/realmos-package/06_operations/ui_navigation_verification_v0_30.md`
 - `docs/realmos-package/99_audits/base_system_readiness_audit_v0_29.md`
-- `docs/realmos-package/06_operations/base_system_verification_plan_v0_29.md`
-- `docs/realmos-package/99_audits/dogfood_realmOS_task_audit_v0_28.md`

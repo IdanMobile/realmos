@@ -239,8 +239,7 @@ side project once ready
 **Allowed upcoming RealmOS-only initiatives (examples — operator approval still required):**
 
 ```text
-0.30 — UI / Navigation Verification Against Locked References
-0.31 — Jarvis Interaction Flow
+0.31 — Jarvis Interaction Path Verification / Chat UI
 0.32 — Necromancer Verification / Hardening
 0.33 — Verification Evidence Capture
 0.34 — Command Center Task Creation / Operator Flow Hardening
@@ -248,7 +247,7 @@ side project once ready
 RealmOS replaces Cursor IDE as primary operator surface
 ```
 
-**Recommended next initiative:** `0.30 — UI / Navigation Verification Against Locked References` (locked references, routed navigation, screenshot comparison plan).
+**Recommended next initiative:** `0.31 — Jarvis Interaction Path Verification / Chat UI` (wire chat UI to `/api/jarvis/chat`, safe defaults, operator conversation surface).
 
 Cursor must not recommend GUING, sync-agent product work, side projects, external project work, or UI polish as the default next step while this gate is active.
 

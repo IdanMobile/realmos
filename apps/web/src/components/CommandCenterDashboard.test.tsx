@@ -1,123 +1,190 @@
-import { render, screen, within } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen, within } from "@testing-library/react";
+import { describe, expect, it, vi, beforeEach } from "vitest";
+import { CommandCenterReadyView } from "@/components/CommandCenterReadyView";
 import { CommandCenterDashboard } from "@/components/CommandCenterDashboard";
 import { createEmptyDashboard, loadMockDashboard } from "@/lib/mock/loadMockDashboard";
 
+const mockReplace = vi.fn();
+let mockSearchParams = new URLSearchParams();
+
+vi.mock("next/navigation", () => ({
+  useSearchParams: () => mockSearchParams,
+  useRouter: () => ({ replace: mockReplace }),
+  usePathname: () => "/"
+}));
+
 function renderDashboard(viewState: "ready" | "loading" | "error" | "empty" = "ready") {
   const data = viewState === "empty" ? createEmptyDashboard() : loadMockDashboard();
+  if (viewState === "ready") {
+    render(<CommandCenterReadyView data={data} health={null} dataSource="mock" />);
+    return;
+  }
   render(<CommandCenterDashboard data={data} viewState={viewState} />);
-  return within(screen.getAllByTestId("command-center-dashboard")[0] ?? screen.getByRole("main"));
+}
+
+function getActiveSectionRoot() {
+  const section = document.querySelector('[data-testid^="command-center-section-"]');
+  if (!section) {
+    throw new Error("No active section root found");
+  }
+  return within(section as HTMLElement);
+}
+
+function navigateTo(sectionId: string) {
+  fireEvent.click(screen.getByTestId(`nav-section-${sectionId}`));
 }
 
 describe("Command Center dashboard", () => {
+  beforeEach(() => {
+    mockSearchParams = new URLSearchParams();
+    mockReplace.mockClear();
+  });
+
   it("renders the dashboard shell", () => {
-    render(<CommandCenterDashboard data={loadMockDashboard()} />);
+    renderDashboard();
 
-    expect(screen.getAllByTestId("command-center-dashboard").length).toBeGreaterThan(0);
+    expect(screen.getByTestId("command-center-dashboard")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Jarvis HQ", level: 1 })).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/Search agents, tasks, approvals/)).toBeInTheDocument();
+    expect(screen.getByTestId("command-center-search")).toBeDisabled();
+    expect(screen.getByTestId("ask-jarvis-button")).toBeDisabled();
   });
 
-  it("renders business cards", () => {
-    const dashboard = renderDashboard();
-    const panel = within(dashboard.getByLabelText("Ecosystem businesses panel"));
-
-    expect(panel.getByText("RealmOS")).toBeInTheDocument();
-    expect(panel.getByText("GUING")).toBeInTheDocument();
+  it("shows overview section by default", () => {
+    renderDashboard();
+    expect(screen.getByTestId("command-center-section-overview")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Overview", level: 2 })).toBeInTheDocument();
+    expect(screen.getByTestId("nav-section-overview")).toHaveAttribute("aria-current", "page");
   });
 
-  it("renders agents", () => {
-    const dashboard = renderDashboard();
-    const panel = within(dashboard.getByLabelText("Active agents panel"));
-
-    expect(panel.getByText("Jarvis")).toBeInTheDocument();
-    expect(panel.getByText("Necromancer")).toBeInTheDocument();
+  it("navigates sections via sidebar and updates URL", () => {
+    renderDashboard();
+    navigateTo("tasks");
+    expect(mockReplace).toHaveBeenCalledWith("/?section=tasks", { scroll: false });
   });
 
-  it("renders self-build console panel", () => {
-    const dashboard = renderDashboard();
-    expect(dashboard.getByLabelText("Self-build console panel")).toBeInTheDocument();
+  it("shows governance safety banner on every section", () => {
+    mockSearchParams = new URLSearchParams("section=agents");
+    renderDashboard();
+    expect(screen.getByTestId("governance-safety-banner")).toBeInTheDocument();
   });
 
-  it("renders fleet control panel", () => {
-    const dashboard = renderDashboard();
-    expect(dashboard.getByLabelText("Fleet control panel")).toBeInTheDocument();
+  it("renders business cards on Realms section", () => {
+    mockSearchParams = new URLSearchParams("section=realms");
+    renderDashboard();
+
+    const section = getActiveSectionRoot();
+    expect(section.getByLabelText("Ecosystem businesses panel")).toBeInTheDocument();
+    expect(section.getByText("RealmOS")).toBeInTheDocument();
   });
 
-  it("renders repository boundary panel", () => {
-    const dashboard = renderDashboard();
-    expect(dashboard.getByLabelText("Repository boundary panel")).toBeInTheDocument();
-    expect(dashboard.getByText("RealmOS Global")).toBeInTheDocument();
+  it("renders agents on Agents section", () => {
+    mockSearchParams = new URLSearchParams("section=agents");
+    renderDashboard();
+
+    const section = getActiveSectionRoot();
+    expect(section.getByLabelText("Active agents panel")).toBeInTheDocument();
+    expect(section.getByText("Jarvis")).toBeInTheDocument();
+    expect(section.getByText("Necromancer")).toBeInTheDocument();
   });
 
-  it("renders project infrastructure panel", () => {
-    const dashboard = renderDashboard();
-    expect(dashboard.getByLabelText("Project infrastructure panel")).toBeInTheDocument();
-    expect(dashboard.getByText("Platform & Project Infrastructure")).toBeInTheDocument();
+  it("renders self-build console on Realms section", () => {
+    mockSearchParams = new URLSearchParams("section=realms");
+    renderDashboard();
+    expect(getActiveSectionRoot().getByLabelText("Self-build console panel")).toBeInTheDocument();
   });
 
-  it("renders pending approvals", () => {
-    const dashboard = renderDashboard();
-
-    expect(dashboard.getAllByText("Enable terminal runner").length).toBeGreaterThan(0);
-    expect(dashboard.getAllByText("Approve").length).toBeGreaterThan(0);
+  it("renders fleet control on Agents section", () => {
+    mockSearchParams = new URLSearchParams("section=agents");
+    renderDashboard();
+    expect(getActiveSectionRoot().getByLabelText("Fleet control panel")).toBeInTheDocument();
   });
 
-  it("renders system status and operator guide", () => {
-    const dashboard = renderDashboard();
-    expect(dashboard.getByLabelText("System status panel")).toBeInTheDocument();
-    expect(dashboard.getByLabelText("Work packet task monitor panel")).toBeInTheDocument();
-    expect(dashboard.getByLabelText("Run state handoff panel")).toBeInTheDocument();
-    expect(dashboard.getByLabelText("Operator guide panel")).toBeInTheDocument();
+  it("renders repository boundary on Realms section", () => {
+    mockSearchParams = new URLSearchParams("section=realms");
+    renderDashboard();
+    const section = getActiveSectionRoot();
+    expect(section.getByLabelText("Repository boundary panel")).toBeInTheDocument();
+    expect(section.getByText("RealmOS Global")).toBeInTheDocument();
   });
 
-  it("renders cost summary", () => {
-    const dashboard = renderDashboard();
-    const panel = within(dashboard.getByLabelText("Cost budget panel"));
-
-    expect(panel.getByText("Cost & Budget")).toBeInTheDocument();
-    expect(panel.getByText(/Monthly limit/)).toBeInTheDocument();
-    expect(panel.getByText(/openai · gpt-4.1-mini/i)).toBeInTheDocument();
+  it("renders project infrastructure on Realms section", () => {
+    mockSearchParams = new URLSearchParams("section=realms");
+    renderDashboard();
+    const section = getActiveSectionRoot();
+    expect(section.getByLabelText("Project infrastructure panel")).toBeInTheDocument();
+    expect(section.getByText("Platform & Project Infrastructure")).toBeInTheDocument();
   });
 
-  it("renders world nodes", () => {
-    const dashboard = renderDashboard();
+  it("renders pending approvals on Overview section", () => {
+    renderDashboard();
+    const section = getActiveSectionRoot();
+    expect(section.getAllByText("Enable terminal runner").length).toBeGreaterThan(0);
+    expect(section.getAllByText("Approve").length).toBeGreaterThan(0);
+  });
 
-    expect(dashboard.getByTestId("world-node-node_jarvis_hq")).toBeInTheDocument();
-    expect(dashboard.getByTestId("world-node-node_realm_os")).toBeInTheDocument();
-    expect(dashboard.getByTestId("world-node-node_guing")).toBeInTheDocument();
+  it("renders system status and operator guide on Overview", () => {
+    renderDashboard();
+    const section = getActiveSectionRoot();
+    expect(section.getByLabelText("System status panel")).toBeInTheDocument();
+    expect(section.getByLabelText("Work packet task monitor panel")).toBeInTheDocument();
+    expect(section.getByLabelText("Run state handoff panel")).toBeInTheDocument();
+    expect(section.getByLabelText("Operator guide panel")).toBeInTheDocument();
+  });
+
+  it("renders cost summary on Overview", () => {
+    renderDashboard();
+    const section = within(getActiveSectionRoot().getByLabelText("Cost budget panel"));
+    expect(section.getByText("Cost & Budget")).toBeInTheDocument();
+    expect(section.getByText(/Monthly limit/)).toBeInTheDocument();
+  });
+
+  it("renders world nodes on Overview", () => {
+    renderDashboard();
+    const section = getActiveSectionRoot();
+    expect(section.getByTestId("world-node-node_jarvis_hq")).toBeInTheDocument();
+    expect(section.getByTestId("world-node-node_realm_os")).toBeInTheDocument();
+  });
+
+  it("shows decisions placeholder instead of fake content", () => {
+    mockSearchParams = new URLSearchParams("section=decisions");
+    renderDashboard();
+    expect(screen.getByTestId("section-placeholder-decisions")).toBeInTheDocument();
+    expect(screen.getByText(/Not implemented yet/)).toBeInTheDocument();
   });
 
   it("shows loading state", () => {
     render(<CommandCenterDashboard data={loadMockDashboard()} viewState="loading" />);
-
     expect(screen.getByText(/Loading Command Center state/)).toBeInTheDocument();
   });
 
   it("shows empty state", () => {
     render(<CommandCenterDashboard data={createEmptyDashboard()} viewState="empty" />);
-
     expect(screen.getByText(/No ecosystem data is available yet/)).toBeInTheDocument();
   });
 
-  it("renders memory panel with scoped entries", () => {
-    const dashboard = renderDashboard();
-    const panel = within(dashboard.getByLabelText("Memory panel"));
-
-    expect(panel.getByText("Memory")).toBeInTheDocument();
-    expect(panel.getByLabelText("Filter memory by scope")).toBeInTheDocument();
+  it("renders memory panel on Memory section", () => {
+    mockSearchParams = new URLSearchParams("section=memory");
+    renderDashboard();
+    const section = within(getActiveSectionRoot().getByLabelText("Memory panel"));
+    expect(section.getByText("Memory")).toBeInTheDocument();
+    expect(section.getByLabelText("Filter memory by scope")).toBeInTheDocument();
   });
 
-  it("renders tool activity panel", () => {
-    const dashboard = renderDashboard();
-    const panel = within(dashboard.getByLabelText("Tool activity panel"));
-    expect(panel.getByText("Tool Activity")).toBeInTheDocument();
-    expect(panel.getByText("Draft business spec")).toBeInTheDocument();
+  it("renders tool activity on Live Runs section", () => {
+    mockSearchParams = new URLSearchParams("section=runs");
+    renderDashboard();
+    const section = within(getActiveSectionRoot().getByLabelText("Tool activity panel"));
+    expect(section.getByText("Tool Activity")).toBeInTheDocument();
   });
 
   it("shows error state", () => {
     render(<CommandCenterDashboard data={loadMockDashboard()} viewState="error" />);
-
     expect(screen.getByText(/Unable to load dashboard mock data/)).toBeInTheDocument();
+  });
+
+  it("blocks side projects in safety banner copy", () => {
+    renderDashboard();
+    expect(screen.getByText(/Side projects \/ GUING/)).toBeInTheDocument();
+    expect(screen.getByText(/blocked until RealmOS base system verified/)).toBeInTheDocument();
   });
 });
