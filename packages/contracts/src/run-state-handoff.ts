@@ -1,4 +1,5 @@
 import type { WorkPacketLifecycleStatus, WorkPacketVerificationStatus } from "./work-packet-lifecycle";
+import type { VerificationEvidenceSummary } from "./verification-evidence";
 
 export type RunStateResultStatus =
   | "pending"
@@ -29,6 +30,7 @@ export type HandoffSummaryObject = {
   nextRecommendedInitiative: string;
   handoffRequired: boolean;
   handoffUpdated: boolean;
+  evidenceSummary?: VerificationEvidenceSummary;
   updatedAt: string;
 };
 
@@ -64,6 +66,7 @@ export type RealmOSRunState = {
   newChatPromptText?: string;
   handoffRequired: boolean;
   handoffUpdated: boolean;
+  evidenceSummary?: VerificationEvidenceSummary;
   auditEvents: RunStateHandoffAuditEvent[];
   createdAt: string;
   updatedAt: string;

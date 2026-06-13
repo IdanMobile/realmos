@@ -99,5 +99,7 @@ export async function buildApp(options: AppOptions = {}) {
   registerWorkPacketLifecycleRoutes(app, db);
   const { registerRunStateHandoffRoutes } = await import("./run-state-handoff-routes");
   registerRunStateHandoffRoutes(app, db);
+  const { registerVerificationEvidenceRoutes } = await import("./verification-evidence-routes");
+  registerVerificationEvidenceRoutes(app, db);
   return { app, db };
 }

@@ -30,6 +30,7 @@ import { SpecKitArtifactsPanel } from "@/components/panels/SpecKitArtifactsPanel
 import { SystemStatusPanel } from "@/components/panels/SystemStatusPanel";
 import { TaskStatusPanel } from "@/components/panels/TaskStatusPanel";
 import { ToolActivityPanel } from "@/components/panels/ToolActivityPanel";
+import { VerificationEvidencePanel } from "@/components/panels/VerificationEvidencePanel";
 import { WorkPacketTaskMonitorPanel } from "@/components/panels/WorkPacketTaskMonitorPanel";
 import { WorldPreviewPanel } from "@/components/panels/WorldPreviewPanel";
 
@@ -133,6 +134,10 @@ export function CommandCenterSectionContent(props: SectionContentProps) {
             health={props.health}
             dataSource={props.dataSource}
             onSelectedPacketChange={props.onSelectedPacketChange}
+          />
+          <VerificationEvidencePanel
+            dataSource={props.dataSource}
+            workPacketId={props.selectedLifecyclePacketId}
           />
           <RunStateHandoffPanel
             dataSource={props.dataSource}

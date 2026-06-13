@@ -13,6 +13,10 @@ import {
   createRunStateHandoffStore,
   type RunStateHandoffStore
 } from "./create-run-state-handoff-store";
+import {
+  createVerificationEvidenceStore,
+  type VerificationEvidenceStore
+} from "./create-verification-evidence-store";
 import { OperationalTables } from "./operational-tables";
 import { createDefaultWorkLoopSeed } from "../work-loop-seed";
 import { createDefaultFleetSeed } from "../fleet-seed";
@@ -28,7 +32,8 @@ const storeRefs = {
   platformInfra: createPlatformInfraStore(activeAdapter),
   executor: createExecutorStore(activeAdapter),
   workPacketLifecycle: createWorkPacketLifecycleStore(activeAdapter),
-  runStateHandoff: createRunStateHandoffStore(activeAdapter)
+  runStateHandoff: createRunStateHandoffStore(activeAdapter),
+  verificationEvidence: createVerificationEvidenceStore(activeAdapter)
 };
 
 function bindStoreProxy<T extends object>(getter: () => T): T {
@@ -51,6 +56,7 @@ export const platformInfraStore = bindStoreProxy(() => storeRefs.platformInfra);
 export const executorStore = bindStoreProxy(() => storeRefs.executor);
 export const workPacketLifecycleStore = bindStoreProxy(() => storeRefs.workPacketLifecycle);
 export const runStateHandoffStore = bindStoreProxy(() => storeRefs.runStateHandoff);
+export const verificationEvidenceStore = bindStoreProxy(() => storeRefs.verificationEvidence);
 
 export function getOperationalPersistenceAdapter(): OperationalPersistenceAdapter {
   return activeAdapter;
@@ -65,6 +71,7 @@ export function configureOperationalPersistence(adapter: OperationalPersistenceA
   storeRefs.executor = createExecutorStore(adapter);
   storeRefs.workPacketLifecycle = createWorkPacketLifecycleStore(adapter);
   storeRefs.runStateHandoff = createRunStateHandoffStore(adapter);
+  storeRefs.verificationEvidence = createVerificationEvidenceStore(adapter);
 }
 
 export async function seedOperationalStoresIfEmpty(): Promise<void> {
@@ -88,4 +95,4 @@ export async function resetOperationalPersistenceForTests(): Promise<void> {
   await seedOperationalStoresIfEmpty();
 }
 
-export type { WorkLoopStore, FleetStore, RealmStore, PlatformInfraStore, ExecutorStore, WorkPacketLifecycleStore, RunStateHandoffStore };
+export type { WorkLoopStore, FleetStore, RealmStore, PlatformInfraStore, ExecutorStore, WorkPacketLifecycleStore, RunStateHandoffStore, VerificationEvidenceStore };

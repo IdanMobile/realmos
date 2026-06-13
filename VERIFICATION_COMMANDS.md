@@ -1,4 +1,6 @@
-# RealmOS — Verification Commands v0.31
+# RealmOS — Verification Commands v0.33
+
+Initiative 0.33 adds verification evidence capture. See `docs/realmos-package/06_operations/verification_evidence_capture_v0_33.md` for manual smoke.
 
 Initiative 0.32 adds Necromancer operator verification. See `docs/realmos-package/06_operations/necromancer_operator_flow_v0_32.md` for manual smoke.
 
@@ -197,6 +199,22 @@ curl http://localhost:4100/api/health | jq '.checks.lifecycle'
 
 Lifecycle orchestrates draft → approval → dispatch (dry-run queue) → manual result → verification → close. No automatic command execution.
 
+## Verification evidence (Initiative 0.33)
+
+Setup: `docs/realmos-package/06_operations/verification_evidence_capture_v0_33.md`
+
+```bash
+pnpm --filter @realmos/api dev
+pnpm --filter @realmos/web dev
+# Command Center → Runs → Verification Evidence (live API + selected packet)
+curl "http://localhost:4100/api/verification/evidence/summary?initiativeId=0.33&workPacketId=<packet-id>"
+curl -X POST http://localhost:4100/api/verification/evidence \
+  -H 'Content-Type: application/json' \
+  -d '{"workPacketId":"<packet-id>","initiativeId":"0.33","gateId":"pnpm_test","commandName":"pnpm test","reportedStatus":"pass","outputText":"Tests passed","environment":"local","operatorId":"operator"}'
+```
+
+Operator pastes command output or links CI URL manually. No automatic shell execution.
+
 ## Command Center task monitor (Initiative 0.26)
 
 Setup: `docs/realmos-package/06_operations/command_center_task_monitor_v0_26.md`
@@ -313,6 +331,8 @@ pnpm --filter @realmos/platform-infra test
 
 ## Audits
 
+- Verification evidence readiness: `docs/realmos-package/99_audits/verification_evidence_readiness_audit_v0_33.md`
+- Verification evidence capture: `docs/realmos-package/06_operations/verification_evidence_capture_v0_33.md`
 - Necromancer readiness: `docs/realmos-package/99_audits/necromancer_readiness_audit_v0_32.md`
 - Necromancer operator flow: `docs/realmos-package/06_operations/necromancer_operator_flow_v0_32.md`
 - Jarvis chat readiness: `docs/realmos-package/99_audits/jarvis_chat_readiness_audit_v0_31.md`

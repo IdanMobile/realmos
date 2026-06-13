@@ -1017,12 +1017,13 @@ Do not start, recommend, prepare, or scope:
 - [x] **0.30 — UI / Navigation Verification Against Locked References** (complete)
 - [x] **0.31 — Jarvis Interaction Path Verification / Chat UI** (complete)
 - [x] **0.32 — Necromancer Verification / Operator UI Hardening** (complete)
-- [ ] **0.33 — Verification Evidence Capture** (recommended next — await operator approval)
+- [x] **0.33 — Verification Evidence Capture** (complete)
+- [ ] **0.34 — Durable Necromancer Evidence / Persistence Hardening** (recommended next — await operator approval)
 - [x] Testing & Quality Gate constitution (0.28)
 - [x] Jarvis interaction path verification (0.31 complete)
 - [x] Necromancer verification (0.32 complete)
-- [ ] Command Center operator flow hardening (0.34 planned)
-- [ ] Real verification evidence capture (0.33 planned)
+- [x] Real verification evidence capture (0.33 complete)
+- [ ] Durable Necromancer evidence / persistence hardening (0.34 planned)
 - [ ] Safe local executor consumer design (0.35 planned — no auto-exec without approval)
 - [ ] RealmOS replaces Cursor IDE as primary operator surface (final milestone)
 
@@ -1043,3 +1044,4 @@ Do not start, recommend, prepare, or scope:
 - [x] 0.30 UI / Navigation Verification Against Locked References
 - [x] 0.31 Jarvis Interaction Path Verification / Chat UI
 - [x] 0.32 Necromancer Verification / Operator UI Hardening
+- [x] 0.33 Verification Evidence Capture

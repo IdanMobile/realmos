@@ -5,6 +5,7 @@ import type {
   RunStateHandoffAuditEvent,
   RunStateHandoffInput,
   RunStateResultStatus,
+  VerificationEvidenceSummary,
   WorkPacketLifecycle,
   WorkPacketLifecycleStatus
 } from "@realmos/contracts";
@@ -14,7 +15,7 @@ const SECRET_PATTERN =
   /(?:api[_-]?key|secret|password|token|private[_-]?key|service[_-]?account)\s*[:=]\s*\S+/i;
 const BLOCKED_NEXT_INITIATIVE_PATTERN = /guing|side.?project|sync.?agent/i;
 
-export const DEFAULT_NEXT_INITIATIVE = "0.33 — Verification Evidence Capture";
+export const DEFAULT_NEXT_INITIATIVE = "0.34 — Durable Necromancer Evidence / Persistence Hardening";
 
 export type RunStateValidationError = {
   field: string;
@@ -115,6 +116,9 @@ function buildHandoffText(packet: WorkPacketLifecycle, state: RealmOSRunState): 
     packet.verification
       ? `${packet.verification.reportedStatus}: ${packet.verification.outputSummary}`
       : `(verification ${packet.verificationStatus})`,
+    state.evidenceSummary
+      ? `Evidence overall: ${state.evidenceSummary.overallStatus} (${state.evidenceSummary.attachedCount} gates attached)`
+      : "(no structured verification evidence attached)",
     "",
     "## Next recommended initiative",
     state.nextRecommendedInitiative,
@@ -237,6 +241,7 @@ export function updateRunStateFromWorkPacket(
       : state.commandsReported,
     changedFilesSummary: packet.expectedArtifacts.join(", ") || state.changedFilesSummary,
     artifactsSummary: packet.verification?.artifactsSummary ?? state.artifactsSummary,
+    evidenceSummary: state.evidenceSummary,
     knownRisks: [...new Set(knownRisks)],
     blockedReasons:
       blockedReasons.length > 0
@@ -306,6 +311,24 @@ export function markRunStateHandoffUpdated(state: RealmOSRunState): RealmOSRunSt
   });
 }
 
+export function updateRunStateFromEvidence(
+  state: RealmOSRunState,
+  evidenceSummary: VerificationEvidenceSummary
+): { state: RealmOSRunState; errors: RunStateValidationError[] } {
+  const updated = touch(state, {
+    evidenceSummary,
+    commandsReported: evidenceSummary.gates
+      .filter((gate) => gate.evidenceIds.length > 0)
+      .map((gate) => gate.expectedCommand),
+    auditEvents: appendAudit(state, "verification_evidence_synced", "Verification evidence summary synced.", {
+      overallStatus: evidenceSummary.overallStatus,
+      attachedCount: evidenceSummary.attachedCount
+    })
+  });
+
+  return { state: updated, errors: [] };
+}
+
 export function buildHandoffSummaryObject(state: RealmOSRunState): HandoffSummaryObject {
   return {
     runStateId: state.id,
@@ -321,6 +344,7 @@ export function buildHandoffSummaryObject(state: RealmOSRunState): HandoffSummar
     nextRecommendedInitiative: state.nextRecommendedInitiative,
     handoffRequired: state.handoffRequired,
     handoffUpdated: state.handoffUpdated,
+    evidenceSummary: state.evidenceSummary,
     updatedAt: state.updatedAt
   };
 }

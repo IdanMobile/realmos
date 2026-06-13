@@ -48,7 +48,17 @@ export {
   updateRunStateFromExecutorResult,
   updateRunStateFromVerification,
   updateRunStateFromWorkPacket,
+  updateRunStateFromEvidence,
   validateNextRecommendedInitiative,
   validateRunStateTextContent,
   type RunStateValidationError
 } from "./run-state-handoff";
+export {
+  buildCiVerificationEvidenceRecord,
+  buildVerificationEvidenceRecord,
+  DEFAULT_VERIFICATION_GATES,
+  hashVerificationOutput,
+  redactVerificationOutput,
+  summarizeVerificationEvidence,
+  validateVerificationEvidenceInput
+} from "./verification-evidence";

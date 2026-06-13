@@ -191,6 +191,34 @@ describe("operational persistence", () => {
     const reloaded = createRunStateHandoffStore(adapter);
     const loaded = await reloaded.getRunState(state.id);
     expect(loaded?.sourcePacketId).toBe("wpl_run_state_persist");
-    expect(loaded?.nextRecommendedInitiative).toContain("0.33");
+    expect(loaded?.nextRecommendedInitiative).toContain("0.34");
+  });
+
+  it("retains verification evidence records across store re-instantiation", async () => {
+    const adapter = createMemoryOperationalAdapter();
+    const { createVerificationEvidenceStore } = await import(
+      "../src/lib/persistence/create-verification-evidence-store"
+    );
+    const { buildVerificationEvidenceRecord } = await import("@realmos/work-loop");
+
+    const storeA = createVerificationEvidenceStore(adapter);
+    const built = buildVerificationEvidenceRecord({
+      workPacketId: "wpl_evidence_persist",
+      initiativeId: "0.33",
+      gateId: "pnpm_test",
+      commandName: "pnpm test",
+      reportedStatus: "pass",
+      outputText: "46 passed",
+      environment: "local",
+      operatorId: "operator"
+    });
+
+    expect(built.record).toBeTruthy();
+    await storeA.createVerificationEvidenceRecord(built.record!);
+
+    const storeB = createVerificationEvidenceStore(adapter);
+    const loaded = await storeB.getVerificationEvidenceRecord(built.record!.id);
+    expect(loaded?.gateId).toBe("pnpm_test");
+    expect(loaded?.outputHash).toBeTruthy();
   });
 });

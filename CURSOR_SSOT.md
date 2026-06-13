@@ -241,12 +241,12 @@ side project once ready
 ```text
 0.32 — Necromancer Verification / Operator UI Hardening
 0.33 — Verification Evidence Capture
-0.34 — Command Center Task Creation / Operator Flow Hardening
+0.34 — Durable Necromancer Evidence / Persistence Hardening
 0.35 — Safe Local Executor Consumer Design (no auto-exec without approval)
 RealmOS replaces Cursor IDE as primary operator surface
 ```
 
-**Recommended next initiative:** `0.33 — Verification Evidence Capture`.
+**Recommended next initiative:** `0.34 — Durable Necromancer Evidence / Persistence Hardening`.
 
 Cursor must not recommend GUING, sync-agent product work, side projects, external project work, or UI polish as the default next step while this gate is active.
 

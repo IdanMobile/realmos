@@ -1488,4 +1488,77 @@ describe("RealmOS API integration", () => {
     const prompt = promptLatest.json() as { promptText: string };
     expect(prompt.promptText).toContain("CURSOR_SSOT.md");
   });
+
+  it("attaches verification evidence and summarizes gates", async () => {
+    const { verificationEvidenceStore } = await import("../src/lib/verification-evidence-store");
+    const db = createMemoryDatabase();
+    const { app } = await buildApp({ database: db });
+
+    const createResponse = await app.inject({
+      method: "POST",
+      url: "/api/lifecycle/packets",
+      payload: {
+        realmId: "realm_realmos",
+        repositoryId: "repo_realmos",
+        allowedPaths: ["packages/**"],
+        forbiddenPaths: [".env"],
+        objective: "Evidence capture test",
+        instructions: "Dry-run only.",
+        verificationCommands: ["pnpm test", "pnpm typecheck"]
+      }
+    });
+    const packet = createResponse.json() as { id: string };
+
+    await app.inject({
+      method: "POST",
+      url: `/api/run-state/records/from-packet/${packet.id}`,
+      payload: { initiativeId: "0.33" }
+    });
+
+    const attachResponse = await app.inject({
+      method: "POST",
+      url: "/api/verification/evidence",
+      payload: {
+        workPacketId: packet.id,
+        initiativeId: "0.33",
+        gateId: "pnpm_test",
+        commandName: "pnpm test",
+        reportedStatus: "pass",
+        outputText: "Tests: 46 passed",
+        environment: "local",
+        operatorId: "operator_test"
+      }
+    });
+
+    expect(attachResponse.statusCode).toBe(201);
+    const attachBody = attachResponse.json() as {
+      record: { outputHash?: string; redactionApplied: boolean };
+      summary: { attachedCount: number; missingRequiredGateIds: string[] };
+    };
+    expect(attachBody.record.outputHash).toBeTruthy();
+    expect(attachBody.summary.attachedCount).toBe(1);
+    expect(attachBody.summary.missingRequiredGateIds).toContain("pnpm_typecheck");
+
+    const summaryResponse = await app.inject({
+      method: "GET",
+      url: `/api/verification/evidence/summary?initiativeId=0.33&workPacketId=${packet.id}`
+    });
+    expect(summaryResponse.statusCode).toBe(200);
+
+    const blocked = await app.inject({
+      method: "POST",
+      url: "/api/verification/evidence",
+      payload: {
+        workPacketId: packet.id,
+        initiativeId: "0.33",
+        gateId: "pnpm_build",
+        commandName: "pnpm build",
+        reportedStatus: "pass",
+        outputText: "-----BEGIN RSA PRIVATE KEY-----\nabc",
+        environment: "local",
+        operatorId: "operator_test"
+      }
+    });
+    expect(blocked.statusCode).toBe(400);
+  });
 });
