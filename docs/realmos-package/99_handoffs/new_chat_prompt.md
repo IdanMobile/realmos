@@ -4,26 +4,19 @@ Then read:
 
 1. docs/realmos-package/99_handoffs/latest_cursor_handoff.md
 2. PROJECT_STATE.md
-3. docs/realmos-package/99_audits/ui_navigation_readiness_audit_v0_30.md
-4. docs/realmos-package/06_operations/ui_navigation_verification_v0_30.md
-
-Optional durable context: `GET /api/run-state/handoff/latest`
+3. docs/realmos-package/99_audits/jarvis_chat_readiness_audit_v0_31.md
 
 ---
 
-## Resume context (2026-06-12)
+## Resume context (2026-06-13)
 
-Continue from **Initiative 0.30 complete**.
+Continue from **Initiative 0.31 complete**.
 
-**0.30 delivered:** Section navigation via `?section=`, governance safety banner, honest disabled Search/Jarvis, Decisions placeholder, reference asset inventory (PNGs still missing).
+**0.31 delivered:** Jarvis operator chat UI + `/api/jarvis/chat?mode=operator` with Ollama routing metadata and safety blocks.
 
-**Roadmap gate (hard rule):** No side projects until RealmOS base system is complete.
+**Recommended next:** **0.32 — Necromancer Verification / Operator UI Hardening** — await operator approval.
 
-**Recommended next (RealmOS-only):** **0.31 — Jarvis Interaction Path Verification / Chat UI** — **await operator approval. Do not auto-start.**
-
-**Do not auto-start:** GUING, side projects, voice, autonomous execution, shell execution, Cursor CLI auto-invoke.
-
-**Testing & Quality Gate:** No PASS without tests or documented test gap (CURSOR_SSOT.md Section 7.1).
+**Do not auto-start:** GUING, side projects, voice, shell, Cursor CLI, autonomous execution.
 
 ```bash
 pnpm test && pnpm typecheck && pnpm build && pnpm check:clean-start

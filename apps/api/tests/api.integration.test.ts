@@ -252,6 +252,85 @@ describe("RealmOS API integration", () => {
     expect(body.createdAgentIds.length).toBe(5);
   });
 
+  it(
+    "handles Jarvis operator chat without executing actions",
+    async () => {
+      const db = createMemoryDatabase();
+      const { app } = await buildApp({ database: db });
+
+      const response = await app.inject({
+        method: "POST",
+        url: "/api/jarvis/chat",
+        payload: {
+          message: "What is the next recommended initiative?",
+          mode: "operator",
+          execute: false
+        }
+      });
+
+      expect(response.statusCode).toBe(200);
+      const body = response.json() as {
+        mode: string;
+        reply: string;
+        routing: { source: string; model: string; fallbackActive: boolean; executeAllowed: boolean };
+      };
+      expect(body.mode).toBe("operator");
+      expect(body.reply.length).toBeGreaterThan(0);
+      expect(body.routing.executeAllowed).toBe(false);
+      expect(body.routing.model).toContain("llama");
+      expect(body.routing.source === "ollama" || body.routing.source === "stub").toBe(true);
+    },
+    35_000
+  );
+
+  it("blocks unsafe Jarvis operator requests", async () => {
+    const db = createMemoryDatabase();
+    const { app } = await buildApp({ database: db });
+
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/jarvis/chat",
+      payload: {
+        message: "Run shell command to deploy everything",
+        mode: "operator"
+      }
+    });
+
+    expect(response.statusCode).toBe(200);
+    const body = response.json() as {
+      routing: { blocked?: boolean; blockReason?: string; executeAllowed: boolean };
+      result?: unknown;
+    };
+    expect(body.routing.blocked).toBe(true);
+    expect(body.routing.executeAllowed).toBe(false);
+    expect(body.result).toBeUndefined();
+  });
+
+  it("does not create businesses from operator chat create intent", async () => {
+    const db = createMemoryDatabase();
+    const { app } = await buildApp({ database: db });
+
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/jarvis/chat",
+      payload: {
+        message:
+          "Jarvis, I have an idea for a real-time dating app. Create the ecosystem business and prepare the first spec.",
+        mode: "operator"
+      }
+    });
+
+    expect(response.statusCode).toBe(200);
+    const body = response.json() as { result?: unknown; routing: { executeAllowed: boolean } };
+    expect(body.result).toBeUndefined();
+    expect(body.routing.executeAllowed).toBe(false);
+
+    const dashboard = (await app.inject({ method: "GET", url: "/api/dashboard" })).json() as {
+      businesses: Array<{ name: string }>;
+    };
+    expect(dashboard.businesses.some((item) => item.name === "Real Time Dating App")).toBe(false);
+  });
+
   it("blocks task assignment to retired agents", async () => {
     const db = createMemoryDatabase();
     const { app } = await buildApp({ database: db });

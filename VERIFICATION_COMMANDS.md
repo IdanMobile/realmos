@@ -1,6 +1,6 @@
-# RealmOS — Verification Commands v0.30
+# RealmOS — Verification Commands v0.31
 
-Initiative 0.30 adds UI/navigation section verification. Initiative 0.29 adds the base system verification plan.
+Initiative 0.31 adds Jarvis operator chat verification. See `docs/realmos-package/06_operations/jarvis_interaction_path_v0_31.md` for manual smoke.
 
 ## Testing & Quality Gate (locked)
 
@@ -311,6 +311,8 @@ pnpm --filter @realmos/platform-infra test
 
 ## Audits
 
+- Jarvis chat readiness: `docs/realmos-package/99_audits/jarvis_chat_readiness_audit_v0_31.md`
+- Jarvis interaction path: `docs/realmos-package/06_operations/jarvis_interaction_path_v0_31.md`
 - UI/navigation readiness: `docs/realmos-package/99_audits/ui_navigation_readiness_audit_v0_30.md`
 - UI/navigation verification: `docs/realmos-package/06_operations/ui_navigation_verification_v0_30.md`
 - Base system readiness: `docs/realmos-package/99_audits/base_system_readiness_audit_v0_29.md`

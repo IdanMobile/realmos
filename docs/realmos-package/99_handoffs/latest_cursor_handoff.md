@@ -1,7 +1,6 @@
-# Latest Cursor Handoff — Post Initiative 0.30
+# Latest Cursor Handoff — Post Initiative 0.31
 
-Updated: 2026-06-12  
-**Purpose:** Continue from UI/navigation verification + section nav fix complete.
+Updated: 2026-06-13
 
 ---
 
@@ -9,45 +8,33 @@ Updated: 2026-06-12
 
 | Field | Value |
 |-------|--------|
-| **Project version** | `0.30.0` |
-| **Post-MVP complete** | 0.18–0.30 |
-| **Strict verification** | **GREEN** |
-| **Navigation** | **PARTIAL** — `?section=` query nav works |
-| **UI reference comparison** | **BLOCKED** — PNGs missing from repo |
+| **Project version** | `0.31.0` |
+| **Post-MVP complete** | 0.18–0.31 |
+| **Jarvis operator chat** | **PASS** (Live API required) |
 | **Cursor IDE exit** | **NOT READY** |
-| **Executor mode** | `dry_run` — no shell execution |
+| **Executor mode** | `dry_run` |
 
 ---
 
 ## Roadmap gate (locked)
 
-- **Recommended next:** **0.31 — Jarvis Interaction Path Verification / Chat UI**
-- **Blocked:** GUING, side projects, product bootstrap
+- **Recommended next:** **0.32 — Necromancer Verification / Operator UI Hardening**
+- **Blocked:** GUING, side projects
 
-**Do not start 0.31 until operator explicitly approves.**
-
----
-
-## Initiative 0.30 summary
-
-- Query-param section navigation for all 10 sidebar IA labels
-- Per-section focused panels; Decisions shows explicit placeholder
-- Search + Ask Jarvis disabled with honest labels (Jarvis → 0.31)
-- Governance safety banner on every section
-- Reference asset audit: 11 mockups + master board **missing** from repo
+**Do not start 0.32 until operator explicitly approves.**
 
 ---
 
-## Exact next task
+## Initiative 0.31 summary
 
-```text
-Await operator approval for Initiative 0.31 — Jarvis Interaction Path Verification / Chat UI.
-```
+- `POST /api/jarvis/chat` with `mode: "operator"` — Ollama-backed replies + routing metadata
+- Ask Jarvis opens chat panel; disabled in mock-only mode
+- Safety blocks shell/Cursor CLI/dispatch/GUING bootstrap
+- No action execution from chat
 
 ---
 
 ## Audits
 
-- `docs/realmos-package/99_audits/ui_navigation_readiness_audit_v0_30.md`
-- `docs/realmos-package/06_operations/ui_navigation_verification_v0_30.md`
-- `docs/realmos-package/99_audits/base_system_readiness_audit_v0_29.md`
+- `docs/realmos-package/99_audits/jarvis_chat_readiness_audit_v0_31.md`
+- `docs/realmos-package/06_operations/jarvis_interaction_path_v0_31.md`

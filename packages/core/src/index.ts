@@ -15,6 +15,12 @@ export {
   type JarvisChatInput,
   type JarvisChatResponse
 } from "./jarvis/chat-handler";
+export { detectUnsafeJarvisRequest, type JarvisSafetyCheck } from "./jarvis/safety";
+export {
+  buildJarvisOperatorPrompt,
+  buildJarvisOperatorSystemPrompt,
+  type JarvisOperatorContext
+} from "./jarvis/operator-prompt";
 export {
   isRealTimeDatingAppDemoCommand,
   parseJarvisChatMessage,

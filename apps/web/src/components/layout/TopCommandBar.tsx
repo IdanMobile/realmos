@@ -4,9 +4,10 @@ import { getCommandCenterSection } from "@/lib/navigation/sections";
 type TopCommandBarProps = {
   dataSource?: "api" | "mock";
   activeSection: CommandCenterSectionId;
+  onAskJarvis?: () => void;
 };
 
-export function TopCommandBar({ dataSource = "mock", activeSection }: TopCommandBarProps) {
+export function TopCommandBar({ dataSource = "mock", activeSection, onAskJarvis }: TopCommandBarProps) {
   const section = getCommandCenterSection(activeSection);
 
   return (
@@ -21,7 +22,7 @@ export function TopCommandBar({ dataSource = "mock", activeSection }: TopCommand
           disabled
           aria-disabled="true"
           aria-label="Search (not implemented yet)"
-          title="Search not implemented yet — planned after Jarvis chat UI (Initiative 0.31)"
+          title="Search not implemented yet"
           placeholder="Search not available yet…"
           className="w-72 cursor-not-allowed rounded-lg border border-border bg-card/50 px-3 py-2 text-sm text-textSecondary placeholder:text-textSecondary/70"
           data-testid="command-center-search"
@@ -34,13 +35,12 @@ export function TopCommandBar({ dataSource = "mock", activeSection }: TopCommand
         </span>
         <button
           type="button"
-          disabled
-          aria-disabled="true"
-          title="Jarvis chat UI planned — Initiative 0.31"
+          onClick={onAskJarvis}
+          title="Open Jarvis operator chat"
           data-testid="ask-jarvis-button"
-          className="cursor-not-allowed rounded-lg bg-accent/40 px-3 py-2 text-sm font-medium text-white/80"
+          className="rounded-lg bg-accent px-3 py-2 text-sm font-medium text-white hover:bg-accentMuted"
         >
-          Ask Jarvis (0.31)
+          Ask Jarvis
         </button>
       </div>
     </header>

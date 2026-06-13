@@ -2,6 +2,8 @@ import type { FastifyInstance } from "fastify";
 import { createBusinessFromIdea, generateSpecKitArtifacts, handleJarvisChat } from "@realmos/core";
 import type { RealmOSDatabase } from "./db/types";
 import { recordAudit } from "./lib/audit";
+import { buildHealthReport } from "./lib/health-export";
+import { handleJarvisOperatorChat } from "./lib/jarvis-operator-chat";
 
 async function persistSpecKitForBusiness(
   db: RealmOSDatabase,
@@ -27,7 +29,17 @@ export function registerJarvisRoutes(app: FastifyInstance, db: RealmOSDatabase):
       message?: string;
       userId?: string;
       execute?: boolean;
+      mode?: "operator" | "legacy";
     };
+
+    if (body.mode === "operator") {
+      const health = await buildHealthReport(db);
+      return handleJarvisOperatorChat(
+        db,
+        { message: body.message ?? "", userId: body.userId },
+        health
+      );
+    }
 
     const response = await handleJarvisChat(db, {
       message: body.message ?? "",

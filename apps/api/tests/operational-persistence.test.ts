@@ -191,6 +191,6 @@ describe("operational persistence", () => {
     const reloaded = createRunStateHandoffStore(adapter);
     const loaded = await reloaded.getRunState(state.id);
     expect(loaded?.sourcePacketId).toBe("wpl_run_state_persist");
-    expect(loaded?.nextRecommendedInitiative).toContain("0.31");
+    expect(loaded?.nextRecommendedInitiative).toContain("0.32");
   });
 });

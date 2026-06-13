@@ -46,7 +46,13 @@ describe("Command Center dashboard", () => {
     expect(screen.getByTestId("command-center-dashboard")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Jarvis HQ", level: 1 })).toBeInTheDocument();
     expect(screen.getByTestId("command-center-search")).toBeDisabled();
-    expect(screen.getByTestId("ask-jarvis-button")).toBeDisabled();
+    expect(screen.getByTestId("ask-jarvis-button")).toBeEnabled();
+  });
+
+  it("opens Jarvis chat panel from Ask Jarvis button", () => {
+    renderDashboard();
+    fireEvent.click(screen.getByTestId("ask-jarvis-button"));
+    expect(screen.getByTestId("jarvis-chat-panel")).toBeInTheDocument();
   });
 
   it("shows overview section by default", () => {

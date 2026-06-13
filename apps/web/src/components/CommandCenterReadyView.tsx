@@ -23,6 +23,7 @@ export function CommandCenterReadyView({ data, health, dataSource }: CommandCent
     data.communicationThreads[0]?.id ?? null
   );
   const [selectedLifecyclePacketId, setSelectedLifecyclePacketId] = useState<string | null>(null);
+  const [jarvisOpen, setJarvisOpen] = useState(false);
 
   const monthlyBudget = useMemo(
     () => data.budgets.find((budget) => budget.scope === "global") ?? data.budgets[0],
@@ -35,6 +36,9 @@ export function CommandCenterReadyView({ data, health, dataSource }: CommandCent
         dataSource={dataSource}
         activeSection={activeSection}
         onSectionChange={setActiveSection}
+        health={health}
+        jarvisOpen={jarvisOpen}
+        onJarvisOpenChange={setJarvisOpen}
       >
         <div className="card max-w-xl" role="alert">
           <p>Unable to load dashboard budget data.</p>
@@ -48,6 +52,9 @@ export function CommandCenterReadyView({ data, health, dataSource }: CommandCent
       dataSource={dataSource}
       activeSection={activeSection}
       onSectionChange={setActiveSection}
+      health={health}
+      jarvisOpen={jarvisOpen}
+      onJarvisOpenChange={setJarvisOpen}
     >
       <div data-testid="command-center-dashboard">
         <CommandCenterSectionContent
